@@ -1,0 +1,388 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>因受 | 因受</title><meta name="keywords" content="因受 苦行"><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="《图解编译原理》读书笔记第一章 运行时结构及编译过程1.1 一个简单的C程序代码如下： 12345678910111213141516int fun(int a, int b);int m &#x3D; 10;int main()&amp;#123;  int i &#x3D; 4;  int j &#x3D; 5;  m &#x3D; fun(i, j);  return 0;&amp;#125;int fun(int a, int b)&amp;#123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="因受">
+<meta property="og:url" content="https://phoenine.github.io/Blog/posts/2/index.html">
+<meta property="og:site_name" content="因受">
+<meta property="og:description" content="《图解编译原理》读书笔记第一章 运行时结构及编译过程1.1 一个简单的C程序代码如下： 12345678910111213141516int fun(int a, int b);int m &#x3D; 10;int main()&amp;#123;  int i &#x3D; 4;  int j &#x3D; 5;  m &#x3D; fun(i, j);  return 0;&amp;#125;int fun(int a, int b)&amp;#123">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-11-04T13:59:14.000Z">
+<meta property="article:modified_time" content="2021-04-20T13:07:34.653Z">
+<meta property="article:author" content="Phoenine">
+<meta property="article:tag" content="因受 苦行">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/Blog/img/favicon.png"><link rel="canonical" href="https://phoenine.github.io/Blog/posts/2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/Blog/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/Blog/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-20 21:07:34'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/Blog/">因受</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-11-04T13:59:14.000Z" title="发表于 2020-11-04 21:59:14">2020-11-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-20T13:07:34.653Z" title="更新于 2021-04-20 21:07:34">2021-04-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><script src="/Blog/assets/js/APlayer.min.js"> </script><h1 id="《图解编译原理》读书笔记"><a href="#《图解编译原理》读书笔记" class="headerlink" title="《图解编译原理》读书笔记"></a>《图解编译原理》读书笔记</h1><h2 id="第一章-运行时结构及编译过程"><a href="#第一章-运行时结构及编译过程" class="headerlink" title="第一章 运行时结构及编译过程"></a>第一章 运行时结构及编译过程</h2><h3 id="1-1-一个简单的C程序"><a href="#1-1-一个简单的C程序" class="headerlink" title="1.1 一个简单的C程序"></a>1.1 一个简单的C程序</h3><p>代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fun</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</span><br><span class="line"><span class="keyword">int</span> m = <span class="number">10</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> i = <span class="number">4</span>;</span><br><span class="line">  <span class="keyword">int</span> j = <span class="number">5</span>;</span><br><span class="line">  m = fun(i, j);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fun</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">  c = a + b;</span><br><span class="line">  <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="程序运行之前"><a href="#程序运行之前" class="headerlink" title="程序运行之前"></a>程序运行之前</h4><p>执行程序之前，我们需要对程序进行编译。</p>
+<p>编译分为以下几个步骤：</p>
+<table>
+<thead>
+<tr>
+<th align="left">1. 预处理： 宏定义展开、头文件展开、条件编译、在这里并不会检查语法。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">2. 编译： 检查语法，将预处理后的文件编译生成汇编文件</td>
+</tr>
+<tr>
+<td align="left">3. 汇编： 将汇编文件生成目标文件(二进制文件)</td>
+</tr>
+<tr>
+<td align="left">4. 链接： 将目标文件链接为可执行文件</td>
+</tr>
+</tbody></table>
+<p>编译完成生成可执行文件之后，我们通过在linux下size命令可以查看一个可执行二进制文件基本情况：</p>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201103194803509.png" alt="image-20201103194803509" style="zoom:50%;" />
+
+<p>通过上图可以得知，在程序没有运行前，也就是说程序没有加载到内存前，可执行程序的内部已经分好了3段信息，分别为代码区(text)，数据区(data)和未初始化数据区(bss) 3个部分。</p>
+<!--data和objc又合称为静态区或者全局区。-->    
+
+<p>程序开始执行前，动态数据区没有数据。只有程序开始执行后，在指令的驱动下，这一区域才会产生数据。压栈和清栈多的工作就是在这一区域完成的。</p>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201103204628715.png" alt="image-20201103204628715" style="zoom:50%;" />
+
+<h4 id="程序的初始化"><a href="#程序的初始化" class="headerlink" title="程序的初始化"></a>程序的初始化</h4><p>初始情景是这样的，eip 指向 main 函数的第一条指令，此时程序还没有运行，栈空间里还没有数据，ebp 和 esp 指向的位置是程序加载时内核设置的。</p>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201103210051065.png" alt="image-20201103210051065" style="zoom:50%;" />
+
+<h4 id="程序的执行"><a href="#程序的执行" class="headerlink" title="程序的执行"></a>程序的执行</h4><ul>
+<li>程序开始执行 main 函数第一条指令，eip 自动指向下一条指令。第一条指令的执行，致使 ebp 的地址值被保存在栈中。</li>
+</ul>
+<!--保存的目的是本程序执行完毕后，ebp还能返回现在的位置，复原现在的栈。-->
+
+<ul>
+<li>随着 ebp 地址值的 压栈，esp 自动向栈顶方向移动，它将永远指向栈顶。</li>
+</ul>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201103210746239.png" alt="image-20201103210746239" style="zoom:50%;" />
+
+<ul>
+<li><p>程序继续执行，开始构建 main 函数自己的栈，ebp 原来指向的地址值已经被保存了，它被腾出来了，用来看管 main 函数的栈底，此时它和 esp 是重叠的</p>
+</li>
+<li><p>程序继续执行，eip 指向下一条指令，此次执行的是局部变量 i 的初始化，初始值 4 被存储在栈中，esp 自动向栈顶方向移动。</p>
+</li>
+<li><p>继续执行下一条指令，局部变量 j 的初始值 5 也被压栈</p>
+</li>
+<li><p>接下来调用 fun 函数时压栈的数据虽然也保存在 main 函数的栈中， 但它们都是供 fun 函数用的。 可以说 fun 函数的数据， 一半在 fun 函数中， 一半在主调函数中， 下面来 看函数调用时留在 main 函数中的那一半数据。</p>
+<ul>
+<li>先执行传参的指令，此时参数入栈的顺序和代码中传参的书写顺序正好相反，<strong>参数 b 先入栈</strong>，数值是 main 函数中局部变量 j 的数值 5。</li>
+<li>程序继续执行，参数 a 被压入栈中，数值是局部变量 i 的数值 4</li>
+</ul>
+</li>
+</ul>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201103211138499.png" alt="image-20201103211138499" style="zoom:50%;" />
+
+<ul>
+<li>程序继续执行， 此次压入的是 fun 函数返回值， 将来 fun 函数返回之后， 这里的值会传递给 m</li>
+<li>还剩最后一步，跳转到 fun 函数去执行。<ul>
+<li>一部分是把 fun 函数执行后的返回地址压入栈中，以便 fun 函数执行完毕后能返回到 main 函数中继续执行</li>
+<li>另一部分就是跳转到被调用的函数的第一条指令去执行</li>
+</ul>
+</li>
+<li>fun 函数开始执行，第一件事就是保存 ebp 指向的地址值，此时 ebp 指向的是 main 函数的栈底，保存的目 的是在返回时恢复 main 函数栈底的位置，这和前面 main 函数刚开始执行时第一步就保存 ebp 的地址值的目的 是一样的</li>
+</ul>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201103211526043.png" alt="image-20201103211526043" style="zoom:50%;" />
+
+<ul>
+<li>执行几个运算指令</li>
+</ul>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201103211648452.png" alt="image-20201103211648452" style="zoom:50%;" />
+
+<ul>
+<li>恢复现场以后，把 fun 函数返回值传递给 m</li>
+<li>该处理 fun 函数调用时的传参和返回值设置了，这两者已经没有存在的必要了，全部清栈</li>
+<li>剩下就是 main 函数的内容了，main 函数执行完毕以后，栈也全部清掉。清栈的方式与 fun 函数执行完后采用的清栈方式一致</li>
+</ul>
+<h4 id="运行之后"><a href="#运行之后" class="headerlink" title="运行之后"></a>运行之后</h4><!--程序执行的本质就是代码区的指令不断执行，驱使动态数据区和静态数据区产生数据变化。-->
+
+<p>程序在加载到内存前，<strong>代码区和全局区(data和bss)的大小就是固定的</strong>，程序运行期间不能改变。然后，运行可执行程序，操作系统把物理硬盘程序load(加载)到内存，除了根据可执行程序的信息分出代码区（text）、数据区（data）和未初始化数据区（bss）之外，还额外增加了栈区、堆区。</p>
+<table>
+<thead>
+<tr>
+<th>代码区</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>代码区(TEXT)</strong></td>
+<td>加载的是可执行文件代码段，所有的可执行代码都加载到代码区，这块内存是不可以在运行期间修改的。</td>
+</tr>
+<tr>
+<td><strong>未初始化数据区(BSS)</strong></td>
+<td>加载的是可执行文件BSS段，位置可以分开亦可以紧靠数据段，存储于数据段的数据（全局未初始化，静态未初始化数据）的生存周期为整个程序运行过程。</td>
+</tr>
+<tr>
+<td><strong>静态数据区(DATA)</strong></td>
+<td>加载的是可执行文件数据段，存储于数据段（全局初始化，静态初始化数据，文字常量(只读)）的数据的生存周期为整个程序运行过程。</td>
+</tr>
+<tr>
+<td><strong>栈区(stack)</strong></td>
+<td>栈是一种先进后出的内存结构，由编译器自动分配释放，存放函数的参数值、返回值、局部变量等。在程序运行过程中实时加载和释放，因此，局部变量的生存周期为申请到释放该段栈空间。</td>
+</tr>
+<tr>
+<td><strong>堆区(heap)</strong></td>
+<td>堆是一个大容器，它的容量要远远大于栈，但没有栈那样先进后出的顺序。用于动态内存分配。堆在内存中位于BSS区和栈区之间。一般由程序员分配和释放，若程序员不释放，程序结束时由操作系统回收。</td>
+</tr>
+</tbody></table>
+<p>常见的类型以及存储位置：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>作用域</th>
+<th>生命周期</th>
+<th>存储位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>auto变量</td>
+<td>{}内</td>
+<td>当前函数</td>
+<td>栈区</td>
+</tr>
+<tr>
+<td>static局部变量</td>
+<td>{}内</td>
+<td>整个程序运行期</td>
+<td>初始化在data段，未初始化在BSS段</td>
+</tr>
+<tr>
+<td>extern变量</td>
+<td>整个程序</td>
+<td>整个程序运行期</td>
+<td>初始化在data段，未初始化在BSS段</td>
+</tr>
+<tr>
+<td>static全局变量</td>
+<td>当前文件</td>
+<td>整个程序运行期</td>
+<td>初始化在data段，未初始化在BSS段</td>
+</tr>
+<tr>
+<td>extern函数</td>
+<td>整个程序</td>
+<td>整个程序运行期</td>
+<td>代码区</td>
+</tr>
+<tr>
+<td>static函数</td>
+<td>当前文件</td>
+<td>整个程序运行期</td>
+<td>代码区</td>
+</tr>
+<tr>
+<td>register变量</td>
+<td>{}内</td>
+<td>当前函数</td>
+<td>运行时存储在CPU寄存器</td>
+</tr>
+<tr>
+<td>字符串常量</td>
+<td>当前文件</td>
+<td>整个程序运行期</td>
+<td>data段</td>
+</tr>
+<tr>
+<td>const全局变量</td>
+<td>当前文件</td>
+<td>整个程序运行期</td>
+<td>初始化放在data段，未初始化在BSS段</td>
+</tr>
+<tr>
+<td>const局部变量</td>
+<td>{}内</td>
+<td>当前函数</td>
+<td>栈区</td>
+</tr>
+</tbody></table>
+<h4 id="CPU中的三个寄存器"><a href="#CPU中的三个寄存器" class="headerlink" title="CPU中的三个寄存器"></a>CPU中的三个寄存器</h4><ul>
+<li>eip：eip永远指向代码区将要执行的下一条指令。<ul>
+<li>顺序执行：程序执行完一条指令后自动指向下一条执行</li>
+<li>跳转：执行完一条跳转指令后跳转到指定位置</li>
+</ul>
+</li>
+<li>ebp：管控栈空间，指向栈底</li>
+<li>esp：管控栈空间，指向栈顶</li>
+</ul>
+<!--栈中数据存储和释放的原则是后进先出-->
+
+<h3 id="1-2-更为复杂的C语言运行结构"><a href="#1-2-更为复杂的C语言运行结构" class="headerlink" title="1.2 更为复杂的C语言运行结构"></a>1.2 更为复杂的C语言运行结构</h3><p>代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> m = <span class="number">10</span>;</span><br><span class="line">  <span class="keyword">char</span> num[<span class="number">4</span>];</span><br><span class="line">  <span class="built_in">strcpy</span>(num, <span class="string">&quot;bbbbbbbbbbbbb\x0F\x10\x40\x00&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;you were attacked!!!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  fun1();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<!--栈底地址值被覆盖了，ebp会得到一个乱值，不再指向main函数的栈底-->
+
+<p>在C语言中，栈的方向是从<strong>高地址向低地址</strong>延伸，而<strong>数组中数据在栈中的存储方向</strong>与此正好相反。</p>
+<p>字符串拷贝等数组操作是不对数据长度做审核的，如果实际的数据长度超过了栈中预留的空间，就会将栈中其他数据覆盖，这种现象被称为“栈溢出”。栈溢出可能导致一个不可预期的错误，也可能导致一个精心策划的执行流程发生改变。</p>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201104213741370.png" alt="image-20201104213741370" style="zoom:50%;" />
+
+<h3 id="1-3-编译过程概述"><a href="#1-3-编译过程概述" class="headerlink" title="1.3 编译过程概述"></a>1.3 编译过程概述</h3><h4 id="1-3-1-词法分析"><a href="#1-3-1-词法分析" class="headerlink" title="1.3.1 词法分析"></a>1.3.1 词法分析</h4><!--编译的第一阶段是词法分析-->
+
+<p>词法分析的作用是从连续的字符中识别出标识符、关键字、数字、运算符并存储为符号(token)流。</p>
+<h4 id="1-3-2-语法分析"><a href="#1-3-2-语法分析" class="headerlink" title="1.3.2 语法分析"></a>1.3.2 语法分析</h4><p>语法分析的作用是从词法分析识别出的符号流中识别出符合C语言语法的语句。</p>
+<h4 id="1-3-3-语法书-gt-中间代码-gt-目标代码"><a href="#1-3-3-语法书-gt-中间代码-gt-目标代码" class="headerlink" title="1.3.3 语法书-&gt;中间代码-&gt;目标代码"></a>1.3.3 语法书-&gt;中间代码-&gt;目标代码</h4><p>中间代码的设计思想： 计算机存在多种CPU硬件平台，要考虑到程序在不同CPU之间的移植性。先转换成通用的、抽象的CPU指令。</p>
+<p>语法树是二维结构。</p>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201104215246865.png" alt="image-20201104215246865" style="zoom:50%;" />
+
+<p>中间代码是准一维结构。</p>
+<img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201104215312619.png" alt="image-20201104215312619" style="zoom:50%;" />
+
+<p>选定具体的 CPU、操作系统后， 中间代码就可以转换为目标代码——汇编代码</p>
+<p>最后链接器把一个或多个目标文件（库文件本质上也是目标文件）链接成符合选定操作系统指定格式的可 执行文件。</p>
+<h2 id="第二章-词法分析"><a href="#第二章-词法分析" class="headerlink" title="第二章 词法分析"></a>第二章 词法分析</h2><h3 id="2-1-总体结构图"><a href="#2-1-总体结构图" class="headerlink" title="2.1 总体结构图"></a>2.1 总体结构图</h3><img src="/Users/Evan/Documents/C_Study/《图解编译原理》读书笔记.assets/image-20201104215858679.png" alt="image-20201104215858679" style="zoom: 67%;" /> </article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://phoenine.github.io/Blog/posts/2/">https://phoenine.github.io/Blog/posts/2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://phoenine.github.io/Blog" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/Blog/posts/13007/"><img class="prev-cover" src="/Blog/img/cpp.png" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">深入理解C++11</div></div></a></div><div class="next-post pull-right"><a href="/Blog/posts/3/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info"></div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="this.onerror=null;this.src='/Blog/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Phoenine</div><div class="author-info__description">Welcome to my new blog ：）</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/phoenine"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/Blog/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8A%E5%9B%BE%E8%A7%A3%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">《图解编译原理》读书笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E8%BF%90%E8%A1%8C%E6%97%B6%E7%BB%93%E6%9E%84%E5%8F%8A%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">第一章 运行时结构及编译过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 一个简单的C程序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E4%B9%8B%E5%89%8D"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">程序运行之前</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">程序的初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">程序的执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E4%B9%8B%E5%90%8E"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">运行之后</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CPU%E4%B8%AD%E7%9A%84%E4%B8%89%E4%B8%AA%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.1.1.5.</span> <span class="toc-text">CPU中的三个寄存器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%9B%B4%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84C%E8%AF%AD%E8%A8%80%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 更为复杂的C语言运行结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.3 编译过程概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">1.3.1 词法分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">1.3.2 语法分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-3-%E8%AF%AD%E6%B3%95%E4%B9%A6-gt-%E4%B8%AD%E9%97%B4%E4%BB%A3%E7%A0%81-gt-%E7%9B%AE%E6%A0%87%E4%BB%A3%E7%A0%81"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">1.3.3 语法书-&gt;中间代码-&gt;目标代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text">第二章 词法分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%80%BB%E4%BD%93%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 总体结构图</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;"><img src="/Blog/img/python.png" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Python模块学习&lt;一&gt;"/></a><div class="content"><a class="title" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;">Python模块学习&lt;一&gt;</a><time datetime="2021-04-13T09:32:24.000Z" title="发表于 2021-04-13 17:32:24">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/13020/" title="automake基础"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="automake基础"/></a><div class="content"><a class="title" href="/Blog/posts/13020/" title="automake基础">automake基础</a><time datetime="2021-04-13T08:59:00.000Z" title="发表于 2021-04-13 16:59:00">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="23 种设计模式的通俗解释"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释">23 种设计模式的通俗解释</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="图解霍夫曼编码"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="图解霍夫曼编码"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="图解霍夫曼编码">图解霍夫曼编码</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/12007/" title="Jenkinsfile introduce"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Jenkinsfile introduce"/></a><div class="content"><a class="title" href="/Blog/posts/12007/" title="Jenkinsfile introduce">Jenkinsfile introduce</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By Phoenine</div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由 GitHub 托管" alt="GitHub"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/Blog/js/utils.js"></script><script src="/Blog/js/main.js"></script><script src="/Blog/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

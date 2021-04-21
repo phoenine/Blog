@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Jenkinsfile introduce | 因受</title><meta name="keywords" content="jenkins"><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Jenkinsfile introduceJenkinsfile 基本语法Defining a PipelineJenkins Pipeline is a suite of plugins that supports implementing and integrating continuous delivery pipelines into Jenkins.  A Pipeline can b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkinsfile introduce">
+<meta property="og:url" content="https://phoenine.github.io/Blog/posts/12007/index.html">
+<meta property="og:site_name" content="因受">
+<meta property="og:description" content="Jenkinsfile introduceJenkinsfile 基本语法Defining a PipelineJenkins Pipeline is a suite of plugins that supports implementing and integrating continuous delivery pipelines into Jenkins.  A Pipeline can b">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-31T15:59:00.000Z">
+<meta property="article:modified_time" content="2021-04-09T13:01:06.000Z">
+<meta property="article:author" content="Phoenine">
+<meta property="article:tag" content="jenkins">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/Blog/img/favicon.png"><link rel="canonical" href="https://phoenine.github.io/Blog/posts/12007/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/Blog/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/Blog/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-09 21:01:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/Blog/">因受</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Jenkinsfile introduce</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-09T13:01:06.000Z" title="更新于 2021-04-09 21:01:06">2021-04-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/Blog/categories/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/">个人项目</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Jenkinsfile introduce"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><script src="/Blog/assets/js/APlayer.min.js"> </script><h1 id="Jenkinsfile-introduce"><a href="#Jenkinsfile-introduce" class="headerlink" title="Jenkinsfile introduce"></a>Jenkinsfile introduce</h1><h2 id="Jenkinsfile-基本语法"><a href="#Jenkinsfile-基本语法" class="headerlink" title="Jenkinsfile 基本语法"></a>Jenkinsfile 基本语法</h2><h3 id="Defining-a-Pipeline"><a href="#Defining-a-Pipeline" class="headerlink" title="Defining a Pipeline"></a>Defining a Pipeline</h3><p>Jenkins Pipeline is a suite of plugins that supports implementing and integrating continuous delivery pipelines into Jenkins. </p>
+<p>A Pipeline can be created in one of the following ways:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://jenkins.io/doc/book/pipeline/getting-started/#through-blue-ocean">Through Blue Ocean</a> - after setting up a Pipeline project in Blue Ocean, the Blue Ocean UI helps you write your Pipeline’s <code>Jenkinsfile</code> and commit it to source control.</li>
+<li><a target="_blank" rel="noopener" href="https://jenkins.io/doc/book/pipeline/getting-started/#through-the-classic-ui">Through the classic UI</a> - you can enter a basic Pipeline directly in Jenkins through the classic UI.</li>
+<li><a target="_blank" rel="noopener" href="https://jenkins.io/doc/book/pipeline/getting-started/#defining-a-pipeline-in-scm">In SCM</a> - you can write a <code>Jenkinsfile</code> manually, which you can commit to your project’s source control repository.</li>
+</ul>
+<h3 id="Using-Environmental-Variables"><a href="#Using-Environmental-Variables" class="headerlink" title="Using Environmental Variables"></a>Using Environmental Variables</h3><p>Environment variables can be set globally or per stage.</p>
+<p>Setting environment variables per stage means they will only apply to the stage in which they’re defined.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; setting environment variables globally</span><br><span class="line">pipeline &#123;</span><br><span class="line"> environment &#123;</span><br><span class="line"> BUILD_NUMBER&#x3D;&quot;$&#123;Calendar.getInstance()format(&#39;yyyyMMddHHmmssSSS&#39;)&#125;&quot;</span><br><span class="line"> BUILD_ID &#x3D; &quot;$&#123;env.BUILD_NUMBER&#125;&quot;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Agent"><a href="#Agent" class="headerlink" title="Agent"></a>Agent</h3><p>In declarative pipelines the <strong>agent</strong> directive is used for specifying which agent/slave the job/task is to be executed on. This directive only allows you to specify where the task can be executed (On which agent, slave, label or docker image)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">agent &#123; kubernetes &#123; label &#39;my-defined-label&#39; inheritFrom &#39;my-defined-build&#39; containerTemplate &#123; name &#39;build-name&#39; image &#39;my-docker-image:latest&#39; workingDir &#39;my&#x2F;working&#x2F;dir&#39; &#125; &#125; &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h3><p>The parameters directive provides a list of parameters which a user should provide when triggering the Pipeline. The values for these user-specified parameters are made available to Pipeline steps via the ‘<code>params&#39;</code> object.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">String parameter:</span><br><span class="line">parameters &#123;</span><br><span class="line"> string(name: &#39;DEPLOY_ENV&#39;, defaultValue: &#39;staging&#39;, description: &#39;&#39;)</span><br><span class="line">&#125;</span><br><span class="line">Boolean parameter:</span><br><span class="line">parameters &#123;</span><br><span class="line"> booleanParam(name: &#39;DEBUG_BUILD&#39;, defaultValue: true, description: &#39;&#39;)</span><br><span class="line">&#125;</span><br><span class="line">Choice parameter:</span><br><span class="line">parameters &#123;</span><br><span class="line"> choice(name:&#39;OPTIONS&#39;, description:&#39;Select an option&#39;, choices:&#39;Option1\nOption2\nOption3&#39;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Gerrit-Triggers"><a href="#Gerrit-Triggers" class="headerlink" title="Gerrit Triggers"></a>Gerrit Triggers</h3><p>This plugin integrates Jenkins to Gerrit code review for triggering builds when a “patch set” is created.</p>
+<p><u><strong>Trigger configuration in pipeline job:</strong></u></p>
+<p>In the “Build Triggers” section of your Job configuration page; tick “Gerrit event”</p>
+<p>Specify what type of event(s) to trigger on:</p>
+<ul>
+<li><strong>Draft Published:</strong> Sent when a change moves from draft state to new. (only available in version 2.5 or higher of Gerrit).</li>
+<li><strong>Patchset Created:</strong> Sent when a new patchset arrives on a change. Before version 2.6.0, this was the only event you could trigger on.</li>
+<li><strong>Change Merged:</strong> Sent when a change is merged on the Gerrit server.</li>
+<li><strong>Comment Added:</strong> Sent when a comment is added to a change. Which category and value to trigger on can be configured. The available categories can be configured in the server settings for the plugin.</li>
+<li><strong>Ref Updated:</strong> Sent when a ref is updated on the Gerrit server, i.e. someone pushes past code review.</li>
+</ul>
+<img src="/Blog/posts/12007/image-20200729094356824.png" class="">
+
+<img src="Jenkinsfile%20introduce/image-20200729094356824.png" alt="image-20200729094356824" style="zoom: 67%;" />
+
+<p><u><strong>Trigger configuration in Jenkinsfile:</strong></u></p>
+<p>Jenkinsfile will overwrite the configuration done in pipeline job. </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">triggers &#123;</span><br><span class="line"> gerrit(</span><br><span class="line">   customUrl: &#39;&#39;,</span><br><span class="line">   gerritProjects: [[</span><br><span class="line">     branches: [[</span><br><span class="line">      compareType: &#39;PLAIN&#39;,</span><br><span class="line">      pattern: &#39;master&#39;</span><br><span class="line">     ]],</span><br><span class="line">    compareType: &#39;PLAIN&#39;,</span><br><span class="line">    disableStrictForbiddenFileVerification: false,</span><br><span class="line">    pattern: &#39;repo-name&#39;</span><br><span class="line">   ]],</span><br><span class="line">   serverName: &#39;user-name&#39;,</span><br><span class="line">   triggerOnEvents: [</span><br><span class="line">     changeMerged(),</span><br><span class="line">     patchsetCreated(</span><br><span class="line">       excludeDrafts: true,</span><br><span class="line">       excludeNoCodeChange: false,</span><br><span class="line">       excludeTrivialRebase: false</span><br><span class="line">     ),</span><br><span class="line">     commentAdded(</span><br><span class="line">       verdictCategory: &#39;Code-Review&#39;,</span><br><span class="line">       commentAddedTriggerApprovalValue: &#39;+2&#39;</span><br><span class="line">     )</span><br><span class="line">   ]</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Jenkinsfile-simple"><a href="#Jenkinsfile-simple" class="headerlink" title="Jenkinsfile simple"></a>Jenkinsfile simple</h2><h3 id="Library"><a href="#Library" class="headerlink" title="@Library"></a>@Library</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@Library([&#39;scm@&lt;pipeline-utils branch or tag&gt;&#39;]) _</span><br></pre></td></tr></table></figure>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@Library([&#39;scm@container-stable-2.x&#39;, &#39;commonLibs@0.0.3&#39;]) _</span><br></pre></td></tr></table></figure>
+<h3 id="extraOnboardingImages"><a href="#extraOnboardingImages" class="headerlink" title="extraOnboardingImages"></a>extraOnboardingImages</h3><p>List containing the extra images that need to onboard to Open Edge server. </p>
+<p>列出包含需要附加到Open Edge服务器的其他图像的列表。</p>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Map containers &#x3D; [</span><br><span class="line">    DockerImage: [</span><br><span class="line">        name: &#39;fhproxy&#x2F;docker-fhproxy&#39;,</span><br><span class="line">        buildName: &#39;fhproxy&#39;,</span><br><span class="line">        testNames: [&#39;Test fhproxy container mvp&#39;,&#39;Test fhproxy container l3 call&#39;],</span><br><span class="line">        published: true,</span><br><span class="line">        type: &#39;runtime&#39;</span><br><span class="line">    ],</span><br><span class="line">    DockerTestImage: [</span><br><span class="line">        name: &#39;fhproxy&#x2F;docker-fhproxy-test&#39;,</span><br><span class="line">        buildName: &#39;fhproxy&#39;,</span><br><span class="line">        testNames: [&#39;Test fhproxy container mvp&#39;,&#39;Test fhproxy container l3 call&#39;],</span><br><span class="line">        published: true,</span><br><span class="line">        type: &#39;runtime&#39;</span><br><span class="line">    ],</span><br><span class="line">    NwInitImage: [</span><br><span class="line">        name: &quot;fhproxy&#x2F;docker-nwinit&quot;,</span><br><span class="line">        buildName: &#39;Onboarding&#39;,</span><br><span class="line">        testNames: [&#39;Test fhproxy container mvp&#39;,&#39;Test fhproxy container l3 call&#39;],</span><br><span class="line">        published: false</span><br><span class="line">    ],</span><br><span class="line">    NwMgmtImage: [</span><br><span class="line">        name: &quot;fhproxy&#x2F;docker-nwmgmt&quot;,</span><br><span class="line">        buildName: &#39;Onboarding&#39;,</span><br><span class="line">        testNames: [&#39;Test fhproxy container mvp&#39;,&#39;Test fhproxy container l3 call&#39;],</span><br><span class="line">        published: false</span><br><span class="line">    ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="tersyParams"><a href="#tersyParams" class="headerlink" title="tersyParams"></a>tersyParams</h3><blockquote>
+<p>platform: <b>Optional arguments</b></p>
+</blockquote>
+<p>String containing platform type of NESC node.  包含NESC节点的平台类型的字符串</p>
+<p>Possible values:</p>
+<ul>
+<li>any</li>
+<li>TPI3-like</li>
+<li>NCIR-like</li>
+</ul>
+<p>Default value: NCIR-like</p>
+<p>When test is executed in real HW <a href="#tersyparams">tersyParams</a> will define which kind of environment is selected</p>
+<p>在实际硬件中执行测试时，tersyParams将定义选择哪种环境</p>
+<p>Map containing information that is used for test environment reservation from Tersy. </p>
+<p>映射包含用于从Tersy保留测试环境的信息。</p>
+<p>Duration and pool or tenant attributes in tersyParams are mandatory if RUN_ON_HW is set to true. </p>
+<p>如果将<strong>RUN_ON_HW</strong>设置为true，则tersyParams中的<strong>duration</strong>和<strong>pool</strong>或<strong>tenant</strong>属性是必需的。</p>
+<p>Other attributes are optional.</p>
+<p>Tersy parameters:</p>
+<p>For details on supported parameters see documentation of <a target="_blank" rel="noopener" href="https://pypi.dynamic.nsn-net.net/rcp/prod/tersycli/latest/+doc/CLI.html#create">tersycli create</a> command.</p>
+<p>有关支持的参数的详细信息，请参见tersycli create命令的文档。</p>
+<p>Only long format of the named arguments are supported, use for example ‘duration’ instead of ‘d’. </p>
+<p>Note that ‘<strong>reservation_name</strong>‘ is not needed as it is automatically set to Jenkins job name. </p>
+<p>Default value of <strong>queue_timeout</strong> parameter is 1 hour if priority is given. </p>
+<p>Default value of <strong>env_type</strong> is CAAS. </p>
+<p>Additionally a specific tersycli version can be requested with <code>tersycliVersion</code>, 2.3.5 is used by default.</p>
+<p>仅支持长格式的命名参数，例如使用“duration”代替“ d”。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Map tersyParamsMvp &#x3D; [    </span><br><span class="line">    pool: &quot;CAAS_test&quot;,</span><br><span class="line">    priority: &quot;3&quot;,</span><br><span class="line">    duration: &quot;1&quot;,</span><br><span class="line">    queue_timeout: &quot;6&quot;,</span><br><span class="line">    tag: &quot;NIC&#x3D;Intel-XXV710&quot;,</span><br><span class="line">    platform: &quot;NCIR19&quot;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">Map tersyParams &#x3D; [</span><br><span class="line">    pool: &quot;CAAS_Host_VLAN&quot;,</span><br><span class="line">    priority: &quot;3&quot;,</span><br><span class="line">    duration: &quot;1&quot;,</span><br><span class="line">    queue_timeout: &quot;6&quot;,</span><br><span class="line">    tag: &quot;NIC&#x3D;Intel-XXV710&quot;,</span><br><span class="line">    platform: &quot;NCIR19&quot;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="builds"><a href="#builds" class="headerlink" title="builds"></a>builds</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">List builds &#x3D; [</span><br><span class="line">    [</span><br><span class="line">        name: &#39;fhproxy&#39;,</span><br><span class="line">        agent: &#39;docker_helmci&#39;,</span><br><span class="line">        command: &#39;ci&#x2F;docker-build&#39;</span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">        name: &#39;Onboarding&#39;,</span><br><span class="line">        agent: &#39;docker_helmci&#39;,</span><br><span class="line">        command: &#39;ci&#x2F;get-onboarding-images&#39;</span><br><span class="line">    ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="agent"><a href="#agent" class="headerlink" title="agent"></a>agent</h3><blockquote>
+<p>agent: <b>Optional arguments</b></p>
+</blockquote>
+<p>Jenkins agent where the test is executed. 执行测试的Jenkins代理。</p>
+<p>Some possible values are:</p>
+<ul>
+<li><code>single-node-container-k8s-dpdk</code>  for 8 core <a target="_blank" rel="noopener" href="https://gitlabe2.ext.net.nokia.com/cloud-tools/cloud-development/">cloud-development</a> environment with dpdk support</li>
+<li><code>single-node-pod-k8s-dpdk</code>  for 16 core <a target="_blank" rel="noopener" href="https://gitlabe2.ext.net.nokia.com/cloud-tools/cloud-development/">cloud-development</a> environment with dpdk support</li>
+<li><code>multi-node-pod-k8s-dpdk</code>  for 1+1 node, 13 core each, <a target="_blank" rel="noopener" href="https://gitlabe2.ext.net.nokia.com/cloud-tools/container-infra-system">container-infra-system</a> environment with dpdk support</li>
+<li>TODO: IT kubernetes cluster agent</li>
+</ul>
+<p>Default value for the parameter is <code>single-node-container-k8s-dpdk</code></p>
+<blockquote>
+<p>cleanCommand: <b>Optional arguments</b></p>
+</blockquote>
+<p>Optional shell command to run before and after test to clean up resources. </p>
+<p>在测试之前和之后运行的可选shell命令，以清理资源。</p>
+<p>要注意的是，pipeline检测v2和v3的Helm命令，并将它们分别暴露为环境变量$ {HELM2}和$ {HELM3}。因此最好在shell脚本中使用这些变量，以避免在’helm’命令更改为指向helm3而不是旧的helm2时更改脚本。</p>
+<blockquote>
+<p>helmName:  <b>Mandatory arguments</b></p>
+</blockquote>
+<p>Name of the helm chart to be tested and published. Helm chart will be cloned to a directory with this name regardless what the repository name is. All scripts are executed in this directory.</p>
+<p>要测试和发布的helm chart的名称, 无论存储库名称是什么，Helm chart都会被克隆到具有该名称的目录中。所有脚本都在此目录中执行。</p>
+<p>To allow for more than one pipeline to be executed for same helm chart, pipeline appends automatically Jenkins build id and branch name to the helm name defined in the <a href="">env_vars file</a>.</p>
+<p>为了允许对同一helm chart执行多个管道，管道会自动将Jenkins构建ID和分支名称附加到env_vars文件中定义的helm名称。</p>
+<blockquote>
+<p>deployCommand: <b>Optional arguments</b></p>
+</blockquote>
+<p>Optional shell command to deploy the helm chart. Default value is <code>ci/deploy.sh</code></p>
+<p>可选的shell命令，用于部署helm chart。默认值为ci / deploy.sh， 应该是这里的command</p>
+<blockquote>
+<p>testCommand: <b>Optional arguments</b></p>
+</blockquote>
+<p>Optional shell command to deploy the helm chart. Default value is <code>ci/test.sh</code></p>
+<p>可选的shell命令，用于部署helm chart。默认值为ci / test.sh</p>
+<blockquote>
+<p>logsCommand: <b>Optional arguments</b></p>
+</blockquote>
+<p>Optional shell command to run at the end of the pipeline to collect logs. Default value is <code>gather-artifacts.sh</code> Will be executed always even if deploy or test fails. To ensure that all logs are collected make sure that the command handles error cases correctly.</p>
+<p>可选的shell命令在pipeline末端运行以收集日志。失败后的log收集，为确保收集所有日志，请确保该命令正确处理错误情况。</p>
+<p>If using <code>bash</code> script you can use <code>+e</code> flag to ignore errors:</p>
+<p>如果使用bash脚本，则可以使用+ e标志忽略错误： <code>#!/bin/bash +e</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">List tests &#x3D; [</span><br><span class="line">    [</span><br><span class="line">        name: &#39;Test fhproxy container mvp&#39;,</span><br><span class="line">		runOnOpenEdge: true,</span><br><span class="line">		tersyParams: tersyParamsMvp,</span><br><span class="line">		helmName: &#39;fhproxy&#39;,</span><br><span class="line">        agent: &#39;single-node-container-k8s-dpdk&#39;,</span><br><span class="line">        prepareCommand: &#39;ci&#x2F;prepare mvp_logs&#39;,</span><br><span class="line">        command: &#39;ci&#x2F;docker-test mvp_logs&#39;,</span><br><span class="line">        logsCommand: &#39;ci&#x2F;helm-log.sh mvp_logs&#39;,</span><br><span class="line">        cleanCommand: &#39;ci&#x2F;helm-delete.sh mvp_logs&#39;,</span><br><span class="line">        artifacts: &#39;mvp_logs&#x2F;*&#39;,</span><br><span class="line">        addSkipParam: true,</span><br><span class="line">        timeout: &#39;30&#39;</span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">        name: &#39;Test fhproxy container l3 call&#39;,</span><br><span class="line">        runOnOpenEdge: true,</span><br><span class="line">        tersyParams: tersyParams,</span><br><span class="line">        helmName: &#39;fhproxy&#39;,</span><br><span class="line">        agent: &#39;single-node-container-k8s-dpdk&#39;,</span><br><span class="line">        prepareCommand: &#39;ci&#x2F;prepare l3_call_logs&#39;,</span><br><span class="line">        command: &#39;ci&#x2F;docker-test l3_call_logs&#39;,</span><br><span class="line">        logsCommand: &#39;ci&#x2F;helm-log.sh l3_call_logs&#39;,</span><br><span class="line">        cleanCommand: &#39;ci&#x2F;helm-delete.sh l3_call_logs&#39;,</span><br><span class="line">        artifacts: &#39;l3_call_logs&#x2F;*&#39;,</span><br><span class="line">        addSkipParam: true,</span><br><span class="line">        timeout: &#39;30&#39;</span><br><span class="line">    ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="jobParams"><a href="#jobParams" class="headerlink" title="jobParams"></a>jobParams</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">List jobParams &#x3D;  [</span><br><span class="line">    [</span><br><span class="line">        name: &#39;CASE_TAG&#39;,</span><br><span class="line">        description: &#39;--test RCP_TRH_FHP_001*; -s FHP_first_temp_test_case; --include owner-XXX; --exclude not-ready;&#39;,</span><br><span class="line">        defaultValue: &#39;&#39;,</span><br><span class="line">        type: &#39;string&#39;</span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">        name: &#39;UP_HELM_BRANCH&#39;,</span><br><span class="line">        description: &quot;This parameter is the branch of rcp-pod-up helm. &#39;master&#39; are set by default.&quot;,</span><br><span class="line">        defaultValue: &#39;master&#39;,</span><br><span class="line">        type: &#39;string&#39;</span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">        name: &#39;MN_HELM_BRANCH&#39;,</span><br><span class="line">        description: &quot;This parameter is the branch of rcp-pod-mn helm. &#39;master&#39; are set by default.&quot;,</span><br><span class="line">        defaultValue: &#39;master&#39;,</span><br><span class="line">        type: &#39;string&#39;</span><br><span class="line">    ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="Notification-Recipients"><a href="#Notification-Recipients" class="headerlink" title="Notification Recipients"></a>Notification Recipients</h3><p>Specifies if email or office365 (yammer/teams) notification should be sent. By default no notifications are sent.</p>
+<p>For each of the notification type define a Map which has <a href="#webhookurl">webhookUrl</a> and/or <a href="#emailaddresses">emailAddresses</a> defined.</p>
+<p>An example where all the notifications are sent:</p>
+<blockquote>
+<p>notifyMainBranchFailure: <b>Optional arguments</b></p>
+</blockquote>
+<p>Set to receive notifications when pipeline failed on the branch defined by <a href="">mainBranch</a>. Do not define to not receive these notifications.</p>
+<p>设置为在mainBranch定义的分支上的pipeline 发生故障时接收通知。别定义为不接收这些通知。</p>
+<blockquote>
+<p>notifyTagSuccess: <b>Optional arguments</b></p>
+</blockquote>
+<p>Set to receive notifications of successful publishing of helm chart. Do not define to not receive these notifications.</p>
+<blockquote>
+<p>notifyTagFailure: <b>Optional arguments</b></p>
+</blockquote>
+<p>Set to receive information when pipeline failed when helm chart was tried to be published. Do not define to not receive these notifications.</p>
+<blockquote>
+<p>webhookUrl: <b>Optional arguments</b></p>
+</blockquote>
+<p>Provide the webhook from yammer or teams to get notifications sent there. In yammer you can add Jenkins app from the “Add or Remove Apps” link. In teams this is done via the “Connectors” link for the channel.</p>
+<blockquote>
+<p>emailAddresses: <b>Optional arguments</b></p>
+</blockquote>
+<p>Comma separated list of email addresses to sent notifications to.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map defaultNotificationRecipients &#x3D; [</span><br><span class="line">    webhookUrl: &#39;https:&#x2F;&#x2F;outlook.office.com&#x2F;webhook&#x2F;1aace586-e82a-49e8-8031-1d5686283369@5d471751-9675-428d-917b-70f44f9630b0&#x2F;JenkinsCI&#x2F;a4f01ac738d74f35a2f9d8c5407fb860&#x2F;64e29d73-1461-434c-9aa1-3c353689ffd6&#39;,</span><br><span class="line">    emailAddresses: &#39;I_NSB_MN_CRAN_RD_CF_RCPTRS_SQUAD_TOUCHDOWN@internal.nsn.com&#39;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Map notifications &#x3D; [</span><br><span class="line">    notifyMainBranchFailure: defaultNotificationRecipients,</span><br><span class="line">    notifyMainBranchSuccess: defaultNotificationRecipients,</span><br><span class="line">    notifyTagSuccess: defaultNotificationRecipients,</span><br><span class="line">    notifyTagFailure: defaultNotificationRecipients</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="containerPipeline"><a href="#containerPipeline" class="headerlink" title="containerPipeline"></a>containerPipeline</h3><p>calling the pipeline from container Jenkinsfile:</p>
+<blockquote>
+<p>gitlabConnection:  <b>Mandatory arguments</b></p>
+</blockquote>
+<p>Tells Jenkins which gitlab connection to use when reporting. Valid values are:</p>
+<ul>
+<li>‘IT gitlab’ for gitlabe1.ext.net.nokia.com</li>
+<li>‘Gitlabe2’ for gitlabe2.ext.net.nokia.com</li>
+</ul>
+<blockquote>
+<p>tagPublishRegexp: <b>Optional arguments</b></p>
+</blockquote>
+<p>By default all tags trigger image publishing if <a href="#publishtags">publishTags</a> is set to <code>true</code>. With this argument it is possible to filter which tags are published. The format is regular expression. Some examples:</p>
+<p>默认情况下，如果publishTags设置为true，则所有标签都会触发图像发布。使用此参数，可以过滤发布哪些标签。格式为正则表达式。</p>
+<ul>
+<li><code>^\\d+\\.\\d+\\.\\d+$</code> would match only semVer formatted tags e.g. 1.2.0  –将仅匹配semVer格式的标签，例如1.2.0</li>
+<li><code>^release-.*</code> would match only tags which start with release- prefix  –将仅匹配以release-前缀开头的标签</li>
+<li><code>^\\d+\\.\\d+\\.\\d+([-_]hb)?$</code> when publishing for Heart Beat build  –在发布Heart Beat版本时</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">containerPipeline   containers: containers,</span><br><span class="line">                    jobParams: jobParams,</span><br><span class="line">                    gitlabConnection: &#39;Gitlabe2&#39;,</span><br><span class="line">                    builds: builds,</span><br><span class="line">                    tests: tests,</span><br><span class="line">                    tagPublishRegexp: &#39;^\\d+\\.\\d+\\.\\d+.*&#39;,</span><br><span class="line">                    relNoteCategory: &#39;ContainerImages&#39;,</span><br><span class="line">                    configFile: &#39;config&#39;,</span><br><span class="line">                    notifications: notifications</span><br></pre></td></tr></table></figure>
+<h3 id="Set-environment-variables"><a href="#Set-environment-variables" class="headerlink" title="Set environment variables"></a>Set environment variables</h3><p>Some environment variables name and value are printed to ./env_vars file. Scripts like config.deployCommand, config.testCommand, config.cleanCommand can source env_vars file and use the listed env variables.</p>
+<p>一些环境变量的名称和值会打印到./env_vars文件中。诸如config.deployCommand，config.testCommand，config.cleanCommand之类的脚本可以获取env_vars文件并使用列出的env变量。</p>
+<p>Example env_vars:</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  + cat env_vars</span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  HELM_NAME=<span class="string">&quot;fhproxy-10-change-the-rpm-name-of-testca&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  NAMESPACE=<span class="string">&quot;cran2&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  TARGET_FILE=<span class="string">&quot;OE19-TT-O5-AIO-1_cran2.yaml&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  RUN_ON_OPEN_EDGE=<span class="string">&quot;true&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  RUN_ON_HW=<span class="string">&quot;true&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  PLATFORM=<span class="string">&quot;NCIR19&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  WORKING_DIR=<span class="string">&quot;CONTAINER_PIPELINE_WORKDIR-fhproxy/fhproxy&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  K8S_NODE_HOST_IP=<span class="string">&quot;192.168.81.26&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  BUILD_ID=<span class="string">&quot;10&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  BRANCH_NAME=<span class="string">&quot;Change_the_rpm_name_of_testcase&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  BUILDING_TAG=<span class="string">&quot;null&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  PUBLISHING_TAG=<span class="string">&quot;null&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  DockerImage=<span class="string">&quot;registry.kube-system.svc.nokia.net:5555/fhproxy/docker-fhproxy:0.0.0-78-g80c0c0f_21595482723715_10&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  DockerTestImage=<span class="string">&quot;registry.kube-system.svc.nokia.net:5555/fhproxy/docker-fhproxy-test:0.0.0-78-g80c0c0f_21595482723715_10&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  NwInitImage=<span class="string">&quot;registry.kube-system.svc.nokia.net:5555/fhproxy/docker-nwinit:0.0.0-78-g80c0c0f_21595482723715_10&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  NwMgmtImage=<span class="string">&quot;registry.kube-system.svc.nokia.net:5555/fhproxy/docker-nwmgmt:0.0.0-78-g80c0c0f_21595482723715_10&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  CASE_TAG=<span class="string">&quot;&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  UP_HELM_BRANCH=<span class="string">&quot;master&quot;</span></span><br><span class="line"><span class="number">17</span>:<span class="number">59</span>:<span class="number">24</span>  MN_HELM_BRANCH=<span class="string">&quot;master&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>RUN_ON_OPEN_EDGE</strong> env variable is deprecated. Scripts should be changed to use RUN_ON_HW instead of RUN_ON_OPEN_EDGE.</p>
+<p>不赞成使用RUN_ON_OPEN_EDGE环境变量。应将脚本更改为使用RUN_ON_HW而不是RUN_ON_OPEN_EDGE。</p>
+<p><strong>BUILD_ID</strong> is the Jenkins job build number. This and <strong>BRANCH_NAME</strong> are also appended to the <strong>HELM_NAME</strong> variable so that it does not conflict with other pipelines running tests for the same helm chart. <code>The name is limited to 40 characters.</code> This allows container developers to add possible pre- and postfixes, but the name should not exceed the maximum allowed for helm release name (53 characters).</p>
+<p>BUILD_ID变量和BRANCH_NAME也附加到HELM_NAME变量中，以使其与运行针对同一helm chart的测试中的其他pipelines不冲突。</p>
+<h3 id="3-参考链接"><a href="#3-参考链接" class="headerlink" title="3. 参考链接"></a>3. 参考链接</h3><p><a target="_blank" rel="noopener" href="https://gitlabe1.ext.net.nokia.com/RCP/pipeline-utils/blob/pkg-mgmt-pipes/vars/helmChartPipeline.md#products">https://gitlabe1.ext.net.nokia.com/RCP/pipeline-utils/blob/pkg-mgmt-pipes/vars/helmChartPipeline.md#products</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.w3cschool.cn/jenkins/jenkins-jg9528pb.html">https://www.w3cschool.cn/jenkins/jenkins-jg9528pb.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://confluence.int.net.nokia.com/display/MPP/Jenkinsfile+Template">https://confluence.int.net.nokia.com/display/MPP/Jenkinsfile+Template</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/">https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://phoenine.github.io/Blog/posts/12007/">https://phoenine.github.io/Blog/posts/12007/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://phoenine.github.io/Blog" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/Blog/tags/jenkins/">jenkins</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/Blog/posts/11000/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">图解霍夫曼编码</div></div></a></div><div class="next-post pull-right"><a href="/Blog/posts/12008/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Helm Introduction</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="this.onerror=null;this.src='/Blog/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Phoenine</div><div class="author-info__description">Welcome to my new blog ：）</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/phoenine"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/Blog/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Jenkinsfile-introduce"><span class="toc-number">1.</span> <span class="toc-text">Jenkinsfile introduce</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Jenkinsfile-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.</span> <span class="toc-text">Jenkinsfile 基本语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Defining-a-Pipeline"><span class="toc-number">1.1.1.</span> <span class="toc-text">Defining a Pipeline</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-Environmental-Variables"><span class="toc-number">1.1.2.</span> <span class="toc-text">Using Environmental Variables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Agent"><span class="toc-number">1.1.3.</span> <span class="toc-text">Agent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parameters"><span class="toc-number">1.1.4.</span> <span class="toc-text">Parameters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gerrit-Triggers"><span class="toc-number">1.1.5.</span> <span class="toc-text">Gerrit Triggers</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Jenkinsfile-simple"><span class="toc-number">1.2.</span> <span class="toc-text">Jenkinsfile simple</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Library"><span class="toc-number">1.2.1.</span> <span class="toc-text">@Library</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#extraOnboardingImages"><span class="toc-number">1.2.2.</span> <span class="toc-text">extraOnboardingImages</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tersyParams"><span class="toc-number">1.2.3.</span> <span class="toc-text">tersyParams</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#builds"><span class="toc-number">1.2.4.</span> <span class="toc-text">builds</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#agent"><span class="toc-number">1.2.5.</span> <span class="toc-text">agent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jobParams"><span class="toc-number">1.2.6.</span> <span class="toc-text">jobParams</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Notification-Recipients"><span class="toc-number">1.2.7.</span> <span class="toc-text">Notification Recipients</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#containerPipeline"><span class="toc-number">1.2.8.</span> <span class="toc-text">containerPipeline</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set-environment-variables"><span class="toc-number">1.2.9.</span> <span class="toc-text">Set environment variables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.2.10.</span> <span class="toc-text">3. 参考链接</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;"><img src="/Blog/img/python.png" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Python模块学习&lt;一&gt;"/></a><div class="content"><a class="title" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;">Python模块学习&lt;一&gt;</a><time datetime="2021-04-13T09:32:24.000Z" title="发表于 2021-04-13 17:32:24">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/13020/" title="automake基础"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="automake基础"/></a><div class="content"><a class="title" href="/Blog/posts/13020/" title="automake基础">automake基础</a><time datetime="2021-04-13T08:59:00.000Z" title="发表于 2021-04-13 16:59:00">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="23 种设计模式的通俗解释"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释">23 种设计模式的通俗解释</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="图解霍夫曼编码"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="图解霍夫曼编码"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="图解霍夫曼编码">图解霍夫曼编码</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/12007/" title="Jenkinsfile introduce"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Jenkinsfile introduce"/></a><div class="content"><a class="title" href="/Blog/posts/12007/" title="Jenkinsfile introduce">Jenkinsfile introduce</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By Phoenine</div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由 GitHub 托管" alt="GitHub"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/Blog/js/utils.js"></script><script src="/Blog/js/main.js"></script><script src="/Blog/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>asm goto与JUMP_LABEL | 因受</title><meta name="keywords" content="baisc"><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="asm goto与JUMP_LABEL版权声明：本文为CSDN博主「dog250」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。 原文链接：https:&#x2F;&#x2F;blog.csdn.net&#x2F;dog250&#x2F;article&#x2F;details&#x2F;6123517  越来越多的工作现如今都交给了编译器，甚至连动态代码修改的数据组织这种事都交给了编译器。gcc提供了一个特性用于嵌入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="asm goto与JUMP_LABEL">
+<meta property="og:url" content="https://phoenine.github.io/Blog/posts/15000/index.html">
+<meta property="og:site_name" content="因受">
+<meta property="og:description" content="asm goto与JUMP_LABEL版权声明：本文为CSDN博主「dog250」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。 原文链接：https:&#x2F;&#x2F;blog.csdn.net&#x2F;dog250&#x2F;article&#x2F;details&#x2F;6123517  越来越多的工作现如今都交给了编译器，甚至连动态代码修改的数据组织这种事都交给了编译器。gcc提供了一个特性用于嵌入">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-31T15:59:00.000Z">
+<meta property="article:modified_time" content="2021-04-08T14:10:08.000Z">
+<meta property="article:author" content="Phoenine">
+<meta property="article:tag" content="baisc">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/Blog/img/favicon.png"><link rel="canonical" href="https://phoenine.github.io/Blog/posts/15000/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/Blog/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/Blog/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-08 22:10:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/Blog/">因受</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">asm goto与JUMP_LABEL</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-08T14:10:08.000Z" title="更新于 2021-04-08 22:10:08">2021-04-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/Blog/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="asm goto与JUMP_LABEL"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><script src="/Blog/assets/js/APlayer.min.js"> </script><h2 id="asm-goto与JUMP-LABEL"><a href="#asm-goto与JUMP-LABEL" class="headerlink" title="asm goto与JUMP_LABEL"></a>asm goto与JUMP_LABEL</h2><p>版权声明：本文为CSDN博主「dog250」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/dog250/article/details/6123517">https://blog.csdn.net/dog250/article/details/6123517</a></p>
+<hr>
+<p>越来越多的工作现如今都交给了编译器，甚至连动态代码修改的数据组织这种事都交给了编译器。gcc提供了一个特性用于嵌入式汇编，那就是asm goto，其实这个特性没有什么神秘之处，就是在嵌入式汇编中go to到c代码的label，其最简单的用法如下(来自gcc的文档)：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/29b980e2bc932adf7464c8f17c5302cd.png)</p>
+<p>asm goto其实就是在outputs，inputs，registers-modified之外提供了嵌入式汇编的第四个“:”，后面可以跟一系列的c语言的label，然后你可以在嵌入式汇编中go to到这些label中一个。然而使用asm goto可以巧妙地将“一个大家都能想到的点子”规范化，就是说你只需要调用一个统一的接口–一个宏，编译器就将你想实现的东西给实现了，要不然代码写起来会很麻烦，这点上，编译器不嫌麻烦。这一个大家都能想出的点子的由来还得从内核的效率说起。</p>
+<p>以下的代码来自lwn的《Jump label》：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/fff4bc0460b6a42964f0707e37e2fdfc.png)</p>
+<p>即使有了unlikey优化，既然有if判断，cpu的分支预测就有可能失败，再者do_trace在代码上离if这么近，即使编译器再聪明，二进制代码的do_trace也不会离前面的代码太远的，这样由于局部性原理和cpu的预取机制，do_trace的代码很有可能就被预取入了cpu的cache，就算我们从来不打算trace代码也是如此。</p>
+<p>   我们需要的是如果不开启trace，那么do_trace永远不被欲取或者被预测，唯一的办法就是去掉if判断，永远不调用goto语句，像下面这样：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/f20c49b0c9978b8ef05c5f21b3086abb.png)</p>
+<p>在运行时修改载入内存的二进制代码就是我们大家都能想到的点子，就是说在运行的时候当我们知道trace_foo_enabled在某一时刻被设置为0的时候，我们动态的将二进制代码修改掉，将if代码段去掉，这样一个分支预测就不存在了，而且trace_foo_enabled这一个变量也不需要再被访问了(该变量在内存中，访问它肯定会涉及load/flush cache的动作，为了一个很可能没有用的变量操作cache很不值)。提前要说的是，我们可以使用这种方式去掉所有的分支预测，然而这并不可取，因为程序是动态运行的，很多用于判断的变量值都是根据程序的执行瞬息万变，正是这种根据判断结果采取不同动作的机制给与了程序灵活性，如果每当我们确定一个值时就修改二进制代码取消分支预测的话，其本身的开销将会远远大于分支预测的开销，更重要的是，紧接着那个值又变化了，我们不得不再次修改二进制代码，这期间要访问那个变量好几次。所以，只有在我们确定不经常变化的变量的判断上才能用这种方式取消分支预测，而像trace与否的判断正好符合我们的需求。</p>
+<p>   gcc编译器提供了asm goto的机制来满足我们的需求，使得我们可以在asm goto的基础上构建出一个叫做jump label的东西。下面的代码段说明了jump label的用法和原理：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/6bac3d6ecb4de4fb911fdea52ac3b685.png)</p>
+<p>标号0仅仅执行一个nop，不涉及cache，后面的pushp保存现有的p，很多情况下当前的p就是text，然后定义一个“表”，表中有两个元素：0b和trace#NUM，其实就是两个标号，在asm goto机制中，标号还可以更多，它们在嵌入式汇编的最后一个“:”后面依次排布。这些标号就是供选择的标号，执行流将跳入其中的一个标号处，具体跳到哪一个就看当前的二进制代码被修改成了“跳到哪一个”，因此asm goto为我们做的仅仅是提供一个地方(一个“:”)供我们将label传入，保存了一系列的表还是需要我们的c代码逻辑–jump label实现，这些表(其实就是一系列的三元组)方便我们根据这些表来修改运行中的二进制代码，最终修改二进制代码还是要由我们自己写代码完成的。</p>
+<p>   有了这个asm goto以及我们jump label代码的支持，内核对于是否trace这种小事就再也不用愁了(使用中的kernel一般是不用trace的，只有在出了问题以后或者调试内核时才使用trace，因此在主代码中加入“是否trace”的判断实在是一种沉重的负担)，如果对于某一个函数不需要trace，内核只需要执行一个操作将asm goto附近的代码改掉即可，比如改称下面这样：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/1cb5ae3625df65f6dd793016bd6ba1b8.png)</p>
+<p>如果需要trace，那么就改成：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/67b8b0eb1f1a2653847f192d3419f03d.png)</p>
+<p>这一切在kernel中的用法如下：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/c64bae7e63e732efcd28ab9f5698094a.png)</p>
+<p>第一行的“1”是一个标号，该标号后的代码执行的内容就是nop-第二行，第三行重新开始了一个p，这样的意义很大，下面的三元组：[instruction address] [jump target] [tracepoint key]的二进制代码就不会紧接着标号1(nop)了，这个三元组就是jump label机制的核心，指示了所有可能跳转到的标号，这里的技巧在于标号1，标号1也作为一个合法的可能跳转到的标号存在，和标号label是并列的，由于pushp和popp的存在，上面的代码汇编结果看起来是下面这样：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/5ab2c7d479df91a760c9d4a5a3c910a8.png)</p>
+<p>如果启用了trace，那么只需要将标号1修改成标号label就可以了：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/af59ab58bba48a1b8eb5365af15a3713.png)</p>
+<p>内核之所以能够找到需要修改代码的地址，就是借助于上面说的那个三元组(instruction address,jump target,tracepoint key)，其中instruction address就是这个地址，在linux的JUMP  LABEL机制中，它固定为标号1，也就是nop的标号，如果不启用trace，那么直接执行nop，如果启用了trace，那么将nop修改为jmp label即可，如果后来又禁用了trace，只需将它再次修改成三元组中的标号1即可，这一切过程中，三元组本身是不会改变的。注意，三元组中的tracepoint key在jump label机制中并没有什么实质的意义，它仅仅是为了组织kernel中“是否trace”变量用的，所有的“是否trace”变量组织成一个链表，链表的每一个节点下面挂着另一个子链表，该子链表中元素是所有使用这个“是否trace”变量的代码环境，包括代码的地址，标号的地址等。</p>
+<p>   下面看一下kernel对于JUMP_LABEL的实现框架。首先看一下三元组的数据结构：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/36bf84b3afa4158dd7d0aff0ee6e7a85.png)</p>
+<p>其次一个比较重要的数据结构是一个key节点，表示一个“是否trace”的变量：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/bf51de614427cbe876e34154c0d163ed.png)</p>
+<p>启用一个trace意味着需要将一个key(类似于trace_foo_enabled)设置为1，然后修改所有判断该key的代码附近的二进制代码：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/8d12750add3c38f5500d3df3ce376fd3.png)</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/bcf035cdda2f9ec3b303a4246f873571.png)</p>
+<p>以上就是使用asm goto实现的jump label，在2.6.37内核中被引入。</p>
+<p>附：.p以及.previous</p>
+<p>在汇编语言中使用.p和.previous指令可以将它们之间的代码编译到不同的p中，也就是不紧接着.p上面的代码。linux kernel中的异常处理就是用这两个伪指令实现的，定义了一个叫做fix的p和一个叫做ex_table的p，可能出现exception的代码用一个标号表示，ex_table中保存了一些二元组(出现异常代码的标号,异常处理程序的标号)，异常处理程序在fix这个p中，这样虽然代码看起来是下面这样：</p>
+<p>![img](/Users/phoenine/Documents/MyBlog/hexo/source/_posts/linux_md/Linux Basic/asm goto与JUMP_LABEL/795f16a399b397a69fe06e8feaea5cbd.png)</p>
+<p>然而编译器会将fix和ex_table放到离text很远的地方的，这样cpu预取时就不会将fix或者ex_table的代码预取到执行cache了，只有在发生异常的时候才会使用fix和ex_table，而发生异常毕竟是一种罕见现象，这就是一种优化。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://phoenine.github.io/Blog/posts/15000/">https://phoenine.github.io/Blog/posts/15000/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://phoenine.github.io/Blog" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/Blog/tags/baisc/">baisc</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/Blog/posts/16000/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Jupyter notebooks 单元测试</div></div></a></div><div class="next-post pull-right"><a href="/Blog/posts/15001/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">世上最好的共享内存</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/Blog/posts/13014/" title="SPEC file writing - Best Practices"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">SPEC file writing - Best Practices</div></div></a></div><div><a href="/Blog/posts/15001/" title="世上最好的共享内存"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">世上最好的共享内存</div></div></a></div><div><a href="/Blog/posts/13009/" title="How to write SPEC file"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">How to write SPEC file</div></div></a></div><div><a href="/Blog/posts/13011/" title="Makefile.am的例子"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">Makefile.am的例子</div></div></a></div><div><a href="/Blog/posts/13008/" title="configure.ac介绍"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">configure.ac介绍</div></div></a></div><div><a href="/Blog/posts/13012/" title="Makefile基础"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">Makefile基础</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="this.onerror=null;this.src='/Blog/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Phoenine</div><div class="author-info__description">Welcome to my new blog ：）</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/phoenine"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/Blog/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#asm-goto%E4%B8%8EJUMP-LABEL"><span class="toc-number">1.</span> <span class="toc-text">asm goto与JUMP_LABEL</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;"><img src="/Blog/img/python.png" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Python模块学习&lt;一&gt;"/></a><div class="content"><a class="title" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;">Python模块学习&lt;一&gt;</a><time datetime="2021-04-13T09:32:24.000Z" title="发表于 2021-04-13 17:32:24">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/13020/" title="automake基础"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="automake基础"/></a><div class="content"><a class="title" href="/Blog/posts/13020/" title="automake基础">automake基础</a><time datetime="2021-04-13T08:59:00.000Z" title="发表于 2021-04-13 16:59:00">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="23 种设计模式的通俗解释"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释">23 种设计模式的通俗解释</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="图解霍夫曼编码"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="图解霍夫曼编码"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="图解霍夫曼编码">图解霍夫曼编码</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/12007/" title="Jenkinsfile introduce"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Jenkinsfile introduce"/></a><div class="content"><a class="title" href="/Blog/posts/12007/" title="Jenkinsfile introduce">Jenkinsfile introduce</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By Phoenine</div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由 GitHub 托管" alt="GitHub"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/Blog/js/utils.js"></script><script src="/Blog/js/main.js"></script><script src="/Blog/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

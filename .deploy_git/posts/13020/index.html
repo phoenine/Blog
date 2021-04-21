@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>automake基础 | 因受</title><meta name="keywords" content="linux,automake"><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="automake基础作为Linux下的程序开发人员,大家一定都遇到过Makefile,用make命令来编译自己写的程序确实是很方便.一般情况下,大家都是手工写一个简单Makefile,如果要想写出一个符合自由软件惯例的Makefile就不那么容易了.在本文中,将给大家介绍如何使用autoconf和automake两个工具来帮助我们自动地生成符合自由软件惯例的 Makefile,这样就可以象常见的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="automake基础">
+<meta property="og:url" content="https://phoenine.github.io/Blog/posts/13020/index.html">
+<meta property="og:site_name" content="因受">
+<meta property="og:description" content="automake基础作为Linux下的程序开发人员,大家一定都遇到过Makefile,用make命令来编译自己写的程序确实是很方便.一般情况下,大家都是手工写一个简单Makefile,如果要想写出一个符合自由软件惯例的Makefile就不那么容易了.在本文中,将给大家介绍如何使用autoconf和automake两个工具来帮助我们自动地生成符合自由软件惯例的 Makefile,这样就可以象常见的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-04-13T08:59:00.000Z">
+<meta property="article:modified_time" content="2021-04-13T11:40:02.510Z">
+<meta property="article:author" content="Phoenine">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="automake">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/Blog/img/favicon.png"><link rel="canonical" href="https://phoenine.github.io/Blog/posts/13020/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/Blog/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/Blog/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-13 19:40:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/Blog/">因受</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/Blog/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/Blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/Blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Blog/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/Blog/photos/"><i class="fa-fw fas fa-video"></i><span> 照片</span></a></li><li><a class="site-page child" href="/Blog/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/Blog/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/Blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">automake基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-13T08:59:00.000Z" title="发表于 2021-04-13 16:59:00">2021-04-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-13T11:40:02.510Z" title="更新于 2021-04-13 19:40:02">2021-04-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/Blog/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="automake基础"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><script src="/Blog/assets/js/APlayer.min.js"> </script><h1 id="automake基础"><a href="#automake基础" class="headerlink" title="automake基础"></a>automake基础</h1><p>作为Linux下的程序开发人员,大家一定都遇到过Makefile,用make命令来编译自己写的程序确实是很方便.一般情况下,大家都是手工写一个简单Makefile,如果要想写出一个符合自由软件惯例的Makefile就不那么容易了.<br>在本文中,将给大家介绍如何使用autoconf和automake两个工具来帮助我们自动地生成符合自由软件惯例的 Makefile,这样就可以象常见的 GNU程序一样,只要使用”./configure”,”make”,”make instal”就可以把程序安装到Linux系统中去了.<br>这将特别适合想做开放源代码软件的程序开发人员,又或如果你只是自己写些小的Toy程序,那么这个文章对你也会有很大的帮助.</p>
+<h2 id="Makefile介绍"><a href="#Makefile介绍" class="headerlink" title="Makefile介绍"></a>Makefile介绍</h2><p>Makefile是用于自动编译和链接的 ,一个工程有很多文件组成,每一个文件的改变都会导致工程的重新链接,但是不是 所有的文件都需要重新编译,Makefile中纪录有文件的信息,在 make时会决定在链接的时候需要重新编译哪些文件.　<br>Makefile的宗旨就是 ：让编译器知道要编译一个文件需要依赖其他的 哪些文件.当那些依赖文件有了改变,编译器会自动的发现最终的生成文件已经过时,而重新编译相应的 模块.　　<br>Makefile的 基本结构不是 很复杂,但当一个程序开发人员开始写Makefile时,经常会怀疑自己写的 是 否符合惯例,而且自己写的 Makefile经常和自己的 开发环境相关联,当系统环境变量或路径发生了变化后,Makefile可能还要跟着修改.这样就造成了手工书写Makefile的 诸多问题,automake恰好能很好地帮助我们解决这些问题.　　<br>使用automake,程序开发人员只需要写一些简单的 含有预定义宏的 文件,由autoconf根据一个宏文件生成configure,由automake根据另一个宏文件生成Makefile.in,再使用configure依据Makefile.in来生成一个符合惯例的 Makefile.下面我们将详细介绍Makefile的 automake生成方法.</p>
+<h2 id="使用的环境"><a href="#使用的环境" class="headerlink" title="使用的环境"></a>使用的环境</h2><p>本文所提到的 程序是 基于Linux发行版本：Fedora Core release 1,它包含了我们要用到的 autoconf,automake.</p>
+<h2 id="从helloworld入手"><a href="#从helloworld入手" class="headerlink" title="从helloworld入手"></a>从helloworld入手</h2><p>我们从大家最常使用的 例子程序helloworld开始.<br>下面的 过程如果简单地说来就是 ：<br>新建三个文件：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">　　　helloworld.c　　　</span><br><span class="line">　　　configure.in　　　</span><br><span class="line">　　　Makefile.am</span><br></pre></td></tr></table></figure>
+<p>然后执行：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aclocal; autoconf; automake --add-missing; ./configure; make; ./helloworld</span><br></pre></td></tr></table></figure>
+<p>就可以看到Makefile被产生出来,而且可以将helloworld.c编译通过.<br>很简单吧,几条命令就可以做出一个符合惯例的 Makefile,感觉如何呀.<br><strong>现在 开始介绍详细的 过程：</strong></p>
+<ol>
+<li>建目录<br> 在 你的工作目录下建一个helloworld目录,我们用它来存放helloworld程序及相关文件,如在 /home/my/build下：</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir helloword</span><br><span class="line">$ cd helloworld</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>helloworld.c<br> 然后用你自己最喜欢的 编辑器写一个hellowrold.c文件,如命令：vi helloworld.c.使用下面的 代码作为helloworld.c的 内容.</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    printf(&quot;%s&quot;, &#x27;Hello, Linux World!\n&quot;);     </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完成后保存退出.<br>现在 在 helloworld目录下就应该有一个你自己写的 helloworld.c了.</p>
+<ol start="3">
+<li><p>生成configure</p>
+<p> 我们使用autoscan命令来帮助我们根据目录下的 源代码生成一个configure.in的 模板文件. 命令：</p>
+</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ autoscan</span><br><span class="line">$ ls</span><br><span class="line">configure.scan helloworld.c</span><br></pre></td></tr></table></figure>
+<p>执行后在 hellowrold目录下会生成一个文件：configure.scan,我们可以拿它作为configure.in的 蓝本.<br>现在 将configure.scan改名为configure.in,并且编辑它,按下面的 内容修改,去掉无关的 语句：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">==========================configure.in内容开始=========================================</span><br><span class="line"><span class="comment"># -*- Autoconf -*-</span></span><br><span class="line"><span class="comment"># Process this file with autoconf to produce a configure script.</span></span><br><span class="line">AC_INIT(helloworld.c)</span><br><span class="line">AM_INIT_AUTOMAKE(helloworld, 1.0)</span><br><span class="line"><span class="comment"># Checks for programs.</span></span><br><span class="line">AC_PROG_CC</span><br><span class="line"><span class="comment"># Checks for libraries.</span></span><br><span class="line"><span class="comment"># Checks for header files.</span></span><br><span class="line"><span class="comment"># Checks for typedefs, structures, and compiler characteristics.</span></span><br><span class="line"><span class="comment"># Checks for library functions.</span></span><br><span class="line">AC_OUTPUT(Makefile)</span><br><span class="line">==========================configure.in内容结束=========================================</span><br></pre></td></tr></table></figure>
+<p>然后执行命令aclocal和autoconf,分别会产生aclocal.m4及configure两个文件：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ aclocal</span><br><span class="line">$ls</span><br><span class="line">aclocal.m4 configure.in helloworld.c</span><br><span class="line">$ autoconf</span><br><span class="line">$ ls</span><br><span class="line">aclocal.m4 autom4te.cache configure configure.in helloworld.c</span><br></pre></td></tr></table></figure>
+<p>大家可以看到configure.in内容是 一些宏定义,这些宏经autoconf处理后会变成检查系统特性.环境变量.软件必须的 参数的 shell脚本.<br>autoconf 是 用来生成自动配置软件源代码脚本（configure）的 工具.configure脚本能独立于autoconf运行,且在 运行的 过程中,不需要用户的 干预.<br>要生成configure文件,你必须告诉autoconf如何找到你所用的 宏.方式是 使用aclocal程序来生成你的 aclocal.m4.<br>aclocal根据configure.in文件的 内容,自动生成aclocal.m4文件.aclocal是 一个perl 脚本程序,它的 定义是 ：”aclocal - create aclocal.m4 by scanning configure.ac”.<br>autoconf从configure.in这个列举编译软件时所需要各种参数的 模板文件中创建configure.<br>autoconf需要GNU m4宏处理器来处理aclocal.m4,生成configure脚本.<br>m4是 一个宏处理器.将输入拷贝到输出,同时将宏展开.宏可以是 内嵌的 ,也可以是 用户定义的 .除了可以展开宏,m4还有一些内建的 函数,用来引用文件,执行命令,整数运算,文本操作,循环等.m4既可以作为编译器的 前端,也可以单独作为一个宏处理器.</p>
+<ol start="4">
+<li>新建Makefile.am<br> 新建Makefile.am文件,命令：</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ vi Makefile.am</span><br><span class="line">　　内容如下:</span><br><span class="line">AUTOMAKE_OPTIONS=foreign</span><br><span class="line">bin_PROGRAMS=helloworld</span><br><span class="line">helloworld_SOURCES=helloworld.c</span><br></pre></td></tr></table></figure>
+<p>automake会根据你写的 Makefile.am来自动生成Makefile.in.<br>Makefile.am中定义的 宏和目标,会指导automake生成指定的 代码.例如,宏bin_PROGRAMS将导致编译和连接的 目标被生成.</p>
+<ol start="5">
+<li>运行automake:</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ automake --add-missing</span><br><span class="line"><span class="section">configure.in: installing `./install-sh&#x27;</span></span><br><span class="line"><span class="section">configure.in: installing `./mkinstalldirs&#x27;</span></span><br><span class="line"><span class="section">configure.in: installing `./missing&#x27;</span></span><br><span class="line"><span class="section">Makefile.am: installing `./depcomp&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>automake会根据Makefile.am文件产生一些文件,包含最重要的 Makefile.in.</p>
+<ol start="6">
+<li>执行configure生成Makefile</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$./configure</span><br><span class="line">checking for a BSD-compatible install... /usr/bin/install -c</span><br><span class="line">checking whether build environment is sane... yes</span><br><span class="line">checking for gawk... gawk</span><br><span class="line">checking whether make sets <span class="variable">$(MAKE)</span>... yes</span><br><span class="line">checking for gcc... gcc</span><br><span class="line">checking for C compiler default output... a.out</span><br><span class="line">checking whether the C compiler works... yes</span><br><span class="line">checking whether we are cross compiling... no</span><br><span class="line">checking for suffix of executables...</span><br><span class="line">checking for suffix of object files... o</span><br><span class="line">checking whether we are using the GNU C compiler... yes</span><br><span class="line">checking whether gcc accepts -g... yes</span><br><span class="line">checking for gcc option to accept ANSI C... none needed</span><br><span class="line">checking for style of <span class="keyword">include</span> used by make... GNU</span><br><span class="line">checking dependency style of gcc... gcc3</span><br><span class="line"><span class="section">configure: creating ./config.status</span></span><br><span class="line"><span class="section">config.status: creating Makefile</span></span><br><span class="line"><span class="section">config.status: executing depfiles commands</span></span><br><span class="line">$ ls -l Makefile</span><br><span class="line">-rw-rw-r-- 1 yutao yutao 15035 Oct 15 10:40 Makefile</span><br></pre></td></tr></table></figure>
+<p>你可以看到,此时Makefile已经产生出来了.</p>
+<ol start="7">
+<li>使用Makefile编译代码</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$make</span><br><span class="line">if gcc -DPACKAGE_NAME=\<span class="string">&quot;FULL-PACKAGE-NAME\&quot; -DPACKAGE_TARNAME=\&quot;full-package-name\&quot; -DPACKAGE_VERSION=\&quot;VERSION\&quot; -DPACKAGE_STRING=\&quot;FULL-PACKAGE-NAME\ VERSION\&quot; -DPACKAGE_BUGREPORT=\&quot;BUG-REPORT-ADDRESS\&quot; -DPACKAGE=\&quot;helloworld\&quot; -DVERSION=\&quot;1.0\&quot; -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1  -I. -I.     -g -O2 -MT helloworld.o -MD -MP -MF &quot;</span>.deps/helloworld.Tpo<span class="string">&quot; -c -o helloworld.o helloworld.c; \</span></span><br><span class="line"><span class="string">then mv -f &quot;</span>.deps/helloworld.Tpo<span class="string">&quot; &quot;</span>.deps/helloworld.Po<span class="string">&quot;; else rm -f &quot;</span>.deps/helloworld.Tpo<span class="string">&quot;; exit 1; fi</span></span><br><span class="line"><span class="string">gcc  -g -O2   -o helloworld  helloworld.o</span></span><br></pre></td></tr></table></figure>
+<p>运行helloworld</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./helloworld</span><br><span class="line">Hello, Linux World!</span><br></pre></td></tr></table></figure>
+<p>这样helloworld就编译出来了,你如果按上面的 步骤来做的 话,应该也会很容易地编译出正确的 helloworld文件.你还可以试着使用一些其他的 make命令,如make clean,make install,make dist,看看它们会给你什么样的 效果.感觉如何？自己也能写出这么专业的 Makefile,老板一定会对你刮目相看.</p>
+<h2 id="深入浅出"><a href="#深入浅出" class="headerlink" title="深入浅出"></a>深入浅出</h2><p>针对上面提到的各个命令,我们再做些详细的介绍.</p>
+<img src="/Blog/posts/13020/Makefile%E5%9F%BA%E7%A1%80.png" class="">
+
+<p><img src=".%5Cautomake%E5%9F%BA%E7%A1%80%5CMakefile%E5%9F%BA%E7%A1%80.png" alt="Makefile基础"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://phoenine.github.io/Blog/posts/13020/">https://phoenine.github.io/Blog/posts/13020/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://phoenine.github.io/Blog" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/Blog/tags/linux/">linux</a><a class="post-meta__tags" href="/Blog/tags/automake/">automake</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/Blog/posts/16108/"><img class="prev-cover" src="/Blog/img/python.png" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Python模块学习&lt;一&gt;</div></div></a></div><div class="next-post pull-right"><a href="/Blog/posts/11000/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/Blog/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">23 种设计模式的通俗解释</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/Blog/posts/15500/" title="Linux中的pushd和popd"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">Linux中的pushd和popd</div></div></a></div><div><a href="/Blog/posts/15002/" title="论一切都是文件之匿名inode"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">论一切都是文件之匿名inode</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/Blog/img/avatar.png" onerror="this.onerror=null;this.src='/Blog/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Phoenine</div><div class="author-info__description">Welcome to my new blog ：）</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/Blog/archives/"><div class="headline">文章</div><div class="length-num">42</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/Blog/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/phoenine"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/Blog/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#automake%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">automake基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Makefile%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.1.</span> <span class="toc-text">Makefile介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%9A%84%E7%8E%AF%E5%A2%83"><span class="toc-number">1.2.</span> <span class="toc-text">使用的环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8Ehelloworld%E5%85%A5%E6%89%8B"><span class="toc-number">1.3.</span> <span class="toc-text">从helloworld入手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA"><span class="toc-number">1.4.</span> <span class="toc-text">深入浅出</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;"><img src="/Blog/img/python.png" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Python模块学习&lt;一&gt;"/></a><div class="content"><a class="title" href="/Blog/posts/16108/" title="Python模块学习&lt;一&gt;">Python模块学习&lt;一&gt;</a><time datetime="2021-04-13T09:32:24.000Z" title="发表于 2021-04-13 17:32:24">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/13020/" title="automake基础"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="automake基础"/></a><div class="content"><a class="title" href="/Blog/posts/13020/" title="automake基础">automake基础</a><time datetime="2021-04-13T08:59:00.000Z" title="发表于 2021-04-13 16:59:00">2021-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="23 种设计模式的通俗解释"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="23 种设计模式的通俗解释">23 种设计模式的通俗解释</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/11000/" title="图解霍夫曼编码"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="图解霍夫曼编码"/></a><div class="content"><a class="title" href="/Blog/posts/11000/" title="图解霍夫曼编码">图解霍夫曼编码</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Blog/posts/12007/" title="Jenkinsfile introduce"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/Blog/img/404.jpg'" alt="Jenkinsfile introduce"/></a><div class="content"><a class="title" href="/Blog/posts/12007/" title="Jenkinsfile introduce">Jenkinsfile introduce</a><time datetime="2020-12-31T15:59:00.000Z" title="发表于 2020-12-31 23:59:00">2020-12-31</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By Phoenine</div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由 GitHub 托管" alt="GitHub"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/Blog/js/utils.js"></script><script src="/Blog/js/main.js"></script><script src="/Blog/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
