@@ -1,0 +1,367 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Notion常见的页面小组件 | 因受</title><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="当我们使用Notion来创建和管理项目、笔记或文档时，为了美观或者更清晰的显示你的状态，我们可能会想要在Notion中嵌入其他内容，如各种精美的小组件，动态图标或其他应用程序的部分。我们可以通过Notion中的”Embed”功能，轻松地将外部内容嵌入到你的Notion页面中，从而使你的工作流更加丰富多样。本文将主要介绍如何使用Notion的Embed功能，以及常用的小组件网站，以帮助大家能更好地利">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Notion常见的页面小组件">
+<meta property="og:url" content="https://blog.phoenine.top/posts/bbec2e61/index.html">
+<meta property="og:site_name" content="因受">
+<meta property="og:description" content="当我们使用Notion来创建和管理项目、笔记或文档时，为了美观或者更清晰的显示你的状态，我们可能会想要在Notion中嵌入其他内容，如各种精美的小组件，动态图标或其他应用程序的部分。我们可以通过Notion中的”Embed”功能，轻松地将外部内容嵌入到你的Notion页面中，从而使你的工作流更加丰富多样。本文将主要介绍如何使用Notion的Embed功能，以及常用的小组件网站，以帮助大家能更好地利">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.phoenine.top/img/cover/coffee.png">
+<meta property="article:published_time" content="2025-05-20T11:56:20.525Z">
+<meta property="article:modified_time" content="2025-10-23T07:02:34.436Z">
+<meta property="article:author" content="Phoenine">
+<meta property="article:tag" content="notion">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.phoenine.top/img/cover/coffee.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Notion常见的页面小组件",
+  "url": "https://blog.phoenine.top/posts/bbec2e61/",
+  "image": "https://blog.phoenine.top/img/cover/coffee.png",
+  "datePublished": "2025-05-20T11:56:20.525Z",
+  "dateModified": "2025-10-23T07:02:34.436Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phoenine",
+      "url": "https://blog.phoenine.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.phoenine.top/posts/bbec2e61/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="//busuanzi.ibruce.info"><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"Z7A3XW4R2I","apiKey":"12db1ad54372045549ef465881c17e743","indexName":"blog","hitsPerPage":6,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Notion常见的页面小组件',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/my-footer.css"><link rel="stylesheet" href="/css/my-callout.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-color: #E2F2F6;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-video"></i><span> 相册</span></a></li><li><a class="site-page child" href="/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">因受</span></a><a class="nav-page-title" href="/"><span class="site-name">Notion常见的页面小组件</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-video"></i><span> 相册</span></a></li><li><a class="site-page child" href="/message/"><i class="fa-fw fas fa-mail-bulk"></i><span> 留言</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Notion常见的页面小组件</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-20T11:56:20.525Z" title="发表于 2025-05-20 19:56:20">2025-05-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-23T07:02:34.436Z" title="更新于 2025-10-23 15:02:34">2025-10-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/">常用工具</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/">Notion</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">893</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><p>当我们使用Notion来创建和管理项目、笔记或文档时，为了美观或者更清晰的显示你的状态，我们可能会想要在Notion中嵌入其他内容，如各种精美的小组件，动态图标或其他应用程序的部分。我们可以通过Notion中的”Embed”功能，轻松地将外部内容嵌入到你的Notion页面中，从而使你的工作流更加丰富多样。本文将主要介绍如何使用Notion的Embed功能，以及常用的小组件网站，以帮助大家能更好地利用这一强大的功能，作为自己心仪的页面。</p>
+<h2 id="1-什么是Notion-Embed"><a href="#1-什么是Notion-Embed" class="headerlink" title="1.  什么是Notion Embed?"></a>1.  <strong>什么是Notion Embed?</strong></h2><p>Notion的Embed功能允许你将外部内容嵌入到你的Notion页面中，而无需离开Notion。这可以包括以下内容：</p>
+<ol>
+<li><strong>网页链接：</strong> 你可以嵌入任何网页链接，这对于引用外部文章、资料或在线资源非常有用。</li>
+<li><strong>多媒体内容：</strong> 你可以嵌入YouTube视频、Vimeo视频、SoundCloud音频，以及其他多媒体内容，使你的页面更加生动和丰富。</li>
+<li><strong>云应用：</strong> 你还可以嵌入其他云应用程序，如Google Docs、Google Sheets、Trello、Figma等，以便在Notion中访问它们，而无需离开Notion。</li>
+</ol>
+<p><img src="https://wechat-public-1258175280.cos.ap-nanjing.myqcloud.com/images/2023-10/image-20231021155718314.png" alt="整体页面"></p>
+<h2 id="2-如何使用Notion-Embed"><a href="#2-如何使用Notion-Embed" class="headerlink" title="2.  如何使用Notion Embed"></a>2.  <strong>如何使用Notion Embed</strong></h2><p>以下是使用Notion Embed功能的简单步骤：</p>
+<ol>
+<li><strong>打开你的Notion页面：</strong> 首先，打开你想要嵌入内容的Notion页面。</li>
+<li><strong>点击加号图标：</strong> 在你的页面上，点击想要嵌入内容的位置，并在文本编辑栏中看到一个加号图标。</li>
+<li><strong>选择“Embed”：</strong> 点击加号图标后，你将看到一个下拉菜单，选择“Embed”。</li>
+<li><strong>获取嵌入代码：</strong> 接下来，你需要获取要嵌入的内容的嵌入代码。这通常在外部网站或应用程序的分享或嵌入选项中提供。</li>
+<li><strong>粘贴嵌入代码：</strong> 将你从外部来源获得的嵌入代码或者url粘贴到Notion的Embed框中。</li>
+<li><strong>确认嵌入内容：</strong> 一旦你粘贴了嵌入代码，Notion会自动加载内容，你可以在页面上看到它。你可以调整嵌入内容的大小、位置和其他选项。</li>
+<li><strong>保存页面：</strong> 最后，确保保存你的Notion页面，以保存嵌入的内容。</li>
+</ol>
+<p><img src="https://wechat-public-1258175280.cos.ap-nanjing.myqcloud.com/images/2023-10/embed.gif" alt="embed"></p>
+<h2 id="3-常用的小组件网站"><a href="#3-常用的小组件网站" class="headerlink" title="3.  常用的小组件网站"></a>3.  常用的小组件网站</h2><h3 id="3-1-WeatherWidget-Apption"><a href="#3-1-WeatherWidget-Apption" class="headerlink" title="3.1.  WeatherWidget + Apption"></a>3.1.  <strong>WeatherWidget + Apption</strong></h3><p>​	登录WeatherWidget， 选择所在的地址和标签，然后点击获取代码<code>get code</code>按钮。复制代码后不能直接粘贴到Notion，可以去Apption生成url，然后将url放到Notion的embed block中。具体网址如下：</p>
+<ul>
+<li>WeatherWidget： <a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly93ZWF0aGVyd2lkZ2V0LmlvLw">https://weatherwidget.io</a> </li>
+<li>Apption：<a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9hcHB0aW9uLmNvLw">https://apption.co</a></li>
+</ul>
+<p><img src="https://wechat-public-1258175280.cos.ap-nanjing.myqcloud.com/images/2023-10/image-20231021151042046.png" alt="weatherwidget"></p>
+<h3 id="3-2-组件世界"><a href="#3-2-组件世界" class="headerlink" title="3.2.  组件世界"></a>3.2.  组件世界</h3><p>可以创建日历/恋爱倒计时/打卡计数/时钟/诗词/访客记录等。登录组件世界，选择创建天气小组件，调整组件参数，完成后点击<code>复制嵌入链接</code>，然后将url放到Notion的embed block中。</p>
+<p><img src="https://wechat-public-1258175280.cos.ap-nanjing.myqcloud.com/images/2023-10/image-20231021151728207.png" alt="组件世界"></p>
+<ul>
+<li>具体网址：<ul>
+<li><strong>组件世界</strong>：<a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9jbi53aWRnZXRzdG9yZS5uZXQv">https://cn.widgetstore.net/</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="3-3-widgetbox"><a href="#3-3-widgetbox" class="headerlink" title="3.3.  widgetbox"></a>3.3.  <strong>widgetbox</strong></h3><p>支持创建日历/天气/时钟/倒计时等。登录widgetbox， 在创建小组件的导航栏选择<code>Weather</code>， 注意部分小组件可能需要收费。</p>
+<p><img src="https://wechat-public-1258175280.cos.ap-nanjing.myqcloud.com/images/2023-10/image-20231021153635820.png" alt="widgetbox"></p>
+<ul>
+<li>具体网址： <a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly93aWRnZXRib3guYXBwLw">https://widgetbox.app</a></li>
+</ul>
+<h3 id="3-4-indify"><a href="#3-4-indify" class="headerlink" title="3.4.  indify"></a>3.4.  <strong>indify</strong></h3><p>可以创建日历/天气/倒计时/计时/时钟以及按钮等。登录indify后，创建新的widget，选择日历模版，配置好参数后，拷贝url到Notion的embed block中。</p>
+<p><img src="https://wechat-public-1258175280.cos.ap-nanjing.myqcloud.com/images/2023-10/image-20231021154623091.png" alt="image-20231021154623091"></p>
+<ul>
+<li>具体网址： <a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9pbmRpZnkuY28v">https://indify.co</a></li>
+</ul>
+<p>今天就分享到这，下次继续分享常用的可视化图表和统计。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top/posts/bbec2e61/">https://blog.phoenine.top/posts/bbec2e61/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.phoenine.top" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/notion/">notion</a></div><div class="post-share"><div class="social-share" data-image="/img/cover/coffee.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer=""></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/e1731546/" title="在太空中没有太空服你能存活多久？"><img class="cover" src="/img/cover/coffee.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">在太空中没有太空服你能存活多久？</div></div><div class="info-2"><div class="info-item-1">在太空中没有太空服你能存活多久？ 真空是无情的，而时间也不会站在你这边。   许多人都曾梦想过进入太空。也许你曾想象过访问国际空间站，甚至探索新的世界。但是在太空旅行带来了一系列的挑战和恶劣环境，因此重要的是要再创造出在地球上让生命得以演化和繁荣的条件。 太空服使宇航员能够在短时间内离开他们的宇宙飞船，提供人类生存所需的空气、水、压力和物理保护。但如果没有这些先进的太空服，会发生什么呢？ 科幻电影和电视节目，包括《2001：太空奥德赛》和《星际之门》，描绘了宇航员在没有太空服的情况下短暂接触外太空的痛苦和生存，而其他则描绘了一系列可怕的死亡方式。  但在现实世界中，如果一个人被投入到外太空的严酷真空中，能存活多久呢？简短的答案是，时间不会很长。 “在很短的时间内，大约10到15秒，由于缺氧，你就会失去意识，”欧洲航天局（ESA）负责协调人类和机器探索战略领域的高级战略官员Stefaan de Mey表示。 这可能看起来是很短的时间，但这是因为在被投入外太空之前，你不会想屏住呼吸。在黑暗的太空虚空中，维持我们生命的氧气将成为一个严重问题。 “氧气开始膨胀并撕裂你的肺，撕裂它们 - ...</div></div></div></a><a class="pagination-related" href="/posts/5cf07dd2/" title="Notion常用快捷键汇总"><img class="cover" src="/img/cover/notionbrand.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Notion常用快捷键汇总</div></div><div class="info-2"><div class="info-item-1">俗话说，工欲善其事，必先利其器。在使用Notion的过程中，掌握Notion笔记的常用快捷键，可以在不使用鼠标的情况下快捷地执行需要的操作，同时能提高工作效率，最重要的是这样很:sunglasses:。 今天给大家介绍下Notion常用的快捷键，因为我日常办公使用的都是Mac电脑，所以这里只列举出Mac的快捷键，如果是使用Windows电脑的朋友，可以将Command换成Ctrl，将option换成Shift键。 1.  常用样式快捷键常用的Markdown语法大家应该都比较熟悉了，这个就不介绍了，只列出特殊的快捷键。  创建新页面： command + n （仅适用于桌面app） 跳转到最近页面：command + p 创建分隔线：—   添加删除线：文本  创建待办事项复选框： 键入[]后加空格  快速打勾/取消：command + 回车  创建折叠列表：键入 &gt; 后加空格，注意这个和Markdown语法不同，Markdown为引用块。  创建引用块：键入 ” 后加空格  更换颜色：在块的任意位置键入 /color,或者直接写颜色 /blu...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/7438f04c/" title="Notion常用Formula总结"><img class="cover" src="/img/cover/notionbrand.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">Notion常用Formula总结</div></div><div class="info-2"><div class="info-item-1">1.  Notion 的 Formula 更新啦~自从九月份Notion的Formula 2.0更新之后，可以使用的函数就丰富了，Notion的灵活性进一步加强。但是同样也导致Notion变得更加复杂。Notion的Formula 2.0的编写更贴近JavaScript，对于前端开发人员更容易上手。对于大多数人使用起来容易迷糊，现在我将Notion中大部分的Formula整理总结，方便大家使用。 2.  Notion的属性返回值prop(“属性”) 即返回每个条目的“属性值”，公式中的六种返回值：  Number Text Date Checkbox List String  3.  Notion的常用函数3.1.  运算函数   3.2.  日期函数 3.3.  功能函数       本期先介绍到这里，Page里面对函数进行了分类，包括2.0新增的函数以及更新的功能，有需要的可以后台回复： Notion公式，获取对应的链接，谢谢关注🙏 https://phoenine.notion.site/notion-69c6eb4a27044a3fba948b50df6fc71e?pv...</div></div></div></a><a class="pagination-related" href="/posts/5cf07dd2/" title="Notion常用快捷键汇总"><img class="cover" src="/img/cover/notionbrand.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">Notion常用快捷键汇总</div></div><div class="info-2"><div class="info-item-1">俗话说，工欲善其事，必先利其器。在使用Notion的过程中，掌握Notion笔记的常用快捷键，可以在不使用鼠标的情况下快捷地执行需要的操作，同时能提高工作效率，最重要的是这样很:sunglasses:。 今天给大家介绍下Notion常用的快捷键，因为我日常办公使用的都是Mac电脑，所以这里只列举出Mac的快捷键，如果是使用Windows电脑的朋友，可以将Command换成Ctrl，将option换成Shift键。 1.  常用样式快捷键常用的Markdown语法大家应该都比较熟悉了，这个就不介绍了，只列出特殊的快捷键。  创建新页面： command + n （仅适用于桌面app） 跳转到最近页面：command + p 创建分隔线：—   添加删除线：文本  创建待办事项复选框： 键入[]后加空格  快速打勾/取消：command + 回车  创建折叠列表：键入 &gt; 后加空格，注意这个和Markdown语法不同，Markdown为引用块。  创建引用块：键入 ” 后加空格  更换颜色：在块的任意位置键入 /color,或者直接写颜色 /blu...</div></div></div></a><a class="pagination-related" href="/posts/9f54810e/" title="使用Notion API整理文档"><img class="cover" src="/img/cover/coffee.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">使用Notion API整理文档</div></div><div class="info-2"><div class="info-item-1">1.  引言Notion 是一个功能强大的协作工具，可以用来创建笔记、任务列表、数据库等。Notion API 为开发者提供了一种自动化操作 Notion 数据的方式，可以极大地提高工作效率。本文将介绍如何使用 Notion API 来更新和整理收藏的文章。最终生成的效果如下：  2.  项目背景Notion一直是我做笔记，习惯管理，工作计划的工具，比如笔记，我习惯在不同的网站或者公众号中收藏大量文章。但是因为使用不同的插件和浏览器，随着时间的推移，笔记的管理变得非常困难。为了提高笔记的整理和管理的效率，我们可以通过 Notion API 自动化这一过程，或者自己写个MCP插件。这里以更新文章的URL以及生成Summary为例子，简单介绍下开发的思路。  3.  技术实现细节3.1.  语言选型本文使用 Python 作为开发语言，主要因为 notion-sdk-py 是一个功能完善的 Notion API 客户端库，支持异步操作，可以有效提高处理大量数据的效率。 3.2.  数据结构在 Notion 中，我们通常会使用数据库来存储文章的相关信息。每个数据库可以包含多个页面，每个...</div></div></div></a><a class="pagination-related" href="/posts/3d2f716e/" title="像玩游戏一样规划你的人生 - Notion积分打卡"><img class="cover" src="/img/cover/coffee.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-09</div><div class="info-item-2">像玩游戏一样规划你的人生 - Notion积分打卡</div></div><div class="info-2"><div class="info-item-1">本文介绍如何用 Notion 搭建“像玩游戏一样规划人生”的积分打卡系统。通过七个页面（月度跟踪、角色属性、奖励商城、任务清单、打卡记录、人生清单、习惯清单）实现任务、习惯与积分挂钩，激发持续打卡动力。</div></div></div></a><a class="pagination-related" href="/posts/b0e2dd23/" title="像玩游戏一样规划你的人生 - Notion积分打卡2"><img class="cover" src="/img/cover/coffee.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">像玩游戏一样规划你的人生 - Notion积分打卡2</div></div><div class="info-2"><div class="info-item-1">XDJM们，是我，我又回来了。断更一段时间后，我决定重新回来继续更新我的小破号了。不知道许久没见，大家是否还在坚持使用Notion打卡，规划着自己的未来？那么这次给大家带来了优化后的Notion积分打卡2.0模版。希望大家可以喜欢。 废话不多说，先一起看看当前的界面哈。  和积分打卡1.0相比，这次主要的优化点是在主页面上增加了多个按钮以及Notion最近更新的Chat功能，之前的页面都是可以很好的兼容的。不会使用Button功能的小伙伴，可以看看我往期的Notion-Button相关的文章哈，这里就不赘言了。 下面简单说说操作方式。 1.  习惯打卡1.1.  创建打卡页面现在创建打卡页面只需要点击按钮，就会自动新建一个打卡页面（新建的页面不需要打开，这里只是演示)。注意不要多次重复点击，否则积分就会成倍的飙升。这个目前我还没有想到更好的办法，有好办法的小伙伴可以留言给我。  1.2.  记录达成的习惯我建立了一个按钮管理的页面，主要保存一些常用的好习惯和坏习惯。这些按钮可以复制到主页，或者直接在主页上新建按钮，看大家的操作习惯了。  当完成某项时，可以直接点击按钮完成打卡。 ...</div></div></div></a><a class="pagination-related" href="/posts/8c8ca081/" title="如何在Notion中获取随机数"><img class="cover" src="/img/cover/coffee.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">如何在Notion中获取随机数</div></div><div class="info-2"><div class="info-item-1">我们都知道，随机是游戏的精髓。那么，你想要在Notion中获取一个随机数吗？截至目前，Notion公式中似乎并没有提供一种简单的方式来创建随机数。但我们可以通过一些变通的方法向Notion工作区引入随机数，并为Notion创建一个类似洗牌的效果。 现在，让我们深入了解并看看如何实现。 1.  Notion中的随机数是什么？在Notion工作区中，随机数是创建特定功能的重要组成部分。它们对于洗牌功能、唯一标识符(GUID)或使Notion一次仅显示一个数据库条目都是必要的。 大多数编程语言(如Python的random)，都有一个简单的命令，可以使程序返回给定范围的随机数。然而目前在Notion中并没有单一的公式命令来获取随机数。 2.  Notion中随机数有什么用？在Notion中使用随机数的主要目的是对大量数据库条目进行洗牌或一次只显示单个条目。 洗牌功能非常适用于需要惊喜的场合。比如可以用在Notion中的餐饮计划器中随机推荐食谱，或在画廊中显示随机选择的图像，比如做一个塔罗牌的游戏，每日励志语录等😄。另外，如果你希望在Notion中仅显示单个数据库项目，也可以使用随机数...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Phoenine</div><div class="author-info-description">中年危机 | 码字困难户</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFNotion-Embed"><span class="toc-text">1.  什么是Notion Embed?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Notion-Embed"><span class="toc-text">2.  如何使用Notion Embed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%B8%B8%E7%94%A8%E7%9A%84%E5%B0%8F%E7%BB%84%E4%BB%B6%E7%BD%91%E7%AB%99"><span class="toc-text">3.  常用的小组件网站</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-WeatherWidget-Apption"><span class="toc-text">3.1.  WeatherWidget + Apption</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E7%BB%84%E4%BB%B6%E4%B8%96%E7%95%8C"><span class="toc-text">3.2.  组件世界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-widgetbox"><span class="toc-text">3.3.  widgetbox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-indify"><span class="toc-text">3.4.  indify</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/13bfb908/" title="用「记忆闪卡 Dashboard」高效学习：费曼技巧 × 间隔复习">用「记忆闪卡 Dashboard」高效学习：费曼技巧 × 间隔复习</a><time datetime="2025-09-20T10:55:26.809Z" title="发表于 2025-09-20 18:55:26">2025-09-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/aed033e2/" title="🏆 Notion积分打卡 3.0 —— 自律升级，像玩 RPG 一样坚持习惯">🏆 Notion积分打卡 3.0 —— 自律升级，像玩 RPG 一样坚持习惯</a><time datetime="2025-09-20T02:19:54.074Z" title="发表于 2025-09-20 10:19:54">2025-09-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/812138c9/" title="Dash安装docset">Dash安装docset</a><time datetime="2025-05-28T12:49:13.591Z" title="发表于 2025-05-28 20:49:13">2025-05-28</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="my-footer-svg-div">
+  <svg class="my-footer-wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+  <path class="my-footer-wave-path" d="M851.8,100c125,0,288.3-45,348.2-64V0H0v44c3.7-1,7.3-1.9,11-2.9C80.7,22,151.7,10.8,223.5,6.3C276.7,2.9,330,4,383,9.8 c52.2,5.7,103.3,16.2,153.4,32.8C623.9,71.3,726.8,100,851.8,100z"></path>
+  </svg>
+</div>
+<div class="my-footer-content-div">
+<div class="my-footer-content">
+    <div class="my-footer-content-column">
+        <div class="my-footer-logo">
+            <a class="my-footer-logo-link" href="/">
+                <span class="hidden-link-text">LOGO</span>
+                <img src="/img/footer/qlogo_white_no_words.png" style="height:40%; width:40%">
+            </a>
+        </div>
+        <div class="my-footer-menu">
+            <h2 class="my-footer-menu-name">开始</h2>
+            <ul id="menu-get-started" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a href="/pages/about.html">关于本站</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="my-footer-content-column">
+        <div class="my-footer-menu">
+            <h2 class="my-footer-menu-name">快速链接</h2>
+            <ul id="menu-company" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a>&nbsp;⨯&nbsp;<a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a>
+                </li>
+                <li class="menu-item menu-item-type-taxonomy menu-item-object-category">
+                    <a href="/archives/">时间轴</a>&nbsp;|&nbsp;<a href="/DO_NOT_render/cosmoscope/cosmoscope_trim.html">关系图</a>&nbsp;|&nbsp;<a href="/categories/">分类</a>
+                </li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a target="_blank" rel="noopener" href="https://blog.uuanqin.top/p/91b7dad/">同款页脚</a>
+                </li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a href="https://www.foreverblog.cn/" rel="noopener external nofollow noreferrer" target="_blank"> <img class="img-foreverblog" src="/img/footer/forever_logo_en_default_white.png" alt="" style="width:auto;height:21px;margin-top:6px"> </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="my-footer-content-column">
+        <div class="my-footer-menu">
+            <h2 class="my-footer-menu-name">法律声明</h2>
+            <ul id="menu-legal" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-170434">
+                    <a href="/pages/privacy.html">隐私政策</a>
+                </li>
+            </ul>
+        </div>
+        <div class="my-footer-call-to-action">
+            <h2 class="my-footer-call-to-action-title">联系本站</h2>
+            <ul id="menu-legal" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-170434">
+                    <a href="/DO_NOT_render/wechatOA/index.html">微信公众号</a>
+                </li>
+
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-170434">
+                    <a class="my-footer-call-to-action-link" href="mailto:contact@phoenine.top" target="_self">
+                        cont<span style="display:none">@</span><!-- >@ -->act@<span style="display:none">@</span>phoe<!-- >@. -->nine<span style="display:none">@</span>.top
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+    <div class="my-footer-content-column">
+        <ul id="menu-get-started" class="my-footer-menu-list">
+            <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                <a href="https://notbyai.fyi/" target="_blank" rel="external nofollow noopener noreferrer"><img class="img-not-ai" src="/img/footer/Written-By-Human-Not-By-AI-Badge-white.svg" alt="Written by Human, Not by AI"></a>
+            </li>
+            <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                <a href="/pages/cc.html"><img src="/img/footer/by-nc-sa.svg" alt="署名-非商业性使用-相同方式共享 4.0 国际"></a>
+            </li>
+
+            <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                ©2022-2025 By Phoenine
+            </li>
+        </ul>
+    </div>
+
+    <div class="my-footer-social-links"> <svg class="my-footer-social-amoeba-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236 54">
+        <path class="my-footer-social-amoeba-path" d="M223.06,43.32c-.77-7.2,1.87-28.47-20-32.53C187.78,8,180.41,18,178.32,20.7s-5.63,10.1-4.07,16.7-.13,15.23-4.06,15.91-8.75-2.9-6.89-7S167.41,36,167.15,33a18.93,18.93,0,0,0-2.64-8.53c-3.44-5.5-8-11.19-19.12-11.19a21.64,21.64,0,0,0-18.31,9.18c-2.08,2.7-5.66,9.6-4.07,16.69s.64,14.32-6.11,13.9S108.35,46.5,112,36.54s-1.89-21.24-4-23.94S96.34,0,85.23,0,57.46,8.84,56.49,24.56s6.92,20.79,7,24.59c.07,2.75-6.43,4.16-12.92,2.38s-4-10.75-3.46-12.38c1.85-6.6-2-14-4.08-16.69a21.62,21.62,0,0,0-18.3-9.18C13.62,13.28,9.06,19,5.62,24.47A18.81,18.81,0,0,0,3,33a21.85,21.85,0,0,0,1.58,9.08,16.58,16.58,0,0,1,1.06,5A6.75,6.75,0,0,1,0,54H236C235.47,54,223.83,50.52,223.06,43.32Z"></path>
+    </svg>
+        <a class="my-footer-social-link github" href="https://github.com/phoenine" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">Github</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                <path class="my-footer-social-icon-path" d="M 16 4 C 9.371094 4 4 9.371094 4 16 C 4 21.300781 7.4375 25.800781 12.207031 27.386719 C 12.808594 27.496094 13.027344 27.128906 13.027344 26.808594 C 13.027344 26.523438 13.015625 25.769531 13.011719 24.769531 C 9.671875 25.492188 8.96875 23.160156 8.96875 23.160156 C 8.421875 21.773438 7.636719 21.402344 7.636719 21.402344 C 6.546875 20.660156 7.71875 20.675781 7.71875 20.675781 C 8.921875 20.761719 9.554688 21.910156 9.554688 21.910156 C 10.625 23.746094 12.363281 23.214844 13.046875 22.910156 C 13.15625 22.132813 13.46875 21.605469 13.808594 21.304688 C 11.144531 21.003906 8.34375 19.972656 8.34375 15.375 C 8.34375 14.0625 8.8125 12.992188 9.578125 12.152344 C 9.457031 11.851563 9.042969 10.628906 9.695313 8.976563 C 9.695313 8.976563 10.703125 8.65625 12.996094 10.207031 C 13.953125 9.941406 14.980469 9.808594 16 9.804688 C 17.019531 9.808594 18.046875 9.941406 19.003906 10.207031 C 21.296875 8.65625 22.300781 8.976563 22.300781 8.976563 C 22.957031 10.628906 22.546875 11.851563 22.421875 12.152344 C 23.191406 12.992188 23.652344 14.0625 23.652344 15.375 C 23.652344 19.984375 20.847656 20.996094 18.175781 21.296875 C 18.605469 21.664063 18.988281 22.398438 18.988281 23.515625 C 18.988281 25.121094 18.976563 26.414063 18.976563 26.808594 C 18.976563 27.128906 19.191406 27.503906 19.800781 27.386719 C 24.566406 25.796875 28 21.300781 28 16 C 28 9.371094 22.628906 4 16 4 Z "></path>
+            </svg>
+        </a>
+        <a class="my-footer-social-link email" href="mailto:sparkbye@phoenine.com" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">Email</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path class="my-footer-social-icon-path" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"></path>
+            </svg>
+        </a>
+        <a class="my-footer-social-link follow" href="https://app.follow.is/share/users/phoenine" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">Follow</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path class="my-footer-social-icon-path" d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM96 136c0-13.3 10.7-24 24-24c137 0 248 111 248 248c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-110.5-89.5-200-200-200c-13.3 0-24-10.7-24-24zm0 96c0-13.3 10.7-24 24-24c83.9 0 152 68.1 152 152c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-57.4-46.6-104-104-104c-13.3 0-24-10.7-24-24zm0 120a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+            </svg>
+        </a>
+        <a class="my-footer-social-link rss" href="/atom.xml" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">RSS</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path class="my-footer-social-icon-path" d="M0 64C0 46.3 14.3 32 32 32c229.8 0 416 186.2 416 416c0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96C14.3 96 0 81.7 0 64zM0 416a64 64 0 1 1 128 0A64 64 0 1 1 0 416zM32 160c159.1 0 288 128.9 288 288c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224c-17.7 0-32-14.3-32-32s14.3-32 32-32z"></path>
+            </svg>
+        </a>
+
+    </div>
+</div>
+</div>
+<div class="my-footer-copyright">
+    <div class="my-footer-copyright-wrapper">
+        <p class="my-footer-copyright-text">
+            <a target="_blank" href="https://beian.miit.gov.cn/" rel="noopener external nofollow noreferrer noopener"><img class="icp-icon" src="/img/footer/icp.ico"><span>暂时没有备案</span></a>
+            &nbsp;|&nbsp;<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12011202000621" rel="noopener external nofollow noreferrer noopener"><img class="icp-icon" src="/img/footer/beian_logo.png"><span>暂时没有备案</span></a>
+            &nbsp;|&nbsp;&nbsp;
+            <span>违法与不良信息举报邮箱&nbsp;
+              cont<span style="display:none">@</span><!-- >@ -->act@<span style="display:none">@</span>phoe<!-- >@. -->nine<span style="display:none">@</span>.top
+            </span>
+        </p>
+    </div>
+</div>
+</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"></div><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div id="algolia-search-input"><div class="ais-SearchBox"><form class="ais-SearchBox-form" action="" role="search" novalidate=""><input class="ais-SearchBox-input" type="search" placeholder="搜索文章" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="512" aria-label="Search"><button class="ais-SearchBox-submit" type="submit" title="Submit the search query" style="display:none;"><svg class="ais-SearchBox-submitIcon" width="10" height="10" viewBox="0 0 40 40" aria-hidden="true"><path d="M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z"></path></svg></button></form></div><hr><div id="algolia-search-results"><div id="algolia-hits"><div id="algolia-hits-empty" style="display:none;"></div><div class="ais-Hits" style="display:none;"><ol class="ais-Hits-list"></ol></div></div><div class="ais-Pagination" id="algolia-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="algolia-info"><span class="ais-Stats-text"></span><a class="algolia-poweredBy" href="https://www.algolia.com/?utm_source=algoliasearch.js&amp;utm_medium=website&amp;utm_content=localhost&amp;utm_campaign=poweredby" target="_blank" aria-label="Search by Algolia" rel="noopener noreferrer"><svg class="ais-PoweredBy-logo" height="1.2em" viewBox="0 0 572 64" style="width: auto;"><path fill="#36395A" d="M16 48.3c-3.4 0-6.3-.6-8.7-1.7A12.4 12.4 0 0 1 1.9 42C.6 40 0 38 0 35.4h6.5a6.7 6.7 0 0 0 3.9 6c1.4.7 3.3 1.1 5.6 1.1 2.2 0 4-.3 5.4-1a7 7 0 0 0 3-2.4 6 6 0 0 0 1-3.4c0-1.5-.6-2.8-1.9-3.7-1.3-1-3.3-1.6-5.9-1.8l-4-.4c-3.7-.3-6.6-1.4-8.8-3.4a10 10 0 0 1-3.3-7.9c0-2.4.6-4.6 1.8-6.4a12 12 0 0 1 5-4.3c2.2-1 4.7-1.6 7.5-1.6s5.5.5 7.6 1.6a12 12 0 0 1 5 4.4c1.2 1.8 1.8 4 1.8 6.7h-6.5a6.4 6.4 0 0 0-3.5-5.9c-1-.6-2.6-1-4.4-1s-3.2.3-4.4 1c-1.1.6-2 1.4-2.6 2.4-.5 1-.8 2-.8 3.1a5 5 0 0 0 1.5 3.6c1 1 2.6 1.7 4.7 1.9l4 .3c2.8.2 5.2.8 7.2 1.8 2.1 1 3.7 2.2 4.9 3.8a9.7 9.7 0 0 1 1.7 5.8c0 2.5-.7 4.7-2 6.6a13 13 0 0 1-5.6 4.4c-2.4 1-5.2 1.6-8.4 1.6Zm35.6 0c-2.6 0-4.8-.4-6.7-1.3a13 13 0 0 1-4.7-3.5 17.1 17.1 0 0 1-3.6-10.4v-1c0-2 .3-3.8 1-5.6a13 13 0 0 1 7.3-8.3 15 15 0 0 1 6.3-1.4A13.2 13.2 0 0 1 64 24.3c1 2.2 1.6 4.6 1.6 7.2V34H39.4v-4.3h21.8l-1.8 2.2c0-2-.3-3.7-.9-5.1a7.3 7.3 0 0 0-2.7-3.4c-1.2-.7-2.7-1.1-4.6-1.1s-3.4.4-4.7 1.3a8 8 0 0 0-2.9 3.6c-.6 1.5-.9 3.3-.9 5.4 0 2 .3 3.7 1 5.3a7.9 7.9 0 0 0 2.8 3.7c1.3.8 3 1.3 5 1.3s3.8-.5 5.1-1.3c1.3-1 2.1-2 2.4-3.2h6a11.8 11.8 0 0 1-7 8.7 16 16 0 0 1-6.4 1.2ZM80 48c-2.2 0-4-.3-5.7-1a8.4 8.4 0 0 1-3.7-3.3 9.7 9.7 0 0 1-1.3-5.2c0-2 .5-3.8 1.5-5.2a9 9 0 0 1 4.3-3.1c1.8-.7 4-1 6.7-1H89v4.1h-7.5c-2 0-3.4.5-4.4 1.4-1 1-1.6 2.1-1.6 3.6s.5 2.7 1.6 3.6c1 1 2.5 1.4 4.4 1.4 1.1 0 2.2-.2 3.2-.7 1-.4 1.9-1 2.6-2 .6-1 1-2.4 1-4.2l1.7 2.1c-.2 2-.7 3.8-1.5 5.2a9 9 0 0 1-3.4 3.3 12 12 0 0 1-5.3 1Zm9.5-.7v-8.8h-1v-10c0-1.8-.5-3.2-1.4-4.1-1-1-2.4-1.4-4.2-1.4a142.9 142.9 0 0 0-10.2.4v-5.6a74.8 74.8 0 0 1 8.6-.4c3 0 5.5.4 7.5 1.2s3.4 2 4.4 3.6c1 1.7 1.4 4 1.4 6.7v18.4h-5Zm12.9 0V17.8h5v12.3h-.2c0-4.2 1-7.4 2.8-9.5a11 11 0 0 1 8.3-3.1h1v5.6h-2a9 9 0 0 0-6.3 2.2c-1.5 1.5-2.2 3.6-2.2 6.4v15.6h-6.4Zm34.4 1a15 15 0 0 1-6.6-1.3c-1.9-.9-3.4-2-4.7-3.5a15.5 15.5 0 0 1-2.7-5c-.6-1.7-1-3.6-1-5.4v-1c0-2 .4-3.8 1-5.6a15 15 0 0 1 2.8-4.9c1.3-1.5 2.8-2.6 4.6-3.5a16.4 16.4 0 0 1 13.3.2c2 1 3.5 2.3 4.8 4a12 12 0 0 1 2 6H144c-.2-1.6-1-3-2.2-4.1a7.5 7.5 0 0 0-5.2-1.7 8 8 0 0 0-4.7 1.3 8 8 0 0 0-2.8 3.6 13.8 13.8 0 0 0 0 10.3c.6 1.5 1.5 2.7 2.8 3.6s2.8 1.3 4.8 1.3c1.5 0 2.7-.2 3.8-.8a7 7 0 0 0 2.6-2c.7-1 1-2 1.2-3.2h6.2a11 11 0 0 1-2 6.2 15.1 15.1 0 0 1-11.8 5.5Zm19.7-1v-40h6.4V31h-1.3c0-3 .4-5.5 1.1-7.6a9.7 9.7 0 0 1 3.5-4.8A9.9 9.9 0 0 1 172 17h.3c3.5 0 6 1.1 7.9 3.5 1.7 2.3 2.6 5.7 2.6 10v16.8h-6.4V29.6c0-2.1-.6-3.8-1.8-5a6.4 6.4 0 0 0-4.8-1.8c-2 0-3.7.7-5 2a7.8 7.8 0 0 0-1.9 5.5v17h-6.4Zm63.8 1a12.2 12.2 0 0 1-10.9-6.2 19 19 0 0 1-1.8-7.3h1.4v12.5h-5.1v-40h6.4v19.8l-2 3.5c.2-3.1.8-5.7 1.9-7.7a11 11 0 0 1 4.4-4.5c1.8-1 3.9-1.5 6.1-1.5a13.4 13.4 0 0 1 12.8 9.1c.7 1.9 1 3.8 1 6v1c0 2.2-.3 4.1-1 6a13.6 13.6 0 0 1-13.2 9.4Zm-1.2-5.5a8.4 8.4 0 0 0 7.9-5c.7-1.5 1.1-3.3 1.1-5.3s-.4-3.8-1.1-5.3a8.7 8.7 0 0 0-3.2-3.6 9.6 9.6 0 0 0-9.2-.2 8.5 8.5 0 0 0-3.3 3.2c-.8 1.4-1.3 3-1.3 5v2.3a9 9 0 0 0 1.3 4.8 9 9 0 0 0 3.4 3c1.4.7 2.8 1 4.4 1Zm27.3 3.9-10-28.9h6.5l9.5 28.9h-6Zm-7.5 12.2v-5.7h4.9c1 0 2-.1 2.9-.4a4 4 0 0 0 2-1.4c.4-.7.9-1.6 1.2-2.7l8.6-30.9h6.2l-9.3 32.4a14 14 0 0 1-2.5 5 8.9 8.9 0 0 1-4 2.8c-1.5.6-3.4.9-5.6.9h-4.4Zm9-12.2v-5.2h6.4v5.2H248Z"></path><path fill="#003DFF" d="M534.4 9.1H528a.8.8 0 0 1-.7-.7V1.8c0-.4.2-.7.6-.8l6.5-1c.4 0 .8.2.9.6v7.8c0 .4-.4.7-.8.7zM428 35.2V.8c0-.5-.3-.8-.7-.8h-.2l-6.4 1c-.4 0-.7.4-.7.8v35c0 1.6 0 11.8 12.3 12.2.5 0 .8-.4.8-.8V43c0-.4-.3-.7-.6-.8-4.5-.5-4.5-6-4.5-7zm106.5-21.8H528c-.4 0-.7.4-.7.8v34c0 .4.3.8.7.8h6.5c.4 0 .8-.4.8-.8v-34c0-.5-.4-.8-.8-.8zm-17.7 21.8V.8c0-.5-.3-.8-.8-.8l-6.5 1c-.4 0-.7.4-.7.8v35c0 1.6 0 11.8 12.3 12.2.4 0 .8-.4.8-.8V43c0-.4-.3-.7-.7-.8-4.4-.5-4.4-6-4.4-7zm-22.2-20.6a16.5 16.5 0 0 1 8.6 9.3c.8 2.2 1.3 4.8 1.3 7.5a19.4 19.4 0 0 1-4.6 12.6 14.8 14.8 0 0 1-5.2 3.6c-2 .9-5.2 1.4-6.8 1.4a21 21 0 0 1-6.7-1.4 15.4 15.4 0 0 1-8.6-9.3 21.3 21.3 0 0 1 0-14.4 15.2 15.2 0 0 1 8.6-9.3c2-.8 4.3-1.2 6.7-1.2s4.6.4 6.7 1.2zm-6.7 27.6c2.7 0 4.7-1 6.2-3s2.2-4.3 2.2-7.8-.7-6.3-2.2-8.3-3.5-3-6.2-3-4.7 1-6.1 3c-1.5 2-2.2 4.8-2.2 8.3s.7 5.8 2.2 7.8 3.5 3 6.2 3zm-88.8-28.8c-6.2 0-11.7 3.3-14.8 8.2a18.6 18.6 0 0 0 4.8 25.2c1.8 1.2 4 1.8 6.2 1.7s.1 0 .1 0h.9c4.2-.7 8-4 9.1-8.1v7.4c0 .4.3.7.8.7h6.4a.7.7 0 0 0 .7-.7V14.2c0-.5-.3-.8-.7-.8h-13.5zm6.3 26.5a9.8 9.8 0 0 1-5.7 2h-.5a10 10 0 0 1-9.2-14c1.4-3.7 5-6.3 9-6.3h6.4v18.3zm152.3-26.5h13.5c.5 0 .8.3.8.7v33.7c0 .4-.3.7-.8.7h-6.4a.7.7 0 0 1-.8-.7v-7.4c-1.2 4-4.8 7.4-9 8h-.1a4.2 4.2 0 0 1-.5.1h-.9a10.3 10.3 0 0 1-7-2.6c-4-3.3-6.5-8.4-6.5-14.2 0-3.7 1-7.2 3-10 3-5 8.5-8.3 14.7-8.3zm.6 28.4c2.2-.1 4.2-.6 5.7-2V21.7h-6.3a9.8 9.8 0 0 0-9 6.4 10.2 10.2 0 0 0 9.1 13.9h.5zM452.8 13.4c-6.2 0-11.7 3.3-14.8 8.2a18.5 18.5 0 0 0 3.6 24.3 10.4 10.4 0 0 0 13 .6c2.2-1.5 3.8-3.7 4.5-6.1v7.8c0 2.8-.8 5-2.2 6.3-1.5 1.5-4 2.2-7.5 2.2l-6-.3c-.3 0-.7.2-.8.5l-1.6 5.5c-.1.4.1.8.5 1h.1c2.8.4 5.5.6 7 .6 6.3 0 11-1.4 14-4.1 2.7-2.5 4.2-6.3 4.5-11.4V14.2c0-.5-.4-.8-.8-.8h-13.5zm6.3 8.2v18.3a9.6 9.6 0 0 1-5.6 2h-1a10.3 10.3 0 0 1-8.8-14c1.4-3.7 5-6.3 9-6.3h6.4zM291 31.5A32 32 0 0 1 322.8 0h30.8c.6 0 1.2.5 1.2 1.2v61.5c0 1.1-1.3 1.7-2.2 1l-19.2-17a18 18 0 0 1-11 3.4 18.1 18.1 0 1 1 18.2-14.8c-.1.4-.5.7-.9.6-.1 0-.3 0-.4-.2l-3.8-3.4c-.4-.3-.6-.8-.7-1.4a12 12 0 1 0-2.4 8.3c.4-.4 1-.5 1.6-.2l14.7 13.1v-46H323a26 26 0 1 0 10 49.7c.8-.4 1.6-.2 2.3.3l3 2.7c.3.2.3.7 0 1l-.2.2a32 32 0 0 1-47.2-28.6z"></path></svg></a></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch@5.39.0/dist/lite/builds/browser.umd.min.js"></script><script src="/js/search/algolia.js?v=5.5.1"></script></div></div><!-- hexo injector body_end start --> <script data-pjax="">if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/常用工具/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🛠️ 常用工具 (19)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/操作系统/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🖥️ 操作系统 (10)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/百味人生/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍵 百味人生 (4)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/知识积累/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">📚 知识积累 (5)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/算法分析/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🧠 算法分析 (2)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/系统架构/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🏗️ 系统架构 (2)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/编程语法/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">👩‍💻 编程语法 (26)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/人工智能/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🤖 人工智能 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item" style="visibility: hidden"></div><a class="magnet_link_more"  href="https://blog.phoenine.top/categories" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #f2f2f2;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: #b30070}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style>#catalog_magnet .magnet_item:nth-child(n+7){display:none !important;}</style><script data-pjax="">
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/fa332fd9/" alt=""><img width="48" height="48" src="img/cover/openmanus.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-05-20</span><a class="blog-slider__title" href="posts/fa332fd9/" alt="">OpenManus 核心代码详细分析</a><div class="blog-slider__text">本文档提供了对 OpenManus 项目核心代码文件的深入分析，包括代码结构、算法逻辑、设计思想和实现细节。通过对关键源码的解读，帮助开发者更好地理解 OpenManus 的内部工作机制。</div><a class="blog-slider__button" href="posts/fa332fd9/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/26a8de56/" alt=""><img width="48" height="48" src="img/cover/shark.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/26a8de56/" alt="">Linux中的pushd和popd</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/26a8de56/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/d81fecfe/" alt=""><img width="48" height="48" src="img/cover/coffee.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2023-10-09</span><a class="blog-slider__title" href="posts/d81fecfe/" alt="">如何搞定图床问题 PicGo + 腾讯云COS</a><div class="blog-slider__text">本文介绍如何使用PicGo与腾讯云COS搭建图床，帮助公众号作者高效管理图片，避免手动上传和链接错误。并提供截图，解决权限和链接格式问题，适合发布图文的作者，并解决常见问题。</div><a class="blog-slider__button" href="posts/d81fecfe/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/28d79a75/" alt=""><img width="48" height="48" src="img/cover/line.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/28d79a75/" alt="">Helm Introduction</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/28d79a75/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/1b782ceb/" alt=""><img width="48" height="48" src="img/cover/fish.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/1b782ceb/" alt="">23种设计模式的通俗解释</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/1b782ceb/" alt="">详情   </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.js"></script><script defer="" data-pjax="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>

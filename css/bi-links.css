@@ -1,0 +1,104 @@
+/*https://codepen.io/ysoftaoglu/pen/JXROeY*/
+
+/* ========== 公共样式 ========== */
+.uuanqin-bilink {
+    display: inline-block;
+    transition: all .2s ease;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-style: dashed;
+    text-underline-offset: 4px;
+    text-decoration-color: #3399ff; /* 默认颜色 */
+}
+
+span.bilink-pop-up {
+    display: block;
+    font-weight: normal;
+    transition: all .2s ease;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -94%);
+    width: auto;
+    height: auto;
+    white-space: nowrap;
+    font-size: 12px;
+    font-style: normal;
+    border-radius: 10px;
+    padding: 4px 8px;
+    line-height: normal;
+    color: #fff;
+    background-color: #3399ff; /* 默认颜色 */
+    /*************** 复制问题的解决 *****************/
+    pointer-events: none;  /* 防止鼠标干扰 hover */
+    user-select: none;     /* 禁止选中文本 */
+    /** 兼容性 **/
+    -webkit-user-select: none; /* Safari/Chrome */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE10+ */
+
+}
+
+
+.uuanqin-bilink[href$="/p/undefined/"] {
+    text-decoration-color: #e81f63;
+}
+
+.uuanqin-bilink[href$="/p/undefined/"] span.bilink-pop-up {
+    background-color: #e81f63;
+}
+
+.uuanqin-bilink:hover span.bilink-pop-up,
+.uuanqin-bilink:focus span.bilink-pop-up {
+    /*transform: translateY(-2px);*/
+    opacity: 1;
+}
+
+.uuanqin-bilink:hover {
+    transform: translateY(-2px);
+    text-decoration: none !important;
+}
+
+
+/* CSS伪元素替换文字 */
+.uuanqin-bilink[href$="/p/undefined/"] span.bilink-pop-up::before {
+    content: "敬请期待"; /* 这里替换成你想显示的文字 */
+}
+
+.uuanqin-bilink[href$="/p/undefined/"] span.bilink-pop-up {
+    font-size: 0; /* 隐藏原文字 */
+}
+
+.uuanqin-bilink[href$="/p/undefined/"] span.bilink-pop-up::before {
+    font-size: 12px; /* 恢复正常大小 */
+}
+
+
+/***************** 解决频闪问题 **************************/
+.uuanqin-bilink {
+    position: relative;
+    display: inline-block;
+}
+
+/* 仍然允许 a 整体位移 */
+.uuanqin-bilink:hover {
+    transform: translateY(-2px);
+    text-decoration: none !important;
+}
+
+/* 悬停垫片：覆盖原始位置，保持 hover 命中不断 */
+.uuanqin-bilink::before {
+    content: "";
+    position: absolute;
+    left: -4px; right: -4px;   /* 适度放大热区 */
+    top: -6px;  bottom: -6px;
+    /* 默认不需要背景与边框，完全透明即可 */
+}
+
+/* 关键：父元素上移 -2px 时，垫片相对再下移 2px，等效留在原位 */
+.uuanqin-bilink:hover::before,
+.uuanqin-bilink:focus::before {
+    transform: translateY(2px);
+}
+
