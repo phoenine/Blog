@@ -36,7 +36,7 @@
     --ai-summary-hover: #667eea; /* 亮蓝色悬停效果 */
 }
 
-.post-SparkLite {
+.post-SiliconFlow {
     background: var(--ai-summary-secondbg);
     border-radius: 0.75rem; /* 12px→0.75rem */
     padding: 0.75rem; /* 12px→0.75rem */
@@ -46,12 +46,12 @@
 }
 
 @media screen and (max-width: 768px) {
-    .post-SparkLite {
+    .post-SiliconFlow {
         margin-top: 1.375rem; /* 22px→1.375rem */
     }
 }
 
-.sparkLite-title {
+.siliconFlow-title {
     display: flex;
     color: var(--ai-summary-lighttext);
     border-radius: 0.5rem; /* 8px→0.5rem */
@@ -61,13 +61,13 @@
     user-select: none;
 }
 
-.sparkLite-title-text {
+.siliconFlow-title-text {
     font-weight: bold;
     margin-left: 0.5rem; /* 8px→0.5rem */
     line-height: 1;
 }
 
-.sparkLite-explanation {
+.siliconFlow-explanation {
     margin-top: 0.75rem; /* 12px→0.75rem */
     padding: 0.5rem 0.75rem; /* 8px 12px→0.5rem 0.75rem */
     background: var(--ai-summary-card-bg);
@@ -78,7 +78,7 @@
     display: flex;
 }
 
-.sparkLite-tag {
+.siliconFlow-tag {
     font-size: 0.70rem; /* 12px→0.75rem */
     background-color: var(--ai-summary-lighttext);
     color: var(--ai-summary-card-bg);
@@ -94,7 +94,7 @@
     transition: 0.3s;
 }
 
-.sparkLite-about {
+.siliconFlow-about {
     font-size: 0.70rem;
     margin-left: auto;
     line-height: 1;
@@ -106,17 +106,17 @@
     transition: 0.3s;
 }
 
-.sparkLite-title-icon {
+.siliconFlow-title-icon {
     width: 1.25rem; /* 20px→1.25rem */
     height: 1.25rem; /* 20px→1.25rem */
 }
 
-.sparkLite-title-icon svg {
+.siliconFlow-title-icon svg {
     width: 1.25rem; /* 20px→1.25rem */
     height: 1.25rem; /* 20px→1.25rem */
     fill: var(--ai-summary-main);
 }
 
-.sparkLite-title-icon svg path {
+.siliconFlow-title-icon svg path {
     fill: var(--ai-summary-main);
 }

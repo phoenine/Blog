@@ -1,0 +1,1 @@
+{"data":{"total":1,"count":3,"pages":[{"index":1,"count":3,"api":"api/archives/2019/page.1.json","info":{"type":"archive","year":2019}}],"info":{"type":"archive","year":2019,"months":[{"month":4,"api":"api/archives/2019/04.json"},{"month":5,"api":"api/archives/2019/05.json"},{"month":11,"api":"api/archives/2019/11.json"}]}},"api":"api/archives/2019.json"}
