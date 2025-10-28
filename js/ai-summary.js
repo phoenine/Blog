@@ -23,8 +23,8 @@ const siliconFlow_typingAnimate = true;
 
 // 允许生成 AI 摘要的 URL 模式（通配符/正则）
 const siliconFlow_postURLs = [
-  // "https://*.phoenine.top/posts/*",
-  // "http://localhost:*/posts/*"
+  "https://blog.phoenine.top/posts/*",
+  "http://localhost:*/posts/*"
 ];
 const siliconFlow_postURLs_regex = [
   /^https:\/\/.*\.phoenine\.top\/posts\/[0-9a-fA-F]+\/$/,
