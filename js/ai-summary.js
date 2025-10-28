@@ -1,415 +1,426 @@
-// 定义样式常量 - 便于集中管理和修改
+// ======================== ai-summary.js (Optimized) ========================
+// 样式常量
 const LEFT_STYLE = "color: #fadfa3; background: #030307; padding:5px 0;";
 const RIGHT_STYLE = "background: #fadfa3; padding:5px 0;";
 
-// 构建消息模板 - 使用多行模板字符串保持视觉结构
+// 控制台横幅
 const MESSAGE_TEMPLATE = `
  %c Silicon Flow 文章摘要AI生成 %c https://blog.phoenine.top/
 `;
 
-const PROXY_API_URL = "https://ai-summary.phoenine.top/api/ai-summary/siliconflow"; // 这里填的是 Vercel 的地址
-const LINK_AI_ABOUT = "https://blog.phoenine.top/posts/13bfb908/"
+// ---------------- 基本配置 ----------------
+const PROXY_API_URL = "https://ai-summary.phoenine.top/api/ai-summary/siliconflow"; // Vercel 代理
+const LINK_AI_ABOUT = "https://blog.phoenine.top/posts/13bfb908/";
 
-// 输出格式化控制台消息
-console.log(
-    MESSAGE_TEMPLATE,
-    LEFT_STYLE,
-    RIGHT_STYLE
-);
+// 文章容器选择器
+const siliconFlow_postSelector = "#article-container";
 
-// --- 其他配置 (根据需要调整) ---
-const siliconFlow_postSelector = "#article-container"; // 文章内容容器的选择器，例如 #article-container, .post-content
-const siliconFlow_wordLimit = 1000;             // 提交给 API 的最大字数限制
-const siliconFlow_typingAnimate = true;         // 是否启用打字机效果
-// 指定博客文章URL类型，只在这样的界面上生成ai摘要
-// 通配符写法
+// 字数上限（保留以备后续扩展，当前由后端处理）
+const siliconFlow_wordLimit = 1000;
+
+// 是否启用打字机动画
+const siliconFlow_typingAnimate = true;
+
+// 允许生成 AI 摘要的 URL 模式（通配符/正则）
 const siliconFlow_postURLs = [
-    // "https://*.phoenine.top/posts/*",
-    // "http://localhost:*/posts/*"
+  // "https://*.phoenine.top/posts/*",
+  // "http://localhost:*/posts/*"
 ];
-// 正则写法
 const siliconFlow_postURLs_regex = [
-    /^https:\/\/.*\.phoenine\.top\/posts\/[0-9a-fA-F]+\/$/,
-    /^http:\/\/localhost:4000\/posts\/[0-9a-fA-F]+\/$/
+  /^https:\/\/.*\.phoenine\.top\/posts\/[0-9a-fA-F]+\/$/,
+  /^http:\/\/localhost:4000\/posts\/[0-9a-fA-F]+\/$/
 ];
 
+// 缓存有效期（默认：1 周）
 const MILLISECONDS_OF_A_WEEK = 7 * 24 * 60 * 60 * 1000;
-
 const siliconFlow_localCacheTime = MILLISECONDS_OF_A_WEEK;
 
-const initDB = () => {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('SiliconFlowDB', 1);
+// 统一运行中标记（替代已弃用的 sparkLiteIsRunning）
+let siliconFlowIsRunning = false;
 
-        request.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains('summaries')) {
-                const store = db.createObjectStore('summaries', {keyPath: 'url'});
-                store.createIndex('timestamp', 'timestamp', {unique: false});
-            }
-        };
+// 控制台提示
+console.log(MESSAGE_TEMPLATE, LEFT_STYLE, RIGHT_STYLE);
 
-        request.onsuccess = (e) => resolve(e.target.result);
-        request.onerror = (e) => reject(e.target.error);
-    });
+// ---------------- 运行期缓存（模块级） ----------------
+const __siliconFlowCache = {
+  urlRegexList: null,
+  postContainerEl: null,
+  db: null,
+  lastURL: null,
+  io: null,                // IntersectionObserver 实例
+  initTimer: null,         // 初始化去抖
+  styleInjected: false     // 是否已注入光标 CSS
 };
 
-let sparkLiteIsRunning = false; // 重命名
-
-// --- insertAIDiv 函数 ---
-function insertAIDiv(selector) {
-    // 首先移除现有的 "post-SiliconFlow" 类元素（如果有的话）
-    removeExistingAIDiv(); // 需要同步修改 removeExistingAIDiv 函数选择器
-
-    // 获取目标元素
-    const targetElement = document.querySelector(selector);
-
-    // 如果没有找到目标元素，不执行任何操作
-    if (!targetElement) {
-        return;
-    }
-
-    // 创建要插入的HTML元素
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'post-SiliconFlow'; // 修改类名
-
-    const aiTitleDiv = document.createElement('div');
-    aiTitleDiv.className = 'siliconFlow-title'; // 修改类名
-    aiDiv.appendChild(aiTitleDiv);
-
-    const aiIcon = document.createElement('i');
-    aiIcon.className = 'siliconFlow-title-icon'; // 修改类名
-    aiTitleDiv.appendChild(aiIcon);
-
-    // 插入 SVG 图标 (保持不变或替换)
-    aiIcon.innerHTML = `<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='48px' height='48px' viewBox='0 0 48 48'>
-  <title>机器人</title>
-  <g id='机器人' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'>
-    <path d='M34.717885,5.03561087 C36.12744,5.27055371 37.079755,6.60373651 36.84481,8.0132786 L35.7944,14.3153359 L38.375,14.3153359 C43.138415,14.3153359 47,18.1768855 47,22.9402569 L47,34.4401516 C47,39.203523 43.138415,43.0650727 38.375,43.0650727 L9.625,43.0650727 C4.861585,43.0650727 1,39.203523 1,34.4401516 L1,22.9402569 C1,18.1768855 4.861585,14.3153359 9.625,14.3153359 L12.2056,14.3153359 L11.15519,8.0132786 C10.920245,6.60373651 11.87256,5.27055371 13.282115,5.03561087 C14.69167,4.80066802 16.024865,5.7529743 16.25981,7.16251639 L17.40981,14.0624532 C17.423955,14.1470924 17.43373,14.2315017 17.43948,14.3153359 L30.56052,14.3153359 C30.56627,14.2313867 30.576045,14.1470924 30.59019,14.0624532 L31.74019,7.16251639 C31.975135,5.7529743 33.30833,4.80066802 34.717885,5.03561087 Z M38.375,19.4902885 L9.625,19.4902885 C7.719565,19.4902885 6.175,21.0348394 6.175,22.9402569 L6.175,34.4401516 C6.175,36.3455692 7.719565,37.89012 9.625,37.89012 L38.375,37.89012 C40.280435,37.89012 41.825,36.3455692 41.825,34.4401516 L41.825,22.9402569 C41.825,21.0348394 40.280435,19.4902885 38.375,19.4902885 Z M14.8575,23.802749 C16.28649,23.802749 17.445,24.9612484 17.445,26.3902253 L17.445,28.6902043 C17.445,30.1191812 16.28649,31.2776806 14.8575,31.2776806 C13.42851,31.2776806 12.27,30.1191812 12.27,28.6902043 L12.27,26.3902253 C12.27,24.9612484 13.42851,23.802749 14.8575,23.802749 Z M33.1425,23.802749 C34.57149,23.802749 35.73,24.9612484 35.73,26.3902253 L35.73,28.6902043 C35.73,30.1191812 34.57149,31.2776806 33.1425,31.2776806 C31.71351,31.2776806 30.555,30.1191812 30.555,28.6902043 L30.555,26.3902253 C30.555,24.9612484 31.71351,23.802749 33.1425,23.802749 Z' id='形状结合' fill='#444444' fill-rule='nonzero'></path>
-  </g>
-  </svg>`;
-
-    const aiTitleTextDiv = document.createElement('div');
-    aiTitleTextDiv.className = 'siliconFlow-title-text'; // 修改类名
-    aiTitleTextDiv.textContent = 'AI 摘要';
-    aiTitleDiv.appendChild(aiTitleTextDiv);
-
-    const aiAboutLink = document.createElement('a');
-    aiAboutLink.href = LINK_AI_ABOUT;
-    aiAboutLink.target = '_blank'; // 可选：在新标签页打开
-    aiAboutLink.className = 'siliconFlow-about'; // 修改类名
-    aiAboutLink.style.color = 'var(--ai-summary-lighttext)'; // 内联样式防止覆写
-    aiAboutLink.id = 'siliconFlow-about'; // 修改 ID
-    aiAboutLink.textContent = '关于'; // 修改显示文本
-    aiTitleDiv.appendChild(aiAboutLink);
-
-    const aiTagDiv = document.createElement('div');
-    aiTagDiv.className = 'siliconFlow-tag'; // 修改类名
-    aiTagDiv.id = 'siliconFlow-tag'; // 修改 ID
-    aiTagDiv.textContent = 'Silicon Flow'; // 修改显示文本
-    aiTitleDiv.appendChild(aiTagDiv);
-
-
-    const aiExplanationDiv = document.createElement('div');
-    aiExplanationDiv.className = 'siliconFlow-explanation'; // 修改类名
-    aiExplanationDiv.innerHTML = '生成中...' + '<span class="blinking-cursor"></span>';
-    aiDiv.appendChild(aiExplanationDiv);
-
-    // 将创建的元素插入到目标元素的顶部
-    targetElement.insertBefore(aiDiv, targetElement.firstChild);
+// ---------------- 工具：注入一次 CSS（打字光标） ----------------
+function injectTypingStyleOnce() {
+  if (__siliconFlowCache.styleInjected) return;
+  const css = `
+  .siliconFlow-explanation.sf-typing::after {
+    content: '';
+    display: inline-block;
+    width: 1ch;
+    border-right: 1px solid currentColor;
+    animation: sfBlink 1s steps(1) infinite;
+    margin-left: 2px;
+  }
+  @keyframes sfBlink { 50% { border-color: transparent; } }
+  `;
+  const style = document.createElement('style');
+  style.setAttribute('data-sf-style', '1');
+  style.textContent = css;
+  document.head.appendChild(style);
+  __siliconFlowCache.styleInjected = true;
 }
 
-
-// --- removeExistingAIDiv 函数 ---
-function removeExistingAIDiv() {
-    // 查找具有 "post-SiliconFlow" 类的元素
-    const existingAIDiv = document.querySelector(".post-SiliconFlow"); // 修改选择器
-
-    // 如果找到了这个元素，就从其父元素中删除它
-    if (existingAIDiv) {
-        existingAIDiv.parentElement.removeChild(existingAIDiv);
-    }
+// ---------------- IndexedDB 初始化与复用 ----------------
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('SiliconFlowDB', 1);
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('summaries')) {
+        const store = db.createObjectStore('summaries', { keyPath: 'url' });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+      }
+    };
+    request.onsuccess = (e) => resolve(e.target.result);
+    request.onerror = (e) => reject(e.target.error);
+  });
 }
 
+async function getDB() {
+  if (__siliconFlowCache.db) return __siliconFlowCache.db;
+  try {
+    __siliconFlowCache.db = await initDB();
+    return __siliconFlowCache.db;
+  } catch {
+    __siliconFlowCache.db = null; // 降级用
+    return null;
+  }
+}
 
-// --- 主要逻辑对象 ---
-const siliconFlow = { // 重命名对象
-    // --- fetchSiliconFlowSummary 函数 (核心修改) ---
-    fetchSiliconFlowSummary: async function () {
-        // const title = document.title;
-        const url = window.location.href;
-
-        // 先尝试从IndexedDB读取
-        try {
-            const db = await initDB();
-            const tx = db.transaction('summaries', 'readonly');
-            const store = tx.objectStore('summaries');
-            const request = store.get(url);
-
-            const cachedData = await new Promise((resolve) => {
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => resolve(null);
-            });
-
-            if (cachedData?.summary) {
-                // 检查缓存是否过期（7天有效期）
-
-                const isExpired = Date.now() - cachedData.timestamp > siliconFlow_localCacheTime;
-                if (!isExpired) {
-                    return cachedData.summary;
-                }
-            }
-        } catch (e) {
-            console.log('【AI 摘要前端】读取 IndexedDB 缓存失败', e);
-        }
-
-        const requestDataToProxy = {post_url: url};// {content: content, title: title};
-        const timeout = 30000;
-
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-            const response = await fetch(PROXY_API_URL, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(requestDataToProxy),
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-            const data = await response.json();
-
-            if (response.ok) {
-                // 成功获取摘要后存入IndexedDB
-                try {
-                    const db = await initDB();
-                    const tx = db.transaction('summaries', 'readwrite');
-                    tx.objectStore('summaries').put({
-                        url: url,
-                        summary: data.summary,
-                        timestamp: Date.now()
-                    });
-                } catch (e) {
-                    console.log('【AI 摘要前端】IndexedDB 写入失败', e);
-                }
-                return data.summary;
-            } else {
-                console.error(`【AI 摘要前端】代理或 API 错误: ${data.error || response.statusText}`);
-                return `【AI 摘要前端】获取摘要失败: ${data.error || `HTTP 状态码: ${response.status}`}`;
-            }
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                console.error('【AI 摘要前端】Silicon Flow 请求超时 (通过代理)');
-                return '【AI 摘要前端】获取文章摘要超时，请稍后刷新重试。';
-            } else {
-                console.error('【AI 摘要前端】Silicon Flow 请求失败 (通过代理)：', error);
-                if (error instanceof SyntaxError) {
-                    return '【AI 摘要前端】获取文章摘要失败：代理服务器响应格式错误。';
-                }
-                return '【AI 摘要前端】获取文章摘要失败，请检查网络连接或代理服务器状态。';
-            }
-        }
-    },
-
-    // --- aiShowAnimation 函数 ---
-    // 可以修改 console.error 和 element.innerHTML 中的 "Silicon Flow"
-    aiShowAnimation: function (text) {
-        const element = document.querySelector(".siliconFlow-explanation"); // 修改选择器
-        if (!element) {
-            return;
-        }
-
-        if (siliconFlowIsRunning) {
-            return;
-        }
-
-        // 检查用户是否已定义 sparkLite_typingAnimate
-        if (typeof siliconFlow_typingAnimate !== "undefined" && !siliconFlow_typingAnimate) { // 修改变量名
-            element.innerHTML = text;
-            return;
-        }
-
-        siliconFlowIsRunning = true; // 修改变量名
-        const typingDelay = 25;
-        const waitingTime = 1000;
-        const punctuationDelayMultiplier = 6;
-
-        element.style.display = "block";
-        element.innerHTML = `生成中...<span class='blinking-cursor'></span>`;
-
-        let animationRunning = true;
-        let currentIndex = 0;
-        let initialAnimation = true;
-        let lastUpdateTime = performance.now();
-
-        const animate = () => {
-            if (currentIndex < text.length && animationRunning) {
-                const currentTime = performance.now();
-                const timeDiff = currentTime - lastUpdateTime;
-
-                const letter = text.slice(currentIndex, currentIndex + 1);
-                const isPunctuation = /[，。！、？,.!?]/.test(letter);
-                const delay = isPunctuation ? typingDelay * punctuationDelayMultiplier : typingDelay;
-
-                if (timeDiff >= delay) {
-                    element.innerText = text.slice(0, currentIndex + 1);
-                    lastUpdateTime = currentTime;
-                    currentIndex++;
-
-                    if (currentIndex < text.length) {
-                        element.innerHTML =
-                            text.slice(0, currentIndex) +
-                            '<span class="blinking-cursor"></span>';
-                    } else {
-                        element.innerHTML = text;
-                        element.style.display = "block";
-                        siliconFlowIsRunning = false; // reset the correct flag
-                        observer.disconnect();// 暂停监听
-                    }
-                }
-                requestAnimationFrame(animate);
-            }
-        }
-
-        // 使用IntersectionObserver对象优化ai离开视口后暂停的业务逻辑，提高性能
-        const observer = new IntersectionObserver((entries) => {
-            animationRunning = entries[0].isIntersecting; // 标志变量更新
-            if (animationRunning && initialAnimation) {
-                setTimeout(() => {
-                    requestAnimationFrame(animate);
-                }, 200);
-            }
-        }, {threshold: 0});
-        let post_ai = document.querySelector('.post-SiliconFlow'); // 修改选择器
-        observer.observe(post_ai);//启动新监听
-    },
-};
-
-// --- runSiliconFlow 函数 (保持不变) ---
-function runSiliconFlow() { // 重命名函数
-    // 确保在运行前移除可能存在的旧div，防止重复添加
-    removeExistingAIDiv();
-    // 插入新的占位符
-    insertAIDiv(siliconFlow_postSelector);
-    siliconFlow.fetchSiliconFlowSummary().then(summary => { // 调用重命名后的方法
-        siliconFlow.aiShowAnimation(summary); // 调用重命名后的方法
+async function readCache(url) {
+  const db = await getDB();
+  if (db) {
+    return new Promise((resolve) => {
+      const tx = db.transaction('summaries', 'readonly');
+      const store = tx.objectStore('summaries');
+      const req = store.get(url);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
     });
-}
-
-// --- checkURLAndRun 函数 (稍微调整，主要负责URL检查) ---
-function checkURLAndRun() {
-    // 检查 AI 是否已在运行，防止重复启动动画等
-    if (siliconFlowIsRunning) {
-        return false; // 返回 false 表示不应继续执行
-    }
-
-
-
-    // URL 检查逻辑
-    if (typeof siliconFlow_postURLs === "undefined" && typeof siliconFlow_postURLs_regex === "undefined") {
-        console.log("【AI 摘要前端】没有设置页面链接模板，所以我为每个页面都生成ai摘要.");
-        return true; // 返回 true 表示检查通过，可以运行
-    }
-
+  } else {
+    // localStorage 简易降级：仅保留一条，避免膨胀
+    const raw = localStorage.getItem('sf_summary_cache');
+    if (!raw) return null;
     try {
-        const regExpEscape = (s) => {
-            return s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
-        };
-        const wildcardToRegExp = (s) => {
-            return new RegExp('^' + s.split(/\*+/).map(regExpEscape).join('.*') + '$');
-        };
+      const obj = JSON.parse(raw);
+      return obj?.url === url ? obj : null;
+    } catch {
+      return null;
+    }
+  }
+}
 
-        const currentURL = window.location.href;
+async function writeCache(url, summary) {
+  const payload = { url, summary, timestamp: Date.now() };
+  const db = await getDB();
+  if (db) {
+    try {
+      const tx = db.transaction('summaries', 'readwrite');
+      tx.objectStore('summaries').put(payload);
+    } catch { /* ignore */ }
+  } else {
+    localStorage.setItem('sf_summary_cache', JSON.stringify(payload));
+  }
+}
 
-        const customPattern = siliconFlow_postURLs.map(wildcardToRegExp);
-        const urlPattern = [...customPattern, ...(siliconFlow_postURLs_regex)];
+// ---------------- URL 规则预编译与匹配 ----------------
+function compileURLPatternsOnce() {
+  if (__siliconFlowCache.urlRegexList) return __siliconFlowCache.urlRegexList;
 
-        // 测试某个 URL 是否匹配任意一个规则
-        const testURL = (url) => {
-            return urlPattern.some(re => re.test(url));
-        };
+  const regExpEscape = (s) => s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+  const wildcardToRegExp = (s) =>
+    new RegExp('^' + s.split(/\*+/).map(regExpEscape).join('.*') + '$');
 
-        if (testURL(currentURL)) {
-            console.log("【AI 摘要前端】匹配到了页面URL，将在此页面生成摘要");
-            return true; // URL匹配，检查通过
+  const customPattern = (siliconFlow_postURLs || []).map(wildcardToRegExp);
+  __siliconFlowCache.urlRegexList = [
+    ...customPattern,
+    ...(siliconFlow_postURLs_regex || [])
+  ];
+  return __siliconFlowCache.urlRegexList;
+}
+
+function matchCurrentURL(url) {
+  const list = compileURLPatternsOnce();
+  if (typeof siliconFlow_postURLs === "undefined" &&
+      typeof siliconFlow_postURLs_regex === "undefined") {
+    // 未配置则默认允许全部
+    return true;
+  }
+  if (list.length === 0) {
+    // 明确配置为空 => 全部允许（与原逻辑一致）
+    return true;
+  }
+  return list.some((re) => re.test(url));
+}
+
+// ---------------- DOM 插入/移除 ----------------
+function removeExistingAIDiv() {
+  const existingAIDiv = document.querySelector(".post-SiliconFlow");
+  if (existingAIDiv && existingAIDiv.parentElement) {
+    existingAIDiv.parentElement.removeChild(existingAIDiv);
+  }
+}
+
+function insertAIDiv(selector) {
+  removeExistingAIDiv(); // 防重复
+  const targetElement = document.querySelector(selector);
+  if (!targetElement) return;
+
+  const aiDiv = document.createElement('div');
+  aiDiv.className = 'post-SiliconFlow';
+
+  const aiTitleDiv = document.createElement('div');
+  aiTitleDiv.className = 'siliconFlow-title';
+  aiDiv.appendChild(aiTitleDiv);
+
+  const aiIcon = document.createElement('i');
+  aiIcon.className = 'siliconFlow-title-icon';
+  aiIcon.innerHTML = `<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' aria-hidden="true" focusable="false">
+    <title>机器人</title>
+    <g fill='none' fill-rule='evenodd'>
+      <path d='M34.717885,5.03561087 C36.12744,5.27055371 37.079755,6.60373651 36.84481,8.0132786 L35.7944,14.3153359 L38.375,14.3153359 C43.138415,14.3153359 47,18.1768855 47,22.9402569 L47,34.4401516 C47,39.203523 43.138415,43.0650727 38.375,43.0650727 L9.625,43.0650727 C4.861585,43.0650727 1,39.203523 1,34.4401516 L1,22.9402569 C1,18.1768855 4.861585,14.3153359 9.625,14.3153359 L12.2056,14.3153359 L11.15519,8.0132786 C10.920245,6.60373651 11.87256,5.27055371 13.282115,5.03561087 C14.69167,4.80066802 16.024865,5.7529743 16.25981,7.16251639 L17.40981,14.0624532 C17.423955,14.1470924 17.43373,14.2315017 17.43948,14.3153359 L30.56052,14.3153359 C30.56627,14.2313867 30.576045,14.1470924 30.59019,14.0624532 L31.74019,7.16251639 C31.975135,5.7529743 33.30833,4.80066802 34.717885,5.03561087 Z M38.375,19.4902885 L9.625,19.4902885 C7.719565,19.4902885 6.175,21.0348394 6.175,22.9402569 L6.175,34.4401516 C6.175,36.3455692 7.719565,37.89012 9.625,37.89012 L38.375,37.89012 C40.280435,37.89012 41.825,36.3455692 41.825,34.4401516 L41.825,22.9402569 C41.825,21.0348394 40.280435,19.4902885 38.375,19.4902885 Z M14.8575,23.802749 C16.28649,23.802749 17.445,24.9612484 17.445,26.3902253 L17.445,28.6902043 C17.445,30.1191812 16.28649,31.2776806 14.8575,31.2776806 C13.42851,31.2776806 12.27,30.1191812 12.27,28.6902043 L12.27,26.3902253 C12.27,24.9612484 13.42851,23.802749 14.8575,23.802749 Z M33.1425,23.802749 C34.57149,23.802749 35.73,24.9612484 35.73,26.3902253 L35.73,28.6902043 C35.73,30.1191812 34.57149,31.2776806 33.1425,31.2776806 C31.71351,31.2776806 30.555,30.1191812 30.555,28.6902043 L30.555,26.3902253 C30.555,24.9612484 31.71351,23.802749 33.1425,23.802749 Z' fill='#444444'></path>
+    </g>
+  </svg>`;
+  aiTitleDiv.appendChild(aiIcon);
+
+  const aiTitleTextDiv = document.createElement('div');
+  aiTitleTextDiv.className = 'siliconFlow-title-text';
+  aiTitleTextDiv.textContent = 'AI 摘要';
+  aiTitleDiv.appendChild(aiTitleTextDiv);
+
+  const aiAboutLink = document.createElement('a');
+  aiAboutLink.href = LINK_AI_ABOUT;
+  aiAboutLink.target = '_blank';
+  aiAboutLink.className = 'siliconFlow-about';
+  aiAboutLink.style.color = 'var(--ai-summary-lighttext)';
+  aiAboutLink.id = 'siliconFlow-about';
+  aiAboutLink.textContent = '关于';
+  aiTitleDiv.appendChild(aiAboutLink);
+
+  const aiTagDiv = document.createElement('div');
+  aiTagDiv.className = 'siliconFlow-tag';
+  aiTagDiv.id = 'siliconFlow-tag';
+  aiTagDiv.textContent = 'Silicon Flow';
+  aiTitleDiv.appendChild(aiTagDiv);
+
+  const aiExplanationDiv = document.createElement('div');
+  aiExplanationDiv.className = 'siliconFlow-explanation';
+  aiExplanationDiv.textContent = '生成中...';
+  aiDiv.appendChild(aiExplanationDiv);
+
+  targetElement.insertBefore(aiDiv, targetElement.firstChild);
+}
+
+// ---------------- SiliconFlow 核心对象 ----------------
+const siliconFlow = {
+  // SWR：先读缓存，后台刷新；无缓存则等待网络；失败用过期缓存兜底
+  fetchSiliconFlowSummary: async function () {
+    const url = window.location.href;
+
+    // 1) 读取缓存
+    let cached = null;
+    try {
+      cached = await readCache(url);
+    } catch (e) {
+      console.log('【AI 摘要前端】读取缓存失败', e);
+    }
+    const isExpired = cached ? (Date.now() - cached.timestamp > siliconFlow_localCacheTime) : true;
+
+    // 2) 后台刷新（不阻塞 UI）
+    const refreshPromise = (async () => {
+      try {
+        const controller = new AbortController();
+        const timeout = 30000;
+        const timer = setTimeout(() => controller.abort(), timeout);
+        const res = await fetch(PROXY_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ post_url: url }),
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data?.summary) {
+          await writeCache(url, data.summary);
+          return data.summary;
         } else {
-            console.log("【AI 摘要前端】因为不符合自定义的链接规则，我决定不执行摘要功能。");
-            removeExistingAIDiv(); // 如果URL不匹配了，移除可能存在的旧AI框
-            return false; // URL不匹配，检查不通过
+          console.error(`【AI 摘要前端】代理或 API 错误: ${data?.error || res.statusText}`);
+          return null;
         }
-    } catch (error) {
-        console.error("【AI 摘要前端】我没有看懂你编写的自定义链接规则...", error);
-        return false; // 出错，检查不通过
-    }
-}
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          console.error('【AI 摘要前端】Silicon Flow 请求超时');
+        } else {
+          console.error('【AI 摘要前端】Silicon Flow 请求失败：', error);
+        }
+        return null;
+      }
+    })();
 
-// --- 新增：统一的初始化入口函数 ---
-function initializeSiliconFlow() {
-    // 1. 检查文章容器是否存在
-    const targetElement = document.querySelector(siliconFlow_postSelector);
-    if (!targetElement) {
-        removeExistingAIDiv(); // 确保目标容器不在时，AI框也被移除
+    // 3) 有未过期缓存则先用
+    if (cached && !isExpired) return cached.summary;
+
+    // 4) 等待网络结果
+    const fresh = await refreshPromise;
+    if (fresh) return fresh;
+
+    // 5) 失败兜底：过期缓存或失败提示
+    if (cached?.summary) return cached.summary;
+    return '【AI 摘要前端】获取文章摘要失败，请稍后重试。';
+  },
+
+  // 打字机动画：分块写入，避免 rAF 空转；IO 复用；避免频繁 innerHTML
+  aiShowAnimation: function (text) {
+    const element = document.querySelector(".siliconFlow-explanation");
+    if (!element) return;
+
+    const useTyping = (typeof siliconFlow_typingAnimate === "undefined")
+      ? true
+      : !!siliconFlow_typingAnimate;
+
+    if (!useTyping) {
+      element.textContent = text;
+      return;
+    }
+
+    if (siliconFlowIsRunning) return;
+    siliconFlowIsRunning = true;
+    injectTypingStyleOnce();
+
+    // 复用 IntersectionObserver
+    if (!__siliconFlowCache.io) {
+      __siliconFlowCache.io = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        // 当元素进入视口后启动动画；离开则暂停（不排新帧）
+        if (entry.isIntersecting) {
+          if (!animState.started) {
+            animState.started = true;
+            requestAnimationFrame(animate);
+          } else if (animState.paused) {
+            animState.paused = false;
+            requestAnimationFrame(animate);
+          }
+        } else {
+          animState.paused = true;
+        }
+      }, { threshold: 0 });
+    }
+
+    const postAI = document.querySelector('.post-SiliconFlow');
+    if (postAI) __siliconFlowCache.io.observe(postAI);
+
+    element.textContent = '';
+    element.classList.add('sf-typing');
+
+    const CHUNK = 4;        // 每帧写入 4 个字符，减少重排
+    const BASE_DELAY = 25;  // 单位毫秒
+    const PUNCT_PAUSE = 6;
+
+    const textLen = text.length;
+    const animState = {
+      idx: 0,
+      paused: false,
+      started: false
+    };
+
+    function nextDelay(slice) {
+      const last = slice[slice.length - 1] || '';
+      return /[，。！、？,.!?]/.test(last) ? BASE_DELAY * PUNCT_PAUSE : BASE_DELAY;
+    }
+
+    function animate() {
+      if (animState.paused) return;
+      if (animState.idx >= textLen) {
+        // 收尾
+        element.classList.remove('sf-typing');
+        siliconFlowIsRunning = false;
+        if (postAI) __siliconFlowCache.io.unobserve(postAI);
         return;
-    }
+      }
 
-    // 2. 执行URL和运行状态检查
-    if (checkURLAndRun()) {
-        // 3. 如果检查通过，执行核心逻辑
-        // console.log("Silicon Flow: Initialization checks passed, running...");
-        runSiliconFlow();
-    } else {
-        // console.log("Silicon Flow: Initialization checks failed (URL mismatch or already running).");
+      const start = animState.idx;
+      const end = Math.min(start + CHUNK, textLen);
+      const slice = text.slice(start, end);
+      animState.idx = end;
+      element.textContent += slice;
+
+      setTimeout(() => {
+        if (!animState.paused) requestAnimationFrame(animate);
+      }, nextDelay(slice));
     }
+  }
+};
+
+// ---------------- 运行主流程 ----------------
+function runSiliconFlow() {
+  removeExistingAIDiv();                    // 防止重复容器
+  insertAIDiv(siliconFlow_postSelector);    // 插占位
+  siliconFlow.fetchSiliconFlowSummary().then((summary) => {
+    siliconFlow.aiShowAnimation(summary);
+  });
 }
 
+// URL + 容器检查并触发
+function initializeSiliconFlow() {
+  const url = window.location.href;
 
-// --- Event Listeners (使用新的初始化函数) ---
+  // 相同 URL 重入保护
+  if (__siliconFlowCache.lastURL === url) return;
+  __siliconFlowCache.lastURL = url;
 
-// 确保在移除旧监听器（如果可能）后添加新的
-// （在简单脚本场景下通常不需要移除，但这是良好实践）
+  // 容器缓存
+  const el = __siliconFlowCache.postContainerEl || document.querySelector(siliconFlow_postSelector);
+  __siliconFlowCache.postContainerEl = el;
 
-// --- 增强路由变化监听 ---
+  if (!el) { removeExistingAIDiv(); return; }
+  if (!matchCurrentURL(url)) { removeExistingAIDiv(); return; }
 
-// 保存原始的 pushState 和 replaceState 方法
+  runSiliconFlow();
+}
+
+// ---------------- 路由事件去抖 ----------------
+function scheduleInit() {
+  if (__siliconFlowCache.initTimer) clearTimeout(__siliconFlowCache.initTimer);
+  __siliconFlowCache.initTimer = setTimeout(initializeSiliconFlow, 150);
+}
+
+// 包装 pushState/replaceState
 const originalPushState = history.pushState;
 const originalReplaceState = history.replaceState;
 
-// 包装 pushState
-history.pushState = function () {
-    // 调用原始方法
-    const result = originalPushState.apply(this, arguments);
-    // 创建并触发自定义事件，表明 URL 可能已更改
+history.pushState = new Proxy(originalPushState, {
+  apply(target, thisArg, argArray) {
+    const res = Reflect.apply(target, thisArg, argArray);
     window.dispatchEvent(new Event('pushstate'));
-    // 触发我们的初始化函数
-    // 使用 setTimeout 确保在 DOM 更新后执行
-    setTimeout(initializeSiliconFlow, 100);
-    return result;
-};
-
-// 包装 replaceState
-history.replaceState = function () {
-    // 调用原始方法
-    const result = originalReplaceState.apply(this, arguments);
-    // 创建并触发自定义事件，表明 URL 可能已更改
-    window.dispatchEvent(new Event('replacestate'));
-    // 触发我们的初始化函数
-    // 使用 setTimeout 确保在 DOM 更新后执行
-    setTimeout(initializeSiliconFlow, 100);
-    return result;
-};
-
-// 监听 popstate 事件 (浏览器前进/后退按钮)
-window.addEventListener('popstate', () => {
-    // 触发我们的初始化函数
-    // 使用 setTimeout 确保在 DOM 更新后执行
-    setTimeout(initializeSiliconFlow, 100);
+    scheduleInit();
+    return res;
+  }
 });
 
-// --- (确保之前的事件监听器仍然存在) ---
-// 初始加载
-document.removeEventListener("DOMContentLoaded", initializeSiliconFlow); // 避免重复添加
+history.replaceState = new Proxy(originalReplaceState, {
+  apply(target, thisArg, argArray) {
+    const res = Reflect.apply(target, thisArg, argArray);
+    window.dispatchEvent(new Event('replacestate'));
+    scheduleInit();
+    return res;
+  }
+});
+
+// popstate + DOMContentLoaded
+window.addEventListener('popstate', scheduleInit);
+document.removeEventListener("DOMContentLoaded", initializeSiliconFlow);
 document.addEventListener("DOMContentLoaded", initializeSiliconFlow);
-if (typeof siliconFlowIsRunning === 'undefined') {
-  var siliconFlowIsRunning = false;
-}
