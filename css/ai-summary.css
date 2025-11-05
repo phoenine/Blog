@@ -78,32 +78,21 @@
     display: flex;
 }
 
+/* 右侧标签靠右显示 */
 .siliconFlow-tag {
-    font-size: 0.70rem; /* 12px→0.75rem */
-    background-color: var(--ai-summary-lighttext);
-    color: var(--ai-summary-card-bg);
-    font-weight: bold;
-    border-radius: 0.25rem; /* 4px→0.25rem */
-    margin-left: 0.75rem;
-    line-height: 1;
-    padding: 0.25rem; /* 4px→0.25rem */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.siliconFlow-about {
-    font-size: 0.70rem;
-    margin-left: auto;
-    line-height: 1;
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
+  font-size: 0.70rem;
+  background-color: var(--ai-summary-lighttext);
+  color: var(--ai-summary-card-bg);
+  font-weight: bold;
+  border-radius: 0.25rem;
+  margin-left: auto; /* 让标签推到右侧（替代原“关于”的 auto） */
+  line-height: 1;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .siliconFlow-title-icon {

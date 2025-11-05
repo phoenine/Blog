@@ -10,7 +10,6 @@ const MESSAGE_TEMPLATE = `
 
 // ---------------- 基本配置 ----------------
 const PROXY_API_URL = "https://ai-summary.phoenine.top/api/ai-summary/siliconflow"; // Vercel 代理
-const LINK_AI_ABOUT = "https://blog.phoenine.top/posts/13bfb908/";
 
 // 文章容器选择器
 const siliconFlow_postSelector = "#article-container";
@@ -200,15 +199,6 @@ function insertAIDiv(selector) {
   aiTitleTextDiv.className = 'siliconFlow-title-text';
   aiTitleTextDiv.textContent = 'AI 摘要';
   aiTitleDiv.appendChild(aiTitleTextDiv);
-
-  const aiAboutLink = document.createElement('a');
-  aiAboutLink.href = LINK_AI_ABOUT;
-  aiAboutLink.target = '_blank';
-  aiAboutLink.className = 'siliconFlow-about';
-  aiAboutLink.style.color = 'var(--ai-summary-lighttext)';
-  aiAboutLink.id = 'siliconFlow-about';
-  aiAboutLink.textContent = '关于';
-  aiTitleDiv.appendChild(aiAboutLink);
 
   const aiTagDiv = document.createElement('div');
   aiTagDiv.className = 'siliconFlow-tag';
