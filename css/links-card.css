@@ -1,14 +1,14 @@
 :root {
-    --tag-link-bg-color: #eeeeee;
+    --tag-link-bg-color: #F4F1E8;
     --tag-link-text-color: #000;
-    --tag-link-border-color: #fff;
-    --tag-link-hover-bg-color: #d5f6ff;
-    --tag-link-hover-border-color: #ebebeb;
-    --tag-link-tips-border-color: #c2c2c2;
-    --tag-link-sitename-color: #909090;
-    --tag-link-hover-sitename-color: #000;
-    --tag-link-card-backgroud: #fff;
-    --tag-link-card-icon-color: #363636;
+    --tag-link-border-color: #E7E0D2;
+    --tag-link-hover-bg-color: #E7EFEA;
+    --tag-link-hover-border-color: #D3DDD7;
+    --tag-link-tips-border-color: #CFC7B8;
+    --tag-link-sitename-color: #7C7A72;
+    --tag-link-hover-sitename-color: #2F413B;
+    --tag-link-card-backgroud: #FFFDF7;
+    --tag-link-card-icon-color: #4F5D58;
 }
 [data-theme=dark] {
     --tag-link-bg-color: #282828;

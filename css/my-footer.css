@@ -24,7 +24,7 @@
 }
 
 .my-footer-wave-path {
-    fill: #177ecd;
+    fill: #6F8B84;
 }
 
 .my-footer-content {
@@ -86,8 +86,8 @@
 }
 
 .my-footer-call-to-action-button:hover {
-    background-color: #fffff2;
-    color: #00bef0;
+    background-color: #FFFFFB;
+    color: #4F6B62;
 }
 
 .button:last-of-type {
@@ -95,7 +95,7 @@
 }
 
 .my-footer-call-to-action-button {
-    background-color: #03708c;
+    background-color: #4F6B62;
     border-radius: 21px;
     color: #fffff2;
     display: inline-block;
@@ -158,7 +158,7 @@
 }
 
 .my-footer-social-amoeba-path {
-    fill: #03708c;
+    fill: #4F6B62;
 }
 
 .my-footer-social-link.email {
@@ -219,7 +219,7 @@
 }
 
 .my-footer-copyright {
-    background-color: #03708c;
+    background-color: #4F6B62;
     color: #fff;
     padding: 15px 30px;
     text-align: center;
@@ -246,7 +246,7 @@
 }
 
 .my-footer-content-div {
-    background: #177ecd
+    background: #6F8B84
 }
 
 .my-footer-svg-div {
@@ -343,4 +343,3 @@
         padding-right: 204px;
     }
 }
-

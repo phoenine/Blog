@@ -8,7 +8,7 @@
     text-decoration-thickness: 1px;
     text-decoration-style: dashed;
     text-underline-offset: 4px;
-    text-decoration-color: #3399ff; /* 默认颜色 */
+    text-decoration-color: #5E7F74; /* 默认颜色 */
 }
 
 span.bilink-pop-up {
@@ -29,7 +29,7 @@ span.bilink-pop-up {
     padding: 4px 8px;
     line-height: normal;
     color: #fff;
-    background-color: #3399ff; /* 默认颜色 */
+    background-color: #5E7F74; /* 默认颜色 */
     /*************** 复制问题的解决 *****************/
     pointer-events: none;  /* 防止鼠标干扰 hover */
     user-select: none;     /* 禁止选中文本 */
@@ -42,11 +42,11 @@ span.bilink-pop-up {
 
 
 .uuanqin-bilink[href$="/p/undefined/"] {
-    text-decoration-color: #e81f63;
+    text-decoration-color: #B26A5E;
 }
 
 .uuanqin-bilink[href$="/p/undefined/"] span.bilink-pop-up {
-    background-color: #e81f63;
+    background-color: #B26A5E;
 }
 
 .uuanqin-bilink:hover span.bilink-pop-up,
@@ -101,4 +101,3 @@ span.bilink-pop-up {
 .uuanqin-bilink:focus::before {
     transform: translateY(2px);
 }
-
