@@ -1,24 +1,24 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SPEC 基础知识 | 因受</title><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFB"><meta name="description" content="SPEC 文件基础知识制作 rpm 软件包并不是一件复杂的工作，其中的关键在于编写软件包的 spec 描述文件。要想制作一个 rpm 软件包就必须写一个软件包描述文件 spec。这个文件中包含了软件包的诸多信息，如：软件包的名字、版本、类别、说明摘要、创建时要执行什么指令、安装时要执行什么操作、以及软件包所要包含的文件列表等等。在实际过程中，最关键的地方是要清楚虚拟路径的位置，以及宏的定义。 Ma">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SPEC 基础知识 | 因受</title><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFB"><meta name="description" content="SPEC 基础知识 写 RPM 包的核心，不是命令多复杂，而是把“构建过程”和“最终安装内容”写清楚。  这篇文章以 rpmbuild 为主线，整理一份可直接落地的 SPEC 入门指南。 1.  SPEC 文件是什么SPEC 是 RPM 的打包脚本与元数据描述文件。它决定了：  包叫什么、版本是多少。 构建时需要什么依赖。 代码如何编译、安装到临时目录。 最终哪些文件进 RPM 包。  可以理解成">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SPEC 基础知识">
 <meta property="og:url" content="https://blog.phoenine.top/posts/745d3c42/index.html">
 <meta property="og:site_name" content="因受">
-<meta property="og:description" content="SPEC 文件基础知识制作 rpm 软件包并不是一件复杂的工作，其中的关键在于编写软件包的 spec 描述文件。要想制作一个 rpm 软件包就必须写一个软件包描述文件 spec。这个文件中包含了软件包的诸多信息，如：软件包的名字、版本、类别、说明摘要、创建时要执行什么指令、安装时要执行什么操作、以及软件包所要包含的文件列表等等。在实际过程中，最关键的地方是要清楚虚拟路径的位置，以及宏的定义。 Ma">
+<meta property="og:description" content="SPEC 基础知识 写 RPM 包的核心，不是命令多复杂，而是把“构建过程”和“最终安装内容”写清楚。  这篇文章以 rpmbuild 为主线，整理一份可直接落地的 SPEC 入门指南。 1.  SPEC 文件是什么SPEC 是 RPM 的打包脚本与元数据描述文件。它决定了：  包叫什么、版本是多少。 构建时需要什么依赖。 代码如何编译、安装到临时目录。 最终哪些文件进 RPM 包。  可以理解成">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://blog.phoenine.top/img/cover/shark.png">
+<meta property="og:image" content="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/automake%E5%9F%BA%E7%A1%80-1774334936068.png">
 <meta property="article:published_time" content="2021-04-22T06:40:34.000Z">
-<meta property="article:modified_time" content="2025-10-23T07:02:34.435Z">
+<meta property="article:modified_time" content="2026-03-24T06:49:57.826Z">
 <meta property="article:author" content="Phoenine">
 <meta property="article:tag" content="因受 苦行">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://blog.phoenine.top/img/cover/shark.png"><script type="application/ld+json">{
+<meta name="twitter:image" content="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/automake%E5%9F%BA%E7%A1%80-1774334936068.png"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "SPEC 基础知识",
   "url": "https://blog.phoenine.top/posts/745d3c42/",
-  "image": "https://blog.phoenine.top/img/cover/shark.png",
+  "image": "https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/automake%E5%9F%BA%E7%A1%80-1774334936068.png",
   "datePublished": "2021-04-22T06:40:34.000Z",
-  "dateModified": "2025-10-23T07:02:34.435Z",
+  "dateModified": "2026-03-24T06:49:57.826Z",
   "author": [
     {
       "@type": "Person",
@@ -159,427 +159,121 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/my-footer.css"><link rel="stylesheet" href="/css/my-callout.css"><script src="/js/ai-summary.js"></script><link rel="stylesheet" href="/css/ai-summary.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-color: #FFFFFB;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-video"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">因受</span></a><a class="nav-page-title" href="/"><span class="site-name">SPEC 基础知识</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-video"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">SPEC 基础知识</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-22T06:40:34.000Z" title="发表于 2021-04-22 14:40:34">2021-04-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-23T07:02:34.435Z" title="更新于 2025-10-23 15:02:34">2025-10-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/Makefile/">Makefile</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="SPEC-文件基础知识"><a href="#SPEC-文件基础知识" class="headerlink" title="SPEC 文件基础知识"></a>SPEC <strong>文件基础知识</strong></h1><p>制作 rpm 软件包并不是一件复杂的工作，其中的关键在于编写软件包的 spec 描述文件。要想制作一个 rpm 软件包就必须写一个软件包描述文件 spec。这个文件中包含了软件包的诸多信息，如：软件包的名字、版本、类别、说明摘要、创建时要执行什么指令、安装时要执行什么操作、以及软件包所要包含的文件列表等等。在实际过程中，最关键的地方是要清楚虚拟路径的位置，以及宏的定义。</p>
-<p><strong>Mandatory parameters to be present in SPEC file to build and generate RPM</strong></p>
-<p>Below options are mandatory to be present in SPEC file</p>
-<p>Name, Version, Release, Summary, License, description, install and files</p>
-<figure class="highlight makefile"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">Name:           test-dev</span></span><br><span class="line"><span class="section">Version:        %{_version}</span></span><br><span class="line"><span class="section">Release:        %{_release}</span></span><br><span class="line"><span class="section">Summary:        &lt;update details&gt;</span></span><br><span class="line"><span class="section">License:        Nokia License</span></span><br><span class="line">%description</span><br><span class="line">&lt;update your description&gt;</span><br><span class="line">%install</span><br><span class="line">make -C %{buildroot}/.. install DESTDIR=<span class="string">"%{buildroot}"</span></span><br><span class="line">%files</span><br><span class="line">%{_bindir}</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="1-文件头"><a href="#1-文件头" class="headerlink" title="1.  文件头"></a>1.  <strong>文件头</strong></h2><p>语法：<code>TagName: value</code>，比如<code>Version: 2.1.0</code>，tag名大小写<strong>不敏感</strong>。</p>
-<p>spec支持定义宏，要定义宏，使用：<code>%define testMacro 2</code>，这里定义了一个宏，名称为testMacro，值为2，要使用这个宏，使用<code>%{testMacro}</code>或者<code>%testMacro</code>。</p>
-<p>这个区域定义的 <code>Name</code>、<code>Version</code> 这些字段对应的值可以在后面通过 <code>%{name}</code>,<code>%{version}</code> 这样的方式来引用，类似于 C 语言中的宏：</p>
-<ul>
-<li><p><code>Summary</code>：用一句话概括该软件s包尽量多的信息。</p>
-</li>
-<li><p><code>Name</code>：软件包的名字，最终 rpm 软件包是用该名字与版本号（<code>Version</code>）、释出号(<code>Release</code>）及体系号来命名软件包的，后面可使用 <code>%{name}</code> 的方式引用</p>
-</li>
-<li><p><code>Version</code>：软件版本号。仅当软件包比以前有较大改变时才增加版本号，后面可使用<code>%{version}</code>引用</p>
-</li>
-<li><p><code>Release</code>：软件包释出号/发行号。一般我们对该软件包做了一些小的补丁的时候就应该把释出号加 1，后面可使用 <code>%{release}</code> 引用</p>
-</li>
-<li><p><code>Packager</code>：打包的人（一般喜欢写个人邮箱）</p>
-</li>
-<li><p><code>Vendor</code>：软件开发者的名字，发行商或打包组织的信息，例如<code>RedFlagCo,Ltd</code></p>
-</li>
-<li><p><code>License</code>：软件授权方式，通常是GPL（自由软件）或GPLv2,BSD</p>
-</li>
-<li><p><code>Copyright</code>：软件包所采用的版权规则。具体有：</p>
-<ul>
-<li><p><code>GPL（自由软件）</code>，</p>
-</li>
-<li><p><code>BSD</code>，</p>
-</li>
-<li><p><code>MIT</code>，</p>
-</li>
-<li><p><code>Public Domain（公共域）</code>，</p>
-</li>
-<li><p><code>Distributable（贡献）</code>，</p>
-</li>
-<li><p><code>commercial（商业）</code>，</p>
-</li>
-<li><p><code>Share（共享）</code></p>
-<p>  一般的开发都写 <code>GPL</code>。</p>
-</li>
-</ul>
-</li>
-<li><p><code>Group</code>：软件包所属类别</p>
-<ul>
-<li>Development/System （开发/系统）</li>
-</ul>
-</li>
-<li><p>System Environment/Daemons （系统环境/守护）</p>
-</li>
-<li><p><code>Source0</code>：源程序软件包的名字/源代码包的名字，如 <code>stardict-2.0.tar.gz</code>。可以带多个用 <code>Source1</code>、<code>Source2</code> 等源，后面也可以用 <code>%{source1}</code>、<code>%{source2}</code> 引用</p>
-</li>
-</ul>
-<figure class="highlight makefile"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line"><span class="section">Source0: %{name}-boost-%{version}.tar.gz    ← 源码包名称(可以使用URL)，可以用SourceN指定多个，如配置文件</span></span><br><span class="line"><span class="comment">#Patch0: some-bugs0.patch                    ← 如果需要打补丁，则依次填写</span></span><br><span class="line"><span class="comment">#Patch1: some-bugs1.patch                    ← 如果需要打补丁，则依次填写</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="2-依赖关系"><a href="#2-依赖关系" class="headerlink" title="2.  依赖关系"></a>2.  依赖关系</h2><p>依赖关系定义了一个包正常工作需要依赖的其他包，RPM在升级、安装和删除的时候会确保依赖关系得到满足。</p>
-<ul>
-<li><p><code>BuildRequires</code>: 制作过程中用到的软件包，构建依赖</p>
-</li>
-<li><p><code>Requires</code>: 安装时所需软件包</p>
-<ul>
-<li><code>Requires(pre)</code>: 指定不同阶段的依赖</li>
-</ul>
-</li>
-<li><p><code>BuildRoot</code>: 这个是安装或编译时使用的「虚拟目录」，打包时会用到该目录下文件，可查看安装后文件路径，例如：<code>BuildRoot: %_topdir/BUILDROOT</code>。</p>
-</li>
-<li><p><code>Prefix: %{_prefix}</code> 这个主要是为了解决今后安装 rpm 包时，并不一定把软件安装到 rpm 中打包的目录的情况。这样，必须在这里定义该标识，并在编写 <code>%install</code> 脚本的时候引用，才能实现 rpm 安装时重新指定位置的功能</p>
-</li>
-<li><p><code>BuildArch</code>: 指编译的目标处理器架构，<code>noarch</code> 标识不指定，但通常都是以 <code>/usr/lib/rpm/marcros</code> 中的内容为默认值</p>
-</li>
-<li><p><code>%description</code>：软件包详细说明，可写在多个行上。这样任何人使用 <code>rpm -qi</code>查询您的软件包时都可以看到它。您可以解释这个软件包做什么，描述任何警告或附加的配置指令，等等。</p>
-</li>
-<li><p><code>URL</code>：软件的主页</p>
-</li>
-</ul>
-<h3 id="2-1-RPM-包信息查看"><a href="#2-1-RPM-包信息查看" class="headerlink" title="2.1.  RPM 包信息查看"></a>2.1.  <strong>RPM 包信息查看</strong></h3><ul>
-<li><p>我通过命令查看了 nginx 包的信息，如下：</p>
-  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line"><span class="comment"># 查看头部信息</span></span><br><span class="line"></span><br><span class="line">$ rpm -qpi ./nginx-1.12.2-2.el7.x86_64.rpm</span><br><span class="line">Name        : nginx</span><br><span class="line">Epoch       : 1</span><br><span class="line">Version     : 1.12.2</span><br><span class="line">Release     : 2.el7</span><br><span class="line">Architecture: x86_64</span><br><span class="line">Install Date: (not installed)</span><br><span class="line">Group       : System Environment/Daemons</span><br><span class="line">Size        : 1574949</span><br><span class="line">License     : BSD</span><br><span class="line">Signature   : RSA/SHA256, Tue 06 Mar 2018 05:44:06 PM CST, Key ID 6a2faea2352c64e5</span><br><span class="line">Source RPM  : nginx-1.12.2-2.el7.src.rpm</span><br><span class="line">Build Date  : Tue 06 Mar 2018 05:27:44 PM CST</span><br><span class="line">Build Host  : buildhw-02.phx2.fedoraproject.org</span><br><span class="line">Relocations : (not relocatable)</span><br><span class="line">Packager    : Fedora Project</span><br><span class="line">Vendor      : Fedora Project</span><br><span class="line">URL         : &lt;http://nginx.org/&gt;</span><br><span class="line">Bug URL     : &lt;https://bugz.fedoraproject.org/nginx&gt;</span><br><span class="line">Summary     : A high performance web server and reverse proxy server</span><br><span class="line">Description :</span><br><span class="line">Nginx is a web server and a reverse proxy server <span class="keyword">for</span> HTTP, SMTP, POP3 and</span><br><span class="line">IMAP protocols, with a strong focus on high concurrency, performance and low</span><br><span class="line">memory usage.</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看脚本内容</span></span><br><span class="line"></span><br><span class="line">$ rpm --scripts -qp ./nginx-1.12.2-2.el7.x86_64.rpm</span><br><span class="line">postinstall scriptlet (using /bin/sh):</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$1</span> -eq 1 ] ; <span class="keyword">then</span></span><br><span class="line">        <span class="comment"># Initial installation</span></span><br><span class="line">        systemctl preset nginx.service &gt;/dev/null 2&gt;&amp;1 || :</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">preuninstall scriptlet (using /bin/sh):</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$1</span> -eq 0 ] ; <span class="keyword">then</span></span><br><span class="line">        <span class="comment"># Package removal, not upgrade</span></span><br><span class="line">        systemctl --no-reload <span class="built_in">disable</span> nginx.service &gt; /dev/null 2&gt;&amp;1 || :</span><br><span class="line">        systemctl stop nginx.service &gt; /dev/null 2&gt;&amp;1 || :</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">postuninstall scriptlet (using /bin/sh):</span><br><span class="line"></span><br><span class="line">systemctl daemon-reload &gt;/dev/null 2&gt;&amp;1 || :</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$1</span> -ge 1 ]; <span class="keyword">then</span></span><br><span class="line">    /usr/bin/nginx-upgrade &gt;/dev/null 2&gt;&amp;1 || :</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></tbody></table></figure></li>
-</ul>
-<h3 id="2-2-BuildRequires"><a href="#2-2-BuildRequires" class="headerlink" title="2.2.  BuildRequires"></a>2.2.  <strong>BuildRequires</strong></h3><p>定义构建时依赖的软件包，在构建机器编译 rpm 包时需要的辅助工具，以逗号分隔。</p>
-<p>假如，要求编译 <code>myapp</code> 时，gcc 的版本至少为 4.4.2，则可以写成 <code>gcc &gt;=4.2.2</code></p>
-<h3 id="2-3-Requires"><a href="#2-3-Requires" class="headerlink" title="2.3.  Requires"></a>2.3.  <strong>Requires</strong></h3><p>定义安装时的依赖包，该 rpm 包所依赖的软件包名称，就是指编译好的 rpm 软件在其他机器上安装时，需要依赖的其他软件包。</p>
-<p>可以用 <code>&gt;=</code> 或 <code>&lt;=</code> 表示大于或小于某一特定版本。 <code>&gt;=</code> 号两边需用空格隔开，而不同软件名称也用空格分开。</p>
-<p>格式：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">Requires:       libpng-devel &gt;= 1.0.20 zlib</span><br></pre></td></tr></tbody></table></figure>
-
-<p>其它写法例如：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">Requires: bzip2 = %{version}, bzip2-libs =%{version}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>还有例如<code>PreReq</code>、<code>Requires(pre)</code>、<code>Requires(post)</code>、<code>Requires(preun)</code>、<code>Requires(postun)</code>、<code>BuildRequires</code>等都是针对不同阶段的依赖指定。</p>
-<p>关于<code>pre</code>、<code>post</code>、<code>preun</code>、<code>postun</code>含义理解，感觉<code>post</code>有一种“完成”的意思：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line"># 安装前执行的脚本，语法和shell脚本的语法相同</span><br><span class="line">%pre</span><br><span class="line"># 安装后执行的脚本</span><br><span class="line">%post</span><br><span class="line"># 卸载前执行的脚本</span><br><span class="line">%preun</span><br><span class="line"># 卸载完成后执行的脚本</span><br><span class="line">%postun</span><br><span class="line"># 清理阶段，在制作完成后删除安装的内容</span><br></pre></td></tr></tbody></table></figure>
-
-<p>例如：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">PreReq: capability&gt;=version      #capability包必须先安装</span><br><span class="line">Conflicts:bash&gt;=2.0              #该包和所有不小于2.0的bash包有冲突</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="/assets/SPEC%20%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20210315162108826.png" alt="image-20210315162108826"></p>
-<h3 id="2-4-BuildRoot"><a href="#2-4-BuildRoot" class="headerlink" title="2.4.  BuildRoot"></a>2.4.  <strong>BuildRoot</strong></h3><p>该参数非常重要，因为在生成 rpm 的过程中，执行 <code>make install</code> 时就会把软件安装到上述的路径中，在打包的时候，同样依赖“虚拟目录”为“根目录”进行操作。后面可使用 <code>$RPM_BUILD_ROOT</code> 方式引用。</p>
-<p>考虑到多用户的环境，一般定义为：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%{_tmppath}/%{name}-%{version}-%{release}-root</span><br><span class="line"># OR</span><br><span class="line">%{_tmppath}/%{name}-%{version}-%{release}-buildroot-%(%{__id_u} -n}</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="3-预处理-prep"><a href="#3-预处理-prep" class="headerlink" title="3.  预处理 %prep"></a>3.  预处理 %prep</h2><p>这个阶段是「预处理」，通常用来执行一些解开源程序包的命令，为下一步的编译安装作准备。</p>
-<p><code>%prep</code> 和下面的 <code>%build</code>，<code>%install</code> 段一样，除了可以执行 rpm 所定义的宏命令（以<code>%</code>开头）以外，还可以执行 <code>SHELL</code> 命令，命令可以有很多行，如我们常写的 <code>tar</code> 解包命令。功能上类似于 <code>./configure</code>。</p>
-<p><code>%prep</code> 阶段进行实际的打包准备工作，它是使用节前缀 <code>%prep</code> 表示的。主要功能有：</p>
-<ul>
-<li>将文件 ( <code>SOURCES/</code>) 解压到构建目录 (<code>BUILD/</code>)</li>
-<li>应用 <code>Patch</code>（打补丁） (<code>SOURCES/ =&gt; BUILD/</code>)</li>
-<li>描述 <code>rm -rf $RPM_BUILD_ROOT</code></li>
-<li>描述或编辑本部分用到的命令到 <code>PreReq</code></li>
-<li>通过 <code>b .XXX</code> 描述补丁备份</li>
-</ul>
-<p>它一般包含 <code>%setup</code> 与 <code>%patch</code> 两个命令。<code>%setup</code> 用于将软件包打开，执行 <code>%patch</code> 可将补丁文件加入解开的源程序中。</p>
-<p>示例：</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%prep</span><br><span class="line">%setup -q                                     ← 宏的作用是解压并切换到目录</span><br><span class="line"><span class="comment">#%patch0 -p1                                  ← 如果需要打补丁，则依次写</span></span><br><span class="line"><span class="comment">#%patch1 -p1                                  ← 如果需要打补丁，则依次写</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="3-1-宏-setup"><a href="#3-1-宏-setup" class="headerlink" title="3.1.  宏 %setup"></a>3.1.  宏 <strong>%setup</strong></h3><p>这个宏解压源代码，将当前目录改为源代码解压之后产生的目录。这个宏还有一些选项可以用。例如，在解压后，<code>%setup</code> 宏假设产生的目录是 <code>%{name}-%{version}</code></p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%setup -n %{name}-%{version} #把源码包解压并放好</span><br></pre></td></tr></tbody></table></figure>
-
-<p>主要的用途就是将 <code>%sourcedir</code> 目录下的源代码解压到 <code>%builddir</code> 目录下，也就是将<code>~/rpmbuild/SOURCES</code> 里的包解压到 <code>~/rpmbuild/BUILD/%{name}-%{version}</code> 中。一般用 <code>%setup -c</code> 就可以了，但有两种情况：</p>
-<ul>
-<li>一就是同时编译多个源码包，</li>
-<li>二就是源码的 tar 包的名称与解压出来的目录不一致，此时，就需要使用 <code>n</code> 参数指定一下。</li>
-</ul>
-<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Copy</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">不加任何选项，仅将软件包打开。</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-a</span> <span class="string">切换目录前，解压指定</span> <span class="string">Source</span> <span class="string">文件，例如</span> <span class="string">`-a</span> <span class="number">0</span><span class="string">`</span> <span class="string">表示解压</span> <span class="string">`Source0`</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-n</span> <span class="string">newdir</span> <span class="string">将软件包解压在newdir目录。</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-c</span> <span class="string">解压缩之前先产生目录。</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-b</span> <span class="string">num</span> <span class="string">将第</span> <span class="string">num</span> <span class="string">个</span> <span class="string">source</span> <span class="string">文件解压缩。</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-D</span> <span class="string">解压前不删除目录</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-T</span> <span class="string">不使用default的解压缩操作。</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-T</span> <span class="string">-b</span> <span class="number">0</span> <span class="string">将第</span> <span class="number">0</span> <span class="string">个源代码文件解压缩。</span></span><br><span class="line"><span class="string">%setup</span> <span class="string">-c</span> <span class="string">-n</span> <span class="string">newdir</span> <span class="string">指定目录名称</span> <span class="string">newdir，并在此目录产生</span> <span class="string">rpm</span> <span class="string">套件。</span></span><br><span class="line"><span class="string">%patch</span> <span class="string">最简单的补丁方式，自动指定patch</span> <span class="string">level。</span></span><br><span class="line"><span class="string">%patch</span> <span class="number">0</span> <span class="string">使用第0个补丁文件，相当于%patch</span> <span class="string">?p</span> <span class="number">0</span><span class="string">。</span></span><br><span class="line"><span class="string">%patch</span> <span class="string">-s</span> <span class="string">不显示打补丁时的信息。</span></span><br><span class="line"><span class="string">%patch</span> <span class="string">-T</span> <span class="string">将所有打补丁时产生的输出文件删除</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>应该 <code>-q</code> 参数给 <code>%setup</code> 宏。这会显著减少编译日志文件的输出，尤其是源代码包会解压出一堆文件的时候。</p>
-<p>在 <code>~/rmpbuild/BUILD/%{name}-%{version}</code> 目录中进行 ，使用标准写法，会引用<code>/usr/lib/rpm/marcros</code> 中定义的参数。</p>
-<h3 id="3-2-宏-patch"><a href="#3-2-宏-patch" class="headerlink" title="3.2.  宏 %patch"></a>3.2.  宏 <strong>%patch</strong></h3><p>这个宏将头部定义的补丁应用于源代码。如果定义了多个补丁，它可以用一个数字的参数来指示应用哪个补丁文件。它也接受 <code>-b extension</code> 参数，指示 RPM 在打补丁之前，将文件备份为扩展名是 <code>extension</code> 的文件。</p>
-<p>通常补丁都会一起在源码 <code>tar.gz</code> 包中，或放到 <code>SOURCES</code> 目录下。一般参数为：</p>
-<ul>
-<li><code>%patch -p1</code> 使用前面定义的 <code>Patch</code> 补丁进行，<code>p1</code>是忽略 <code>patch</code> 的第一层目录</li>
-<li><code>%Patch2 -p1 -b xxx.patch</code>打上指定的补丁，<code>b</code>是指生成备份文件</li>
-</ul>
-<h3 id="3-3-build-阶段"><a href="#3-3-build-阶段" class="headerlink" title="3.3.  %build 阶段"></a>3.3.  <strong>%build 阶段</strong></h3><p>本段是「构建」阶段，这个阶段会在 <code>%_builddir</code> 目录下执行源码包的编译。一般是执行执行常见的 <code>configure</code> 和 <code>make</code> 操作。</p>
-<p>该阶段一般由多个 <code>make</code> 命令组成。与 <code>%prep</code> 段落一样，这些命令可以是 <code>shell</code> 命令，也可以是宏。</p>
-<p>记住两点：</p>
-<ol>
-<li><code>%build</code> 和 <code>%install</code> 的过程中，都必须把编译和安装的文件定义到“虚拟根目录” 中</li>
-<li><code>%file</code> 中必须明白，用的是相对目录</li>
-</ol>
-<p>这个阶段我们最常见只有两条指令：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%configure</span><br><span class="line">make %{?_smp_mflags} OPTIMIZE="%{optflags}"           ← 多核则并行编译</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>%configure</code> 这个不是关键字，而是 rpm 定义的标准宏命令。意思是执行源代码的<code>configure</code>配置。会自动将 <code>prefix</code> 设置成 <code>/usr</code>。</p>
-<p>这个 <code>%{?_smp_mflags} %{optflags}</code> 是什么意思呢？</p>
-<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">$ rpm --eval <span class="string">"%{?_smp_mflags}"</span></span><br><span class="line">-j4</span><br><span class="line">$ rpm --eval <span class="string">"%{optflags}"</span></span><br><span class="line">-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=<span class="number">2</span> -fexceptions -fstack-protector-strong --param=ssp-buffer-size=<span class="number">4</span> -grecord-gcc-switches   -m64 -mtune=generic</span><br></pre></td></tr></tbody></table></figure>
-
-<p>所以，上面那个命令就是 <code>make -j4</code>。问题又来了，<code>make -j4</code> 表示什么意思？</p>
-<blockquote>
-<p>都是一些优化参数</p>
+}</script><link rel="stylesheet" href="/css/my-footer.css"><link rel="stylesheet" href="/css/my-callout.css"><script src="/js/ai-summary.js"></script><link rel="stylesheet" href="/css/ai-summary.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-color: #FFFFFB;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-video"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">因受</span></a><a class="nav-page-title" href="/"><span class="site-name">SPEC 基础知识</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-video"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">SPEC 基础知识</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-22T06:40:34.000Z" title="发表于 2021-04-22 14:40:34">2021-04-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-24T06:49:57.826Z" title="更新于 2026-03-24 14:49:57">2026-03-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/Makefile/">Makefile</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="SPEC-基础知识"><a href="#SPEC-基础知识" class="headerlink" title="SPEC 基础知识"></a>SPEC 基础知识</h1><blockquote>
+<p>写 RPM 包的核心，不是命令多复杂，而是把“构建过程”和“最终安装内容”写清楚。</p>
 </blockquote>
-<ul>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9uYW54aWFvLm1lL2xpbnV4LWtlcm5lbC1ub3RlLTI2LW1ha2Utai8">Linux kernel 笔记 （26）——利用“make -j”提高编译<code>kernel</code>速度</a></li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9iYnMuY3Nkbi5uZXQvdG9waWNzLzM4MDA3Mjc3MA">CSDB-make -j4是什么意思</a></li>
-</ul>
-<h3 id="3-4-install-阶段"><a href="#3-4-install-阶段" class="headerlink" title="3.4.  %install 阶段"></a>3.4.  <strong>%install 阶段</strong></h3><p>「安装」阶段，就是执行 <code>make install</code> 命令操作。开始把软件安装到虚拟的根目录中。这个阶段会在 <code>%buildrootdir</code> 目录里建好目录结构，然后将需要打包到 rpm 软件包里的文件从 <code>%builddir</code> 里拷贝到 <code>%_buildrootdir</code> 里对应的目录里。</p>
-<p>在 <code>~/rpmbuild/BUILD/%{name}-%{version}</code> 目录中进行 <code>make install</code> 的操作。<code>%install</code> 很重要，因为如果这里的路径不对的话，则下面 <code>%file</code> 中寻找文件的时候就会失败。</p>
-<p>特别需要注意的是：<code>%install</code> 部分使用的是绝对路径，而 <code>%file</code> 部分使用则是相对路径，虽然其描述的是同一个地方。千万不要写错。</p>
-<p>将已编译的软件安装到虚拟的目录结构中，从而可以打包成一个 RPM。当用户最终用 <code>rpm -ivh name-version.rpm</code> 安装软件包时，这些文件会安装到用户系统中相应的目录里。</p>
-<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Copy</span></span><br><span class="line"><span class="string">%install</span></span><br><span class="line"><span class="string">if</span> [<span class="string">-d</span> <span class="string">%</span>{<span class="string">buildroot</span>}]<span class="string">;</span> <span class="string">then</span></span><br><span class="line">   <span class="string">rm</span> <span class="string">-rf</span> <span class="string">%{buildroot}</span>                      <span class="string">←</span> <span class="string">清空下安装目录，实际会自动清除</span></span><br><span class="line"><span class="string">fi</span></span><br><span class="line"><span class="string">make</span> <span class="string">install</span> <span class="string">DESTDIR=%{buildroot}</span>           <span class="string">←</span> <span class="string">安装到buildroot目录下</span></span><br><span class="line"><span class="string">%{__install}</span> <span class="string">-Dp</span> <span class="string">-m0755</span> <span class="string">contrib/init.d</span> <span class="string">%{buildroot}%{_initrddir}/foobar</span></span><br><span class="line"><span class="string">%{__install}</span> <span class="string">-d</span> <span class="string">%{buildroot}%{_sysconfdir}/foobar.d/</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>「翻译」一下：</p>
-<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Copy</span></span><br><span class="line"><span class="string">make</span> <span class="string">install</span> <span class="string">DESTDIR=/root/rpmbuild/BUILDROOT/%{name}-%{version}-%{release}.x86_64</span></span><br><span class="line"><span class="string">make</span> <span class="string">install</span> <span class="string">DESTDIR=/root/rpmbuild/BUILDROOT/%{name}-%{version}-%{release}.x86_64</span></span><br><span class="line"><span class="string">/usr/bin/install</span> <span class="string">-d</span> <span class="string">/root/rpmbuild/BUILDROOT/%{name}-%{version}-%{release}.x86_64/etc/foobar.d/</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>需要说明的是，这里的 <code>%install</code> 主要就是为了后面的 <code>%file</code> 服务的。所以，还可以使用常规的系统命令：</p>
-<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Copy</span></span><br><span class="line"><span class="string">install</span> <span class="string">-d</span> <span class="string">$RPM_BUILD_ROOT/</span></span><br><span class="line"><span class="string">cp</span> <span class="string">-a</span> <span class="string">*</span> <span class="string">$RPM_BUILD_ROOT/</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>其中 <code>%{buildroot}</code> 和 <code>$RPMBUILDROOT</code> 是等价的， <code>%{buildroot}</code>必须全部用小写，不然要报错。</p>
-<p>注意区分 <code>$RPM_BUILD_ROOT</code>和 <code>$RPM_BUILD_DIR</code>：</p>
-<ul>
-<li><code>$RPM_BUILD_ROOT</code> 是指开头定义的 <code>BuildRoot</code>，是 <code>%file</code> 需要的。</li>
-<li><code>$RPM_BUILD_DIR</code> 通常就是指 <code>~/rpmbuild/BUILD</code></li>
-</ul>
-<p><strong>scripts section 没必要可以不填<a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vbWljaGFlbC14aWFuZy9wLzEwNDgwODA5Lmh0bWwjMzcxNTc5OTMwMw">#</a></strong></p>
-<ul>
-<li><code>%pre</code> 安装前执行的脚本</li>
-<li><code>%post</code> 安装后执行的脚本</li>
-<li><code>%preun</code> 卸载前执行的脚本</li>
-<li><code>%postun</code> 卸载后执行的脚本</li>
-<li><code>%pretrans</code> 在事务开始时执行脚本</li>
-<li><code>%posttrans</code> 在事务结束时执行脚本</li>
-</ul>
-<p><code>%preun</code> <code>%postun</code> 的区别是什么呢？</p>
-<ul>
-<li>前者在升级的时候会执行，后者在升级 rpm 包的时候不会执行</li>
-</ul>
-<h3 id="3-5-files-阶段"><a href="#3-5-files-阶段" class="headerlink" title="3.5.  %files 阶段"></a>3.5.  <strong>%files 阶段</strong></h3><p>任何打包的文件，都需要在这个包的详细的文件列表中，如果是目录，包的所有者的全部目录都在中间, %dir 来指定空目录，可以用 %files -f /tmp/dyanmic_filelist 来指定一个文件列表。</p>
-<p>默认 %config 会替换掉配置，给原来的配置修改名字为 .rpmorig ,如果不想修改的话，就用%config(noreplace) 就会给新的配置文件名字命名为 .rpmnew.</p>
-<p>本段是文件段，主要用来说明会将 <code>%{buildroot}</code> 目录下的哪些文件和目录最终打包到rpm包里。定义软件包所包含的文件，分为三类：</p>
-<ul>
-<li>说明文档（doc）</li>
-<li>配置文件（config）</li>
-<li>执行程序</li>
-</ul>
-<p>具体一点，包含如下场景：</p>
-<p><strong>1. 一个文件没有被%config或%config(noreplace)指令配置</strong></p>
-<p>此时，不管该文件在安装完成后，有没有在本地被修改过，当升级该rpm包时，该文件会被这个新的rpm包的里的同名文件替换,（旧文件被删除）。</p>
-<p><strong>2. 一个文件被%config指令配置</strong></p>
-<p>此时包含如下情况：</p>
-<ul>
-<li>该文件在新的rpm包里相对之前的rpm有变化，且在本地没有被修改过。此时执行<code>rpm -Uvh xxxx</code>时，新rpm包里的该文件会替换旧的文件。（旧文件被删除）</li>
-<li>该文件在新的rpm包里相对之前的rpm有变化，且在本地被修改过。此时执行<code>rpm -Uvh xxxx</code>时，新rpm包里的该文件会替换掉掉旧的文件，旧的文件会被保存为xx**.rpmsave**，如/etc/redis/redis.conf.rpmsave</li>
-<li>该文件在新的rpm包里相对之前的rpm没有变化，且在本地没有被修改过。此时执行<code>rpm -Uvh xxxx</code>时，新rpm包里的该文件会替换掉旧的文件。（旧文件被删除）</li>
-<li>该文件在新的rpm包里相对之前的rpm没有变化，且在本地被修改过。此时执行<code>rpm -Uvh xxxx</code>时，新rpm包里的该文件不会覆盖旧的文件，旧文件保持不变。</li>
-</ul>
-<p><strong>3. 一个文件被%config(noreplace)指令配置</strong></p>
-<p>此时包含如下情况：</p>
-<ul>
-<li>该文件在新的rpm包里相对之前的rpm有变化，且在本地没有被修改过。此时执行<code>rpm -Uvh xxxx</code>时，新rpm包里的该文件会替换旧的文件。（旧文件被删除）</li>
-<li>该文件在新的rpm包里相对之前的rpm有变化，且在本地被修改过。此时执行<code>rpm -Uvh xxxx</code>时，旧文件保持不变，新rpm包里的该文件并重命名为xx**.rpmnew**,例如/etc/redis/redis.conf.rpmnew</li>
-<li>该文件在新的rpm包里相对之前的rpm没有变化，且在本地没有被修改过。此时执行<code>rpm -Uvh xxxx</code>时，新rpm包里的该文件会替换旧的文件。（旧文件被删除）</li>
-<li>该文件在新的rpm包里相对之前的rpm没有变化，且在本地被修改过。此时执行<code>rpm -Uvh xxxx</code>时，新rpm包里的该文件不会覆盖旧的文件，旧文件保持不变。</li>
-</ul>
-<p><a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly93d3cubm90aW9uLnNvLzQ4NDJiNjQ4ODBkNjQxN2M4OWQ1MmQ5MmIwYzRkNDg4">Config总结</a></p>
-<table>
-<thead>
-<tr>
-<th>文件标记</th>
-<th>在update包中是否更新</th>
-<th>本地磁盘没有被修改</th>
-<th>本地磁盘被修改过</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>无</td>
-<td>没更新</td>
-<td>替换(旧文件删除)</td>
-<td>替换(旧文件删除)</td>
-</tr>
-<tr>
-<td>无</td>
-<td>更新</td>
-<td>替换(旧文件删除)</td>
-<td>替换(旧文件删除)</td>
-</tr>
-<tr>
-<td>%config</td>
-<td>没更新</td>
-<td>替换(旧文件删除)</td>
-<td>保留修改过的文件，不替换</td>
-</tr>
-<tr>
-<td>%config</td>
-<td>更新</td>
-<td>替换(旧文件删除)</td>
-<td>旧文件被保存为xxx.rpmsave，新文件替换旧文件</td>
-</tr>
-<tr>
-<td>%config(noreplace)</td>
-<td>没更新</td>
-<td>替换(旧文件删除)</td>
-<td>保留修改过的文件，不替换</td>
-</tr>
-<tr>
-<td>%config(noreplace)</td>
-<td>更新</td>
-<td>替换(旧文件删除)</td>
-<td>旧文件保持不变，新文件重命名为xxx.rpmnew</td>
-</tr>
-</tbody></table>
-<p><a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly93d3cubm90aW9uLnNvL2EzNWM1MTFiOGQ5ZTQ2MGY5YTJlMTA4YTIwYTlmMzQ1">当rpm包中该文件的标记方法发生改变的两个场景：</a></p>
-<table>
-<thead>
-<tr>
-<th>文件标记</th>
-<th>在update包中是否更新</th>
-<th>本地磁盘被修改过</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>之前是%config(noreplace)，现在是%config</td>
-<td>更新</td>
-<td>文件被替换，旧文件被保存为xxx.rpmsave</td>
-</tr>
-<tr>
-<td>之前是%config，现在是%config(noreplace)</td>
-<td>更新</td>
-<td>旧文件保持不变，update包中的新文件重命名为xxx.rpmnew</td>
-</tr>
-</tbody></table>
-<p><a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly93d3cubm90aW9uLnNvL2Q5OTI4ZDU5MmI2MDRmMDk5MGY0ZmUzNDAxYTY0NWE4">常用变量</a></p>
-<table>
-<thead>
-<tr>
-<th align="left">macro</th>
-<th align="left">definition</th>
-<th align="left">comment</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><code>%{_sysconfdir}</code></td>
-<td align="left"><code>/etc</code></td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left"><code>%{_prefix}</code></td>
-<td align="left"><code>/usr</code></td>
-<td align="left">can be defined to <code>/app</code> for flatpak builds</td>
-</tr>
-<tr>
-<td align="left"><code>%{_exec_prefix}</code></td>
-<td align="left"><code>%{_prefix}</code></td>
-<td align="left">default: <code>/usr</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_includedir}</code></td>
-<td align="left"><code>%{_prefix}/include</code></td>
-<td align="left">default: <code>/usr/include</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_bindir}</code></td>
-<td align="left"><code>%{_exec_prefix}/bin</code></td>
-<td align="left">default: <code>/usr/bin</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_libdir}</code></td>
-<td align="left"><code>%{_exec_prefix}/%{_lib}</code></td>
-<td align="left">default: <code>/usr/%{_lib}</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_libexecdir}</code></td>
-<td align="left"><code>%{_exec_prefix}/libexec</code></td>
-<td align="left">default: <code>/usr/libexec</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_sbindir}</code></td>
-<td align="left"><code>%{_exec_prefix}/sbin</code></td>
-<td align="left">default: <code>/usr/sbin</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_datadir}</code></td>
-<td align="left"><code>%{_datarootdir}</code></td>
-<td align="left">default: <code>/usr/share</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_infodir}</code></td>
-<td align="left"><code>%{_datarootdir}/info</code></td>
-<td align="left">default: <code>/usr/share/info</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_mandir}</code></td>
-<td align="left"><code>%{_datarootdir}/man</code></td>
-<td align="left">default: <code>/usr/share/man</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_docdir}</code></td>
-<td align="left"><code>%{_datadir}/doc</code></td>
-<td align="left">default: <code>/usr/share/doc</code></td>
-</tr>
-<tr>
-<td align="left"><code>%{_rundir}</code></td>
-<td align="left"><code>/run</code></td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left"><code>%{_localstatedir}</code></td>
-<td align="left"><code>/var</code></td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left"><code>%{_sharedstatedir}</code></td>
-<td align="left"><code>/var/lib</code></td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left"><code>%{_lib}</code></td>
-<td align="left"><code>lib64</code></td>
-<td align="left"><code>lib</code> on 32bit platforms</td>
-</tr>
-</tbody></table>
-<p>还可定义文件存取权限，拥有者及组别。</p>
-<p>这里会在虚拟根目录下进行，千万不要写绝对路径，而应用宏或变量表示相对路径。</p>
-<p>在 <code>%files</code> 阶段的第一条命令的语法是：</p>
-<figure class="highlight makefile"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%defattr(文件权限,用户名,组名,目录权限)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>注意点：同时需要在 <code>%install</code> 中安装。</p>
-<figure class="highlight makefile"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%files</span><br><span class="line">%defattr (-,root,root,0755)                         ← 设定默认权限</span><br><span class="line">%config(noreplace) /etc/my.cnf                      ← 表明是配置文件，noplace表示替换文件</span><br><span class="line">%doc %{src_dir}/Docs/ChangeLog                      ← 表明这个是文档</span><br><span class="line">%attr(644, root, root) %{_mandir}/man8/mysqld.8*    ← 分别是权限，属主，属组</span><br><span class="line">%attr(755, root, root) %{_sbindir}/mysqld</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>%exclude</code> 列出不想打包到 rpm 中的文件。注意：如果 <code>%exclude</code> 指定的文件不存在，也会出错的。</p>
-<p>在安装 rpm 时，会将可执行的二进制文件放在 <code>/usr/bin</code> 目录下，动态库放在 <code>/usr/lib</code> 或者 <code>/usr/lib64</code> 目录下，配置文件放在 <code>/etc</code> 目录下，并且多次安装时新的配置文件不会覆盖以前已经存在的同名配置文件。</p>
-<p>关于 <code>%files</code> 阶段有两个特性：</p>
+<p>这篇文章以 <code>rpmbuild</code> 为主线，整理一份可直接落地的 SPEC 入门指南。</p>
+<h2 id="1-SPEC-文件是什么"><a href="#1-SPEC-文件是什么" class="headerlink" title="1.  SPEC 文件是什么"></a>1.  SPEC 文件是什么</h2><p>SPEC 是 RPM 的打包脚本与元数据描述文件。<br>它决定了：</p>
 <ol>
-<li><code>%{buildroot}</code> 里的所有文件都要明确被指定是否要被打包到 rpm里。什么意思呢？假如，<code>%{buildroot}</code> 目录下有 4 个目录 a、b、c和d，在 <code>%files</code> 里仅指定 a 和 b 要打包到 rpm 里，如果不把 c 和 d 用 <code>exclude</code> 声明是要报错的；</li>
-<li>如果声明了 <code>%{buildroot}</code> 里不存在的文件或者目录也会报错。</li>
+<li>包叫什么、版本是多少。</li>
+<li>构建时需要什么依赖。</li>
+<li>代码如何编译、安装到临时目录。</li>
+<li>最终哪些文件进 RPM 包。</li>
 </ol>
-<p>关于 <code>%doc</code> 宏，所有跟在这个宏后面的文件都来自 <code>%{_builddir}</code> 目录，当用户安装 rpm 时，由这个宏所指定的文件都会安装到 <code>/usr/share/doc/name-version/</code> 目录里。</p>
-<h2 id="4-clean"><a href="#4-clean" class="headerlink" title="4.  %clean"></a>4.  <strong>%clean</strong></h2><p>清理段，可以通过 <code>--clean</code> 删除 <code>BUILD</code></p>
-<p>编译完成后一些清理工作，主要包括对 <code>%{buildroot}</code> 目录的清空(这不是必须的)，通常执行诸如 <code>make clean</code> 之类的命令。</p>
-<h2 id="5-changelog"><a href="#5-changelog" class="headerlink" title="5.  %changelog"></a>5.  <strong>%changelog</strong></h2><p>本段是修改日志段，记录 spec 的修改日志段。你可以将软件的每次修改记录到这里，保存到发布的软件包中，以便查询之用。</p>
-<p>每一个修改日志都有这样一种格式：</p>
-<ul>
-<li>第一行是：<code>星期 月 日 年 修改人 电子信箱</code>。其中：星期、月份均用英文形式的前 3 个字母，用中文会报错。</li>
-<li>接下来的行写的是修改了什么地方，可写多行。一般以减号开始，便于后续的查阅。</li>
-</ul>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%changelog</span><br><span class="line">* Fri Dec 29 2012 foobar &lt;foobar@kidding.com&gt; - 1.0.0-1</span><br><span class="line">- Initial version</span><br></pre></td></tr></tbody></table></figure>
+<p>可以理解成：<code>元信息 + 构建脚本 + 打包清单</code>。</p>
+<h2 id="2-最小可用-SPEC-模板"><a href="#2-最小可用-SPEC-模板" class="headerlink" title="2.  最小可用 SPEC 模板"></a>2.  最小可用 SPEC 模板</h2><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Name:           hello</span><br><span class="line">Version:        1.0.0</span><br><span class="line">Release:        1%{?dist}</span><br><span class="line">Summary:        A simple hello package</span><br><span class="line">License:        MIT</span><br><span class="line">URL:            https://example.com/hello</span><br><span class="line">Source0:        %{name}-%{version}.tar.gz</span><br><span class="line"></span><br><span class="line">BuildRequires:  gcc, make</span><br><span class="line">Requires:       bash</span><br><span class="line"></span><br><span class="line">%description</span><br><span class="line">A simple hello package for RPM packaging demo.</span><br><span class="line"></span><br><span class="line">%prep</span><br><span class="line">%autosetup</span><br><span class="line"></span><br><span class="line">%build</span><br><span class="line">%configure</span><br><span class="line">make %{?_smp_mflags}</span><br><span class="line"></span><br><span class="line">%install</span><br><span class="line">rm -rf %{buildroot}</span><br><span class="line">make install DESTDIR=%{buildroot}</span><br><span class="line"></span><br><span class="line">%files</span><br><span class="line">%license LICENSE</span><br><span class="line">%doc README.md</span><br><span class="line">%{_bindir}/hello</span><br><span class="line"></span><br><span class="line">%changelog</span><br><span class="line">* Tue Mar 24 2026 Your Name &lt;you@example.com&gt; - 1.0.0-1</span><br><span class="line">- Initial package</span><br></pre></td></tr></tbody></table></figure>
 
-<h2 id="6-宏"><a href="#6-宏" class="headerlink" title="6.  宏"></a>6.  <strong>宏</strong></h2><p>在定义文件的安装路径时，通常会使用类似 <code>%_sharedstatedir</code> 的宏，这些宏一般会在 <code>/usr/lib/rpm/macros</code> 中定义。关于宏的语法，可以查看 <a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9ycG0ub3JnL3VzZXJfZG9jL21hY3Jvcy5odG1s">Macro syntax</a></p>
-<p>RPM 内建宏定义在 <code>/usr/lib/rpm/redhat/macros</code> 文件中，这些宏基本上定义了目录路径或体系结构等等；同时也包含了一组用于调试 spec 文件的宏。</p>
-<p>所有宏都可以在 <code>/usr/lib/rpm/macros</code> 找到，附录一些常见的宏：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%{_sysconfdir}        /etc</span><br><span class="line">%{_prefix}            /usr</span><br><span class="line">%{_exec_prefix}       %{_prefix}</span><br><span class="line">%{_bindir}            %{_exec_prefix}/bin</span><br><span class="line">%{_lib}               lib (lib64 on 64bit systems)</span><br><span class="line">%{_libdir}            %{_exec_prefix}/%{_lib}</span><br><span class="line">%{_libexecdir}        %{_exec_prefix}/libexec</span><br><span class="line">%{_sbindir}           %{_exec_prefix}/sbin</span><br><span class="line">%{_sharedstatedir}    /var/lib</span><br><span class="line">%{_datadir}           %{_prefix}/share</span><br><span class="line">%{_includedir}        %{_prefix}/include</span><br><span class="line">%{_oldincludedir}     /usr/include</span><br><span class="line">%{_infodir}           /usr/share/info</span><br><span class="line">%{_mandir}            /usr/share/man</span><br><span class="line">%{_localstatedir}     /var</span><br><span class="line">%{_initddir}          %{_sysconfdir}/rc.d/init.d</span><br><span class="line">%{_topdir}            %{getenv:HOME}/rpmbuild</span><br><span class="line">%{_builddir}          %{_topdir}/BUILD</span><br><span class="line">%{_rpmdir}            %{_topdir}/RPMS</span><br><span class="line">%{_sourcedir}         %{_topdir}/SOURCES</span><br><span class="line">%{_specdir}           %{_topdir}/SPECS</span><br><span class="line">%{_srcrpmdir}         %{_topdir}/SRPMS</span><br><span class="line">%{_buildrootdir}      %{_topdir}/BUILDROOT</span><br><span class="line">%{_var}               /var</span><br><span class="line">%{_tmppath}           %{_var}/tmp</span><br><span class="line">%{_usr}               /usr</span><br><span class="line">%{_usrsrc}            %{_usr}/src</span><br><span class="line">%{_docdir}            %{_datadir}/doc</span><br><span class="line">%{buildroot}          %{_buildrootdir}/%{name}-%{version}-%{release}.%{_arch}</span><br><span class="line">$RPM_BUILD_ROOT       %{buildroot}</span><br></pre></td></tr></tbody></table></figure>
+<p>如果你刚接触 SPEC，先把这个模板跑通，再做高级改造。</p>
+<h2 id="3-头部字段（Header）"><a href="#3-头部字段（Header）" class="headerlink" title="3.  头部字段（Header）"></a>3.  头部字段（Header）</h2><p>常见核心字段：</p>
+<ol>
+<li><code>Name</code>：包名。</li>
+<li><code>Version</code>：上游软件版本。</li>
+<li><code>Release</code>：打包发布号（同一版本改 SPEC 通常加这个）。</li>
+<li><code>Summary</code>：一句话描述。</li>
+<li><code>License</code>：许可证。</li>
+<li><code>Source0</code>：源码包。</li>
+<li><code>BuildRequires</code>：构建依赖。</li>
+<li><code>Requires</code>：运行依赖。</li>
+</ol>
+<p>说明：</p>
+<ol>
+<li><code>Version</code> 与 <code>Release</code> 组合决定升级比较顺序。</li>
+<li><code>Release</code> 常用 <code>1%{?dist}</code>，便于不同发行版区分。</li>
+</ol>
+<h2 id="4-各阶段脚本做什么"><a href="#4-各阶段脚本做什么" class="headerlink" title="4.  各阶段脚本做什么"></a>4.  各阶段脚本做什么</h2><h3 id="4-1-prep"><a href="#4-1-prep" class="headerlink" title="4.1.  %prep"></a>4.1.  <code>%prep</code></h3><p>准备源码，解压、打补丁。</p>
+<ol>
+<li>现代写法优先 <code>%autosetup</code>。</li>
+<li>需要补丁时在头部加 <code>Patch0</code>、<code>Patch1</code>，再由 <code>%autosetup</code> 或 <code>%patch</code> 应用。</li>
+</ol>
+<h3 id="4-2-build"><a href="#4-2-build" class="headerlink" title="4.2.  %build"></a>4.2.  <code>%build</code></h3><p>执行编译，常见是：</p>
+<ol>
+<li><code>./configure</code> / <code>%configure</code></li>
+<li><code>make %{?_smp_mflags}</code></li>
+</ol>
+<p><code>%{?_smp_mflags}</code> 通常会展开成 <code>-jN</code>，用于并行编译。</p>
+<h3 id="4-3-install"><a href="#4-3-install" class="headerlink" title="4.3.  %install"></a>4.3.  <code>%install</code></h3><p>把产物安装到 <strong>虚拟根目录</strong> <code>%{buildroot}</code>，不是直接装系统。</p>
+<p>典型模式：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%install</span><br><span class="line">rm -rf %{buildroot}</span><br><span class="line">make install DESTDIR=%{buildroot}</span><br></pre></td></tr></tbody></table></figure>
 
-<p>利用 rpmbuild 构建 rpm 安装包时，通过命令 <code>rpm --showrc|grep prefix</code> 查看。</p>
-<p>通过 <code>rpm --eval "%{macro}"</code> 来查看具体对应路径。</p>
-<p>比如我们要查看 <code>%{_bindir}</code> 的路径，就可以使用命令 <code>rpm --eval "%{ _bindir}"</code> 来查看。</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">%{_topdir}            %{getenv:HOME}/rpmbuild</span><br><span class="line">%{_builddir}          %{_topdir}/BUILD</span><br><span class="line">%{_rpmdir}            %{_topdir}/RPMS</span><br><span class="line">%{_sourcedir}         %{_topdir}/SOURCES</span><br><span class="line">%{_specdir}           %{_topdir}/SPECS</span><br><span class="line">%{_srcrpmdir}         %{_topdir}/SRPMS</span><br><span class="line">%{_buildrootdir}      %{_topdir}/BUILDROOT</span><br><span class="line"></span><br><span class="line">Note: On releases older than Fedora 10 (and EPEL), %{_buildrootdir} does not exist.</span><br><span class="line">Build flags macros</span><br><span class="line"></span><br><span class="line">%{_global_cflags}     -O2 -g -pipe</span><br><span class="line">%{_optflags}          %{__global_cflags} -m32 -march=i386 -mtune=pentium4 # if redhat-rpm-config is installed</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="4-4-files"><a href="#4-4-files" class="headerlink" title="4.4.  %files"></a>4.4.  <code>%files</code></h3><p>声明“最终打包进 RPM 的文件”。</p>
+<p>注意：</p>
+<ol>
+<li>这里写的是最终系统路径（如 <code>%{_bindir}/hello</code>）。</li>
+<li><code>%install</code> 里必须先把这些文件放进 <code>%{buildroot}</code> 对应位置。</li>
+</ol>
+<h2 id="5-files-常用标记"><a href="#5-files-常用标记" class="headerlink" title="5.  %files 常用标记"></a>5.  <code>%files</code> 常用标记</h2><ol>
+<li><code>%doc</code>：文档文件。</li>
+<li><code>%license</code>：许可证文件。</li>
+<li><code>%config</code>：配置文件（升级可能覆盖，视场景）。</li>
+<li><code>%config(noreplace)</code>：配置文件升级时尽量不覆盖本地修改，生成 <code>.rpmnew</code>。</li>
+<li><code>%dir</code>：声明目录。</li>
+<li><code>%attr(mode,user,group)</code>：指定权限和属主属组。</li>
+</ol>
+<p>一个常见示例：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%files</span><br><span class="line">%license LICENSE</span><br><span class="line">%doc README.md</span><br><span class="line">%config(noreplace) %{_sysconfdir}/hello/hello.conf</span><br><span class="line">%{_bindir}/hello</span><br><span class="line">%{_unitdir}/hello.service</span><br></pre></td></tr></tbody></table></figure>
 
-<h2 id="7-变量"><a href="#7-变量" class="headerlink" title="7.  变量"></a>7.  <strong>变量</strong></h2><p><code>define</code> 定义的变量类似于局部变量，只在 <code>%{!?foo: ... }</code> 区间有效，不过 SPEC 并不会自动清除该变量，只有再次遇到 <code>%{}</code> 时才会清除</p>
-<h3 id="7-1-define-vs-global"><a href="#7-1-define-vs-global" class="headerlink" title="7.1.  define vs. global"></a>7.1.  <strong>define vs. global</strong></h3><p>两者都可以用来进行变量定义，不过在细节上有些许差别，简单列举如下：</p>
-<ul>
-<li><code>define</code> 用来定义宏，<code>global</code> 用来定义变量；</li>
-<li>如果定义带参数的宏 (类似于函数)，必须要使用 <code>define</code>；</li>
-<li>在 <code>%{}</code> 内部，必须要使用 <code>global</code> 而非 <code>define</code>；</li>
-<li><code>define</code> 在使用时计算其值，而 <code>global</code> 则在定义时就计算其值；</li>
-</ul>
-<p>可以简单参考如下的示例。</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">#--- %prep之前的参数是必须要有的</span><br><span class="line">Name:           mysql</span><br><span class="line">Version:        5.7.17</span><br><span class="line">Release:        1%{?dist}</span><br><span class="line">Summary:        MySQL from FooBar.</span><br><span class="line">License:        GPLv2+ and BSD</span><br><span class="line"></span><br><span class="line">%description</span><br><span class="line">It is a MySQL from FooBar.</span><br><span class="line"></span><br><span class="line">%prep</span><br><span class="line">#--- 带参数时，必须使用%define定义</span><br><span class="line">%define myecho() echo %1 %2</span><br><span class="line">%{!?bar: %define bar defined}</span><br><span class="line"></span><br><span class="line">echo 1: %{bar}</span><br><span class="line">%{myecho 2: %{bar}}</span><br><span class="line">echo 3: %{bar}</span><br><span class="line"></span><br><span class="line"># 如下是输出内容</span><br><span class="line">#1: defined</span><br><span class="line">#2: defined</span><br><span class="line">#3: %{bar}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="6-脚本钩子（可选）"><a href="#6-脚本钩子（可选）" class="headerlink" title="6.  脚本钩子（可选）"></a>6.  脚本钩子（可选）</h2><p>需要安装/卸载动作时可用：</p>
+<ol>
+<li><code>%pre</code>：安装前。</li>
+<li><code>%post</code>：安装后。</li>
+<li><code>%preun</code>：卸载前。</li>
+<li><code>%postun</code>：卸载后。</li>
+<li><code>%posttrans</code>：事务完成后。</li>
+</ol>
+<p>示例（systemd 服务）：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">%post</span><br><span class="line">%systemd_post hello.service</span><br><span class="line"></span><br><span class="line">%preun</span><br><span class="line">%systemd_preun hello.service</span><br><span class="line"></span><br><span class="line">%postun</span><br><span class="line">%systemd_postun_with_restart hello.service</span><br></pre></td></tr></tbody></table></figure>
 
-<p>3 的输出是不符合预期的，可以将 <code>%define</code> 修改为 <code>global</code> 即可</p>
-<h3 id="7-2-dist-表示什么含义？"><a href="#7-2-dist-表示什么含义？" class="headerlink" title="7.2.  %{?dist} 表示什么含义？"></a>7.2.  <strong>%{?dist} 表示什么含义？</strong></h3><p>不加问号，如果 <code>dist</code> 有定义，那么就会用定义的值替换，否则就会保 <code>%{dist}</code>;加问好，如果 <code>dist</code> 有定义，那么也是会用定义的值替换，否则就直接移除这个tag <code>%{?dist}</code></p>
-<p>举例：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Copy</span><br><span class="line">$ rpm -E 'foo:%{foo}'$'\\n''bar:%{?bar}'</span><br><span class="line">foo:%{foo}</span><br><span class="line">bar:</span><br><span class="line"></span><br><span class="line">$ rpm -D'foo foov' -E 'foo:%{foo}'$'\\n''bar:%{?bar}'</span><br><span class="line">foo:foov</span><br><span class="line">bar:</span><br><span class="line"></span><br><span class="line">$ rpm -D'foo foov' -D'bar barv' -E 'foo:%{foo}'$'\\n''bar:%{?bar}'</span><br><span class="line">foo:foov</span><br><span class="line">bar:barv</span><br></pre></td></tr></tbody></table></figure><!-- hexo injector body_end start --> <script data-pjax="">if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+<p>没必要时不要加脚本钩子，保持简单。</p>
+<h2 id="7-宏与路径（高频）"><a href="#7-宏与路径（高频）" class="headerlink" title="7.  宏与路径（高频）"></a>7.  宏与路径（高频）</h2><p>常用宏：</p>
+<ol>
+<li><code>%{_bindir}</code>：<code>/usr/bin</code></li>
+<li><code>%{_sbindir}</code>：<code>/usr/sbin</code></li>
+<li><code>%{_libdir}</code>：<code>/usr/lib64</code>（64 位常见）</li>
+<li><code>%{_sysconfdir}</code>：<code>/etc</code></li>
+<li><code>%{_unitdir}</code>：systemd unit 目录（发行版相关）</li>
+<li><code>%{buildroot}</code>：打包虚拟根</li>
+<li><code>%{?_smp_mflags}</code>：并行编译参数</li>
+</ol>
+<p>查看宏值：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpm --<span class="built_in">eval</span> <span class="string">'%{_bindir}'</span></span><br><span class="line">rpm --<span class="built_in">eval</span> <span class="string">'%{buildroot}'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="8-BuildRequires-与-Requires-的区别"><a href="#8-BuildRequires-与-Requires-的区别" class="headerlink" title="8.  BuildRequires 与 Requires 的区别"></a>8.  BuildRequires 与 Requires 的区别</h2><ol>
+<li><code>BuildRequires</code>：只在构建机需要。</li>
+<li><code>Requires</code>：用户安装包时需要。</li>
+</ol>
+<p>典型误区：</p>
+<ol>
+<li>把构建工具误写进 <code>Requires</code>。</li>
+<li>漏掉运行时依赖，导致安装成功但运行失败。</li>
+</ol>
+<h2 id="9-从-0-到-1-的打包流程"><a href="#9-从-0-到-1-的打包流程" class="headerlink" title="9.  从 0 到 1 的打包流程"></a>9.  从 0 到 1 的打包流程</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1) 准备目录（通常是 ~/rpmbuild）</span></span><br><span class="line">rpmdev-setuptree</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2) 放源码和 spec</span></span><br><span class="line"><span class="comment"># SOURCES: hello-1.0.0.tar.gz</span></span><br><span class="line"><span class="comment"># SPECS:   hello.spec</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3) 构建二进制包和源码包</span></span><br><span class="line">rpmbuild -ba ~/rpmbuild/SPECS/hello.spec</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4) 查看产物</span></span><br><span class="line"><span class="built_in">ls</span> ~/rpmbuild/RPMS</span><br><span class="line"><span class="built_in">ls</span> ~/rpmbuild/SRPMS</span><br></pre></td></tr></tbody></table></figure>
+
+<p>验证：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rpm -qpi xxx.rpm      <span class="comment"># 看包头信息</span></span><br><span class="line">rpm -qpl xxx.rpm      <span class="comment"># 看文件列表</span></span><br><span class="line">rpm --scripts -qp xxx.rpm  <span class="comment"># 看脚本钩子</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="10-常见报错与排查"><a href="#10-常见报错与排查" class="headerlink" title="10.  常见报错与排查"></a>10.  常见报错与排查</h2><ol>
+<li><code>File not found by glob</code>：<code>%files</code> 写了不存在的路径，先检查 <code>%install</code> 是否真的安装到 <code>%{buildroot}</code>。</li>
+<li><code>Installed (but unpackaged) file(s) found</code>：有文件进了 <code>%{buildroot}</code> 但没在 <code>%files</code> 声明。</li>
+<li>依赖报错：区分是 <code>BuildRequires</code> 缺失还是 <code>Requires</code> 缺失。</li>
+<li>宏路径不一致：用 <code>rpm --eval</code> 先确认宏值，再写路径。</li>
+</ol>
+<h2 id="11-我的建议"><a href="#11-我的建议" class="headerlink" title="11.  我的建议"></a>11.  我的建议</h2><ol>
+<li>先保证“能稳定构建 + 文件列表准确”，再做宏优化。</li>
+<li><code>%install</code> 和 <code>%files</code> 要一一对应，这是 SPEC 最容易踩坑的地方。</li>
+<li>先写最小模板跑通，再逐步引入 <code>%config</code>、脚本钩子和子包拆分。</li>
+</ol>
+<p>当你能稳定回答“这个文件为什么会进包、为什么会装到这个目录”，SPEC 就算入门了。</p>
+<!-- hexo injector body_end start --> <script data-pjax="">if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
     var parent = document.getElementById('recent-posts');
     var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/常用工具/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🛠️ 常用工具 (22)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/操作系统/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🖥️ 操作系统 (10)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/百味人生/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍵 百味人生 (4)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/知识积累/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">📚 知识积累 (5)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/算法分析/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🧠 算法分析 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/系统架构/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🏗️ 系统架构 (2)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/编程语法/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">👩‍💻 编程语法 (19)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/人工智能/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🤖 人工智能 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item" style="visibility: hidden"></div><a class="magnet_link_more"  href="https://blog.phoenine.top/categories" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
     console.log('已挂载magnet')
@@ -588,7 +282,7 @@
     <style>#catalog_magnet .magnet_item:nth-child(n+7){display:none !important;}</style><script data-pjax="">
   function butterfly_swiper_injector_config(){
     var parent_div_git = document.getElementById('recent-posts');
-    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/b53f2424/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105084433789.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-11-05</span><a class="blog-slider__title" href="posts/b53f2424/" alt="">使用Midscene实现AI自动化测试</a><div class="blog-slider__text">Midscene.js是一款AI驱动的UI自动化工具，支持自然语言操作与视觉+文本识别，可与Playwright、Chrome插件集成，兼容多模型，适合快速迭代的测试场景。</div><a class="blog-slider__button" href="posts/b53f2424/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/13bfb908/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/image-20250920185703323.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-09-20</span><a class="blog-slider__title" href="posts/13bfb908/" alt="">使用「Notion - 记忆闪卡 」模版高效学习</a><div class="blog-slider__text">Notion记忆闪卡模版将费曼学习法与间隔重复结合，卡片要求用通俗语言讲解，自动生成复习时间，三种学习状态（初学、巩固、熟练）清晰可见。支持技术、工具、职场等多领域知识，内置工具墙与书摘区，帮助学习者系统化记忆、快速复习，提升学习效率。</div><a class="blog-slider__button" href="posts/13bfb908/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/aed033e2/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105145726546.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-09-20</span><a class="blog-slider__title" href="posts/aed033e2/" alt="">像玩 RPG 一样坚持习惯-Notion积分打卡v3.0</a><div class="blog-slider__text">Notion积分打卡3.0将习惯养成游戏化，首页展示修行之路、成长曲线成长每日；任务分主线，完成可解锁称号、徽章；积分可兑换奖励商城物品，变化直观；系统提供称号，让坚持像打RPG一样有剧情与奖励。</div><a class="blog-slider__button" href="posts/aed033e2/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/fa332fd9/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028155325008.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-05-20</span><a class="blog-slider__title" href="posts/fa332fd9/" alt="">OpenManus 核心代码详细分析</a><div class="blog-slider__text">本文档提供了对 OpenManus 项目核心代码文件的深入分析，包括代码结构、算法逻辑、设计思想和实现细节。通过对关键源码的解读，帮助开发者更好地理解 OpenManus 的内部工作机制。</div><a class="blog-slider__button" href="posts/fa332fd9/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/26a8de56/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028174209087.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/26a8de56/" alt="">Linux中的pushd和popd</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/26a8de56/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/d81fecfe/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028155922735.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2023-10-09</span><a class="blog-slider__title" href="posts/d81fecfe/" alt="">如何搞定图床问题 PicGo + 腾讯云COS</a><div class="blog-slider__text">本文介绍如何使用PicGo与腾讯云COS搭建图床，帮助公众号作者高效管理图片，避免手动上传和链接错误。并提供截图，解决权限和链接格式问题，适合发布图文的作者，并解决常见问题。</div><a class="blog-slider__button" href="posts/d81fecfe/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/28d79a75/" alt=""><img width="48" height="48" src="img/cover/line.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/28d79a75/" alt="">Helm Introduction</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/28d79a75/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/1b782ceb/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105154427143.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/1b782ceb/" alt="">探索Notion中节省时间的神器 - Button</a><div class="blog-slider__text">Notion按钮可插入块、添加页面、编辑页面、打开页面等功能，帮助快速完成重复任务、管理项目，提升效率，成为节省时间的实用工具，高效使用。</div><a class="blog-slider__button" href="posts/1b782ceb/" alt="">详情   </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/b53f2424/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105084433789.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-11-05</span><a class="blog-slider__title" href="posts/b53f2424/" alt="">使用Midscene实现AI自动化测试</a><div class="blog-slider__text">Midscene.js是一款AI驱动的UI自动化工具，支持自然语言操作与视觉+文本识别，可与Playwright、Chrome插件集成，兼容多模型，适合快速迭代的测试场景。</div><a class="blog-slider__button" href="posts/b53f2424/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/aed033e2/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105145726546.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-09-20</span><a class="blog-slider__title" href="posts/aed033e2/" alt="">像玩 RPG 一样坚持习惯-Notion积分打卡v3.0</a><div class="blog-slider__text">Notion积分打卡3.0将习惯养成游戏化，首页展示修行之路、成长曲线成长每日；任务分主线，完成可解锁称号、徽章；积分可兑换奖励商城物品，变化直观；系统提供称号，让坚持像打RPG一样有剧情与奖励。</div><a class="blog-slider__button" href="posts/aed033e2/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/13bfb908/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/image-20250920185703323.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-09-20</span><a class="blog-slider__title" href="posts/13bfb908/" alt="">使用「Notion - 记忆闪卡 」模版高效学习</a><div class="blog-slider__text">Notion记忆闪卡模版将费曼学习法与间隔重复结合，卡片要求用通俗语言讲解，自动生成复习时间，三种学习状态（初学、巩固、熟练）清晰可见。支持技术、工具、职场等多领域知识，内置工具墙与书摘区，帮助学习者系统化记忆、快速复习，提升学习效率。</div><a class="blog-slider__button" href="posts/13bfb908/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/fa332fd9/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028155325008.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-05-20</span><a class="blog-slider__title" href="posts/fa332fd9/" alt="">OpenManus 核心代码详细分析</a><div class="blog-slider__text">本文档提供了对 OpenManus 项目核心代码文件的深入分析，包括代码结构、算法逻辑、设计思想和实现细节。通过对关键源码的解读，帮助开发者更好地理解 OpenManus 的内部工作机制。</div><a class="blog-slider__button" href="posts/fa332fd9/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/26a8de56/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028174209087.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/26a8de56/" alt="">Linux中的pushd和popd</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/26a8de56/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/d81fecfe/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028155922735.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2023-10-09</span><a class="blog-slider__title" href="posts/d81fecfe/" alt="">如何搞定图床问题 PicGo + 腾讯云COS</a><div class="blog-slider__text">本文介绍如何使用PicGo与腾讯云COS搭建图床，帮助公众号作者高效管理图片，避免手动上传和链接错误。并提供截图，解决权限和链接格式问题，适合发布图文的作者，并解决常见问题。</div><a class="blog-slider__button" href="posts/d81fecfe/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/28d79a75/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/202603230025669.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/28d79a75/" alt="">Helm Introduction</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/28d79a75/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/1b782ceb/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105154427143.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/1b782ceb/" alt="">探索Notion中节省时间的神器 - Button</a><div class="blog-slider__text">Notion按钮可插入块、添加页面、编辑页面、打开页面等功能，帮助快速完成重复任务、管理项目，提升效率，成为节省时间的实用工具，高效使用。</div><a class="blog-slider__button" href="posts/1b782ceb/" alt="">详情   </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
     console.log('已挂载butterfly_swiper')
     parent_div_git.insertAdjacentHTML("afterbegin",item_html)
     }
@@ -609,7 +303,7 @@
   else if (epage === cpage){
     butterfly_swiper_injector_config();
   }
-  </script><script defer="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.js"></script><script defer="" data-pjax="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper_init.js"></script><!-- hexo injector body_end end --></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top/posts/745d3c42/">https://blog.phoenine.top/posts/745d3c42/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.phoenine.top" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/cover/shark.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer=""></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/bc91626e/" title="Jupyter notebooks单元测试"><img class="cover" src="/img/cover/wolf.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Jupyter notebooks单元测试</div></div><div class="info-2"><div class="info-item-1">在 Jupyter notebooks 中进行单元测试我们都知道开发过程中应该编写单元测试，实际上我们中的许多人都这样做。对于生产代码，库代码，或者归因于测试驱动的开发过程，这一点尤其正确。 通常，Jupyter notebooks用于数据探究，因此用户可能不选择（或不需要）为其代码编写单元测试，因为当他们在Jupyter中运行时，通常会查看每个单元格的结果，然后得出结论，之后继续。但是，以我的经验来看，Jupyter通常会发生的情况是，Jupyter中的代码很快就超出了数据探究的范围，对于进一步的工作很有用。或者，Jupyter本身可能会产生有用的结果，需要定期运行。也许需要维护代码并将其与外部数据源集成。然后，确保可以测试和验证notebook中的代码就变得很重要。 在这种情况下，我们有哪些选择对Jupyter代码来进行单元测试？在本文中，我将介绍在Jupyter notebooks中对Python代码进行单元测试的几个选项。 也许只是不做？ Jupyter notebook 单元测试的第一个选择是根本不做。这样，我并不是说不要对代码进行单元测试，而是将其从notebook ...</div></div></div></a><a class="pagination-related" href="/posts/409dc345/" title="SPEC file writing - Best Practices"><img class="cover" src="/img/cover/shark.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">SPEC file writing - Best Practices</div></div><div class="info-2"><div class="info-item-1">SPEC file writing - Best Practices1.  Do not leave empty tagsAlways fill “Summary”, “description”, etc tags. Never left things blank.They will be displayed when queried using “rpm -qi “.  2.  SPEC Directives values aligned to same columnIt is easier to read SPEC files if values of directives are aligned to same column like this: sample spec 123456789101112131415161718Name:           RUOAM-CommonLibraryVersion:        %{_version}Release:        %{_release}Summary:        Common libraryGroup:  ...</div></div></div></a></nav><hr class="custom-hr"><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Phoenine</div><div class="author-info-description">中年危机 | 码字困难户</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SPEC-%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">SPEC 文件基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%96%87%E4%BB%B6%E5%A4%B4"><span class="toc-text">1.  文件头</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="toc-text">2.  依赖关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-RPM-%E5%8C%85%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B"><span class="toc-text">2.1.  RPM 包信息查看</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-BuildRequires"><span class="toc-text">2.2.  BuildRequires</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Requires"><span class="toc-text">2.3.  Requires</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-BuildRoot"><span class="toc-text">2.4.  BuildRoot</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%A2%84%E5%A4%84%E7%90%86-prep"><span class="toc-text">3.  预处理 %prep</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%AE%8F-setup"><span class="toc-text">3.1.  宏 %setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%AE%8F-patch"><span class="toc-text">3.2.  宏 %patch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-build-%E9%98%B6%E6%AE%B5"><span class="toc-text">3.3.  %build 阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-install-%E9%98%B6%E6%AE%B5"><span class="toc-text">3.4.  %install 阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-files-%E9%98%B6%E6%AE%B5"><span class="toc-text">3.5.  %files 阶段</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-clean"><span class="toc-text">4.  %clean</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-changelog"><span class="toc-text">5.  %changelog</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%AE%8F"><span class="toc-text">6.  宏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%8F%98%E9%87%8F"><span class="toc-text">7.  变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-define-vs-global"><span class="toc-text">7.1.  define vs. global</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-dist-%E8%A1%A8%E7%A4%BA%E4%BB%80%E4%B9%88%E5%90%AB%E4%B9%89%EF%BC%9F"><span class="toc-text">7.2.  %{?dist} 表示什么含义？</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/56fdbc0b/" title="从Notion迁移到Obsidian后，我如何用Codex Skills重构知识管理">从Notion迁移到Obsidian后，我如何用Codex Skills重构知识管理</a><time datetime="2026-03-21T02:22:17.564Z" title="发表于 2026-03-21 10:22:17">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b53f2424/" title="使用Midscene实现AI自动化测试">使用Midscene实现AI自动化测试</a><time datetime="2025-11-05T00:42:43.860Z" title="发表于 2025-11-05 08:42:43">2025-11-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/13bfb908/" title="使用「Notion - 记忆闪卡 」模版高效学习">使用「Notion - 记忆闪卡 」模版高效学习</a><time datetime="2025-09-20T10:55:26.809Z" title="发表于 2025-09-20 18:55:26">2025-09-20</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="my-footer-svg-div">
+  </script><script defer="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.js"></script><script defer="" data-pjax="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper_init.js"></script><!-- hexo injector body_end end --></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top/posts/745d3c42/">https://blog.phoenine.top/posts/745d3c42/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.phoenine.top" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/automake%E5%9F%BA%E7%A1%80-1774334936068.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer=""></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/bc91626e/" title="Jupyter notebooks单元测试"><img class="cover" src="/img/cover/wolf.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Jupyter notebooks单元测试</div></div><div class="info-2"><div class="info-item-1">在 Jupyter notebooks 中进行单元测试我们都知道开发过程中应该编写单元测试，实际上我们中的许多人都这样做。对于生产代码，库代码，或者归因于测试驱动的开发过程，这一点尤其正确。 通常，Jupyter notebooks用于数据探究，因此用户可能不选择（或不需要）为其代码编写单元测试，因为当他们在Jupyter中运行时，通常会查看每个单元格的结果，然后得出结论，之后继续。但是，以我的经验来看，Jupyter通常会发生的情况是，Jupyter中的代码很快就超出了数据探究的范围，对于进一步的工作很有用。或者，Jupyter本身可能会产生有用的结果，需要定期运行。也许需要维护代码并将其与外部数据源集成。然后，确保可以测试和验证notebook中的代码就变得很重要。 在这种情况下，我们有哪些选择对Jupyter代码来进行单元测试？在本文中，我将介绍在Jupyter notebooks中对Python代码进行单元测试的几个选项。 也许只是不做？ Jupyter notebook 单元测试的第一个选择是根本不做。这样，我并不是说不要对代码进行单元测试，而是将其从notebook ...</div></div></div></a><a class="pagination-related" href="/posts/409dc345/" title="SPEC file writing - Best Practices"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/automake%E5%9F%BA%E7%A1%80-1774334936068.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">SPEC file writing - Best Practices</div></div><div class="info-2"><div class="info-item-1">SPEC file writing - Best Practices这篇是 SPEC 系列的“最佳实践清单”。  目标不是再讲语法，而是减少线上踩坑、提升包的可维护性。 1.  头部字段不要留空Summary、License、URL、%description 等信息必须完整。这些信息会直接体现在 rpm -qi 输出里，也是排障和审计的第一入口。 2.  头部字段对齐，降低阅读成本推荐统一列宽对齐： 123456Name:           mydaemonVersion:        1.2.0Release:        1%{?dist}Summary:        My daemon serviceLicense:        MITURL:            https://example.com/mydaemon  团队协作里，这种“无功能变化但提升可读性”的规范非常值。 3.  分段清晰，段内紧凑建议：  段与段之间空一行。 段内不要插入无意义空行。 注释聚焦“为什么”，不要重复“做了什么”。  4.  能用宏就不要写死路径避免硬编码 /usr、/et...</div></div></div></a></nav><hr class="custom-hr"><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Phoenine</div><div class="author-info-description">中年危机 | 码字困难户</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SPEC-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">SPEC 基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-SPEC-%E6%96%87%E4%BB%B6%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">1.  SPEC 文件是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9C%80%E5%B0%8F%E5%8F%AF%E7%94%A8-SPEC-%E6%A8%A1%E6%9D%BF"><span class="toc-text">2.  最小可用 SPEC 模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%EF%BC%88Header%EF%BC%89"><span class="toc-text">3.  头部字段（Header）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%90%84%E9%98%B6%E6%AE%B5%E8%84%9A%E6%9C%AC%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-text">4.  各阶段脚本做什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-prep"><span class="toc-text">4.1.  %prep</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-build"><span class="toc-text">4.2.  %build</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-install"><span class="toc-text">4.3.  %install</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-files"><span class="toc-text">4.4.  %files</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-files-%E5%B8%B8%E7%94%A8%E6%A0%87%E8%AE%B0"><span class="toc-text">5.  %files 常用标记</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%84%9A%E6%9C%AC%E9%92%A9%E5%AD%90%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="toc-text">6.  脚本钩子（可选）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%AE%8F%E4%B8%8E%E8%B7%AF%E5%BE%84%EF%BC%88%E9%AB%98%E9%A2%91%EF%BC%89"><span class="toc-text">7.  宏与路径（高频）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-BuildRequires-%E4%B8%8E-Requires-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">8.  BuildRequires 与 Requires 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E4%BB%8E-0-%E5%88%B0-1-%E7%9A%84%E6%89%93%E5%8C%85%E6%B5%81%E7%A8%8B"><span class="toc-text">9.  从 0 到 1 的打包流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%E4%B8%8E%E6%8E%92%E6%9F%A5"><span class="toc-text">10.  常见报错与排查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E6%88%91%E7%9A%84%E5%BB%BA%E8%AE%AE"><span class="toc-text">11.  我的建议</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/be47a21c/" title="C++ 并发编程">C++ 并发编程</a><time datetime="2026-03-24T06:01:24.913Z" title="发表于 2026-03-24 14:01:24">2026-03-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/6f34c617/" title="Makefile基础">Makefile基础</a><time datetime="2026-03-24T03:54:47.514Z" title="发表于 2026-03-24 11:54:47">2026-03-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/56fdbc0b/" title="从Notion迁移到Obsidian后，我如何用Codex Skills重构知识管理">从Notion迁移到Obsidian后，我如何用Codex Skills重构知识管理</a><time datetime="2026-03-21T02:22:17.564Z" title="发表于 2026-03-21 10:22:17">2026-03-21</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="my-footer-svg-div">
   <svg class="my-footer-wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
   <path class="my-footer-wave-path" d="M851.8,100c125,0,288.3-45,348.2-64V0H0v44c3.7-1,7.3-1.9,11-2.9C80.7,22,151.7,10.8,223.5,6.3C276.7,2.9,330,4,383,9.8 c52.2,5.7,103.3,16.2,153.4,32.8C623.9,71.3,726.8,100,851.8,100z"></path>
   </svg>
