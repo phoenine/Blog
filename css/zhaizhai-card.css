@@ -1,0 +1,226 @@
+.zhaizhai-masonry {
+  column-width: 340px;
+  column-gap: 18px;
+}
+
+#article-container.zhaizhai-masonry .shuoshuo-item.zhaizhai-item,
+.zhaizhai-masonry .shuoshuo-item.zhaizhai-item {
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  break-inside: avoid;
+}
+
+.zhaizhai-item .container {
+  border-radius: 22px;
+  background: #f3f5f8;
+  box-shadow: 0 8px 24px rgba(85, 96, 122, 0.08);
+  padding: 16px 18px 14px;
+}
+
+.zhaizhai-flip-card {
+  perspective: 1200px;
+}
+
+.zhaizhai-face {
+  animation: zhaizhai-flip-in 0.42s ease both;
+}
+
+.zhaizhai-flip-card.is-flipped .zhaizhai-face-front {
+  display: none;
+}
+
+.zhaizhai-flip-card:not(.is-flipped) .zhaizhai-face-back {
+  display: none;
+}
+
+@keyframes zhaizhai-flip-in {
+  from {
+    opacity: 0;
+    transform: rotateY(-90deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+}
+
+.zhaizhai-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.zhaizhai-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zhaizhai-tag {
+  border-radius: 999px;
+  border: 1px solid rgba(106, 131, 178, 0.35);
+  background: rgba(106, 131, 178, 0.12);
+  color: #4c6690;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 10px;
+}
+
+.zhaizhai-date {
+  color: #748097;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.zhaizhai-content-wrap {
+  margin-top: 12px;
+}
+
+.zhaizhai-content {
+  color: #232b3a;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+.zhaizhai-source {
+  margin-top: 12px;
+  color: #82755e;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.zhaizhai-meta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.zhaizhai-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zhaizhai-loc {
+  color: #8f96a6;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.zhaizhai-back-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.zhaizhai-back-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #38465e;
+}
+
+.zhaizhai-back-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zhaizhai-back-section {
+  border: 1px solid rgba(153, 164, 188, 0.35);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.46);
+  padding: 10px 12px;
+}
+
+.zhaizhai-back-section h4 {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4b5f86;
+}
+
+.zhaizhai-back-content :first-child {
+  margin-top: 0;
+}
+
+.zhaizhai-back-content :last-child {
+  margin-bottom: 0;
+}
+
+.zhaizhai-back-content p,
+.zhaizhai-back-content li {
+  margin: 0.25em 0;
+  line-height: 1.65;
+  color: #313948;
+  font-size: 0.88rem;
+}
+
+.zhaizhai-back-empty {
+  color: #667088;
+}
+
+.zhaizhai-empty {
+  border-radius: 16px;
+  border: 1px dashed rgba(144, 156, 181, 0.5);
+  padding: 22px;
+  text-align: center;
+  color: #6d7688;
+}
+
+/* Mood is not shown as text, only used as internal palette switch. */
+.zhaizhai-item.x-mood-冷静 .container,
+.zhaizhai-item.x-mood-calm .container {
+  background: #eff4fb;
+}
+
+.zhaizhai-item.x-mood-治愈 .container,
+.zhaizhai-item.x-mood-heal .container {
+  background: #f2f7ee;
+}
+
+.zhaizhai-item.x-mood-热烈 .container,
+.zhaizhai-item.x-mood-warm .container {
+  background: #fbf1eb;
+}
+
+.zhaizhai-item.x-mood-深思 .container,
+.zhaizhai-item.x-mood-think .container {
+  background: #f3f2f8;
+}
+
+.zhaizhai-item.x-mood-欢快 .container,
+.zhaizhai-item.x-mood-happy .container {
+  background: #fdf6e9;
+}
+
+@media (max-width: 900px) {
+  .zhaizhai-masonry {
+    column-width: 280px;
+    column-gap: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .zhaizhai-masonry {
+    columns: 1;
+  }
+
+  .zhaizhai-masonry .zhaizhai-item {
+    margin-bottom: 14px;
+  }
+}
