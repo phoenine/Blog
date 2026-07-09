@@ -1,27 +1,26 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？ | 因受</title><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFB"><meta name="description" content="Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？最近读到 Ben Gesoff 的一篇文章，讲他用 Jujutsu (jj) 这个版本控制系统来做大型 PR 审查。核心思路很漂亮：用 jj duplicate 复制变更 → jj new --insert-before @ 创建一个空提交作为”已审查”锚点 → 逐文件 jj squash 把已审文件标记到父提交中。审查状态被持久">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践 | 因受</title><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFB"><meta name="description" content="agent-next 测试 Harness 实践：五层架构、运行态数据流、Lazy Load、Skills 改造经验、机器门禁与 Hermes 落地。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？">
+<meta property="og:title" content="agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践">
 <meta property="og:url" content="https://blog.phoenine.top/posts/88d4d675/index.html">
 <meta property="og:site_name" content="因受">
-<meta property="og:description" content="Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？最近读到 Ben Gesoff 的一篇文章，讲他用 Jujutsu (jj) 这个版本控制系统来做大型 PR 审查。核心思路很漂亮：用 jj duplicate 复制变更 → jj new --insert-before @ 创建一个空提交作为”已审查”锚点 → 逐文件 jj squash 把已审文件标记到父提交中。审查状态被持久">
+<meta property="og:description" content="agent-next 测试 Harness 实践：五层架构、运行态数据流、Lazy Load、Skills 改造经验、机器门禁与 Hermes 落地。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.phoenine.top/img/avatar.png">
 <meta property="article:published_time" content="2026-06-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-06-10T02:31:29.410Z">
+<meta property="article:modified_time" content="2026-07-09T08:08:54.739Z">
 <meta property="article:author" content="Phoenine">
-<meta property="article:tag" content="llm">
-<meta property="article:tag" content="code-review">
-<meta property="article:tag" content="jujutsu">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="Skills">
 <meta property="article:tag" content="workflow">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog.phoenine.top/img/avatar.png"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？",
+  "headline": "agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践",
   "url": "https://blog.phoenine.top/posts/88d4d675/",
   "image": "https://blog.phoenine.top/img/avatar.png",
   "datePublished": "2026-06-07T16:00:00.000Z",
-  "dateModified": "2026-06-10T02:31:29.410Z",
+  "dateModified": "2026-07-09T08:08:54.739Z",
   "author": [
     {
       "@type": "Person",
@@ -158,145 +157,784 @@
   },
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？',
+  title: 'agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践',
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/my-footer.css"><link rel="stylesheet" href="/css/my-callout.css"><link rel="stylesheet" href="/css/zhaizhai-card.css"><script src="/js/ai-summary.js"></script><link rel="stylesheet" href="/css/ai-summary.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-color: #FFFFFB;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/we-events"><i class="fa-fw fas fa-calendar-alt"></i><span> we-events</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/code-reviewer"><i class="fa-fw fas fa-code"></i><span> code-reviewer</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/liucai"><i class="fa-fw fas fa-palette"></i><span> liucai</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 摘摘</span></a></li><li><a class="site-page child" href="/reading/"><i class="fa-fw fas fa-book-open"></i><span> 读书</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">因受</span></a><a class="nav-page-title" href="/"><span class="site-name">Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/we-events"><i class="fa-fw fas fa-calendar-alt"></i><span> we-events</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/code-reviewer"><i class="fa-fw fas fa-code"></i><span> code-reviewer</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/liucai"><i class="fa-fw fas fa-palette"></i><span> liucai</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 摘摘</span></a></li><li><a class="site-page child" href="/reading/"><i class="fa-fw fas fa-book-open"></i><span> 读书</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-07T16:00:00.000Z" title="发表于 2026-06-08 00:00:00">2026-06-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-10T02:31:29.410Z" title="更新于 2026-06-10 10:31:29">2026-06-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/">LLM</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="Jujutsu-的代码审查工作流，对-LLM-做代码审查有什么启发？"><a href="#Jujutsu-的代码审查工作流，对-LLM-做代码审查有什么启发？" class="headerlink" title="Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？"></a>Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？</h1><p>最近读到 Ben Gesoff 的一篇文章，讲他用 Jujutsu (jj) 这个版本控制系统来做大型 PR 审查。核心思路很漂亮：用 <code>jj duplicate</code> 复制变更 → <code>jj new --insert-before @</code> 创建一个空提交作为”已审查”锚点 → 逐文件 <code>jj squash</code> 把已审文件标记到父提交中。审查状态被持久化到版本历史里，不需要在脑子里记账。</p>
-<p>读完后我一直在想一个问题：这套思路对 LLM 做代码审查有没有指导意义？</p>
-<p>直接说结论：<strong>有，但不是你以为的那种”让 LLM 也用 jj”。</strong> 真正有价值的是它对审查过程本身的建模方式。</p>
-<hr>
-<h2 id="审查的本质是什么"><a href="#审查的本质是什么" class="headerlink" title="审查的本质是什么"></a>审查的本质是什么</h2><p>先拆清楚 Gesoff 的工作流到底做了什么。</p>
-<p>表面上是三个 jj 命令。但底层是一个<strong>状态机</strong>：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">待审查 → 部分完成 → 全部完成 → 输出审查意见</span><br></pre></td></tr></tbody></table></figure>
-
-<p>每个文件经历的状态转换是：<code>待审</code> → <code>审查中</code> → <code>已审（squashed）</code>。状态被记录在版本历史中，而不是审查者的脑海里。</p>
-<p>这个模型的关键特征是：</p>
-<ol>
-<li><strong>增量</strong>——一次只处理一个文件，限制信息摄入量</li>
-<li><strong>收敛</strong>——每处理完一个文件，将其结论压缩到累积状态（父提交）中</li>
-<li><strong>可暂停</strong>——状态持久化，随时中断随时恢复</li>
-<li><strong>可验证</strong>——<code>jj diff --stat</code> 一目了然地显示还剩什么</li>
-</ol>
-<p>这四个特征，恰恰是 LLM 做代码审查时最难做好的地方。逐个来看。</p>
-<hr>
-<h2 id="增量：一次只消化一个-chunk"><a href="#增量：一次只消化一个-chunk" class="headerlink" title="增量：一次只消化一个 chunk"></a>增量：一次只消化一个 chunk</h2><p>LLM 的 context window 从 8K 涨到 128K 再到 200K，看起来好像可以塞下整个 PR 了。但<strong>能吃 ≠ 能消化</strong>。</p>
-<p>当你在一个 prompt 里塞了 40 个文件的 diff，模型的表现和人类面对同样场景时一样——开头几段分析最详尽，中间开始泛泛而谈，尾部出现模式化的套话。这并不是 context window 不够，而是模型在长上下文中对信息的分辨率会衰减（众所周知的”lost in the middle”效应）。</p>
-<p>Gesoff 的做法是一次处理一个文件，squash 完再看下一个。LLM 审查也应该遵循同样的节奏。</p>
-<p><strong>可行的做法是这样</strong>：不要让模型一次性看见整个 PR。构建一个迭代循环：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">对于每个文件/逻辑chunk：</span><br><span class="line">  1. 给模型当前文件 + 累积审查摘要</span><br><span class="line">  2. 模型输出对该文件的意见</span><br><span class="line">  3. 将意见收敛到累积摘要中</span><br><span class="line">  4. 进入下一个文件</span><br></pre></td></tr></tbody></table></figure>
-
-<p>累积摘要在这里扮演的角色，就是 jj 的”已审查提交”——一个不断增长的收敛状态。</p>
-<hr>
-<h2 id="收敛：把”看完了”变成一段摘要"><a href="#收敛：把”看完了”变成一段摘要" class="headerlink" title="收敛：把”看完了”变成一段摘要"></a>收敛：把”看完了”变成一段摘要</h2><p>这是整个模式里最关键的一步，也是最容易被忽视的。</p>
-<p>Gesoff 用 <code>jj squash</code> 把已审文件从 working copy 移到父提交。这个操作本质上是一个<strong>信息压缩</strong>——文件的逐行 diff 不再参与后续的认知处理，取而代之的是一个结论（”这个文件没问题”或”这个函数需要改名”）。</p>
-<p>LLM 审查中对应的做法是：不要让模型保留所有已审查文件的完整内容。相反，让它<strong>为每个已审文件生成一段精炼的结论</strong>，并只把这段结论传给下一轮。</p>
-<p>举个例子，不好的做法是：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户：审查以下 3 个文件。文件1：[完整diff]。文件2：[完整diff]。文件3：[完整diff]。</span><br></pre></td></tr></tbody></table></figure>
-
-<p>更好的做法是：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">回合 1：</span><br><span class="line">  用户：审查文件 A。输出你的结论。</span><br><span class="line">  模型：[分析，结论]</span><br><span class="line"></span><br><span class="line">回合 2：</span><br><span class="line">  用户：文件 A 结论是"逻辑正确，命名需改进"。</span><br><span class="line">        现在审查文件 B。</span><br><span class="line">  模型：[分析，结论]</span><br><span class="line"></span><br><span class="line">回合 3：</span><br><span class="line">  用户：累积结论如下——</span><br><span class="line">         文件 A：逻辑正确，命名需改进</span><br><span class="line">         文件 B：缺少边界条件检查</span><br><span class="line">        现在审查文件 C。</span><br><span class="line">  模型：[分析，结论]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>每轮只给模型它<strong>当下需要的信息</strong>（当前文件 + 之前的收敛结论），而不是让它自行在几十个文件的 diff 中筛选相关部分。</p>
-<p>这个迭代模式的可靠度远高于一次性塞入。它在每次对话中只暴露有限的信息，审查质量可以通过每轮独立评估来验证。</p>
-<hr>
-<h2 id="可暂停：LLM-不需要，但流程需要"><a href="#可暂停：LLM-不需要，但流程需要" class="headerlink" title="可暂停：LLM 不需要，但流程需要"></a>可暂停：LLM 不需要，但流程需要</h2><p>Gesoff 工作流的一个卖点是”随时放下，回来时一切如初”。这对人类审查者很重要——短期记忆不可靠。</p>
-<p>LLM 不需要这个特性，因为它的”记忆”只存在于当前对话中。但如果你把审查拆成多轮、甚至多个对话，你<strong>需要</strong>一种方式来传递累积的审查状态。这就是收敛阶段生成的摘要的作用——它充当了跨越对话边界的”检查点”。</p>
-<p>特别是当 PR 大到超过单次对话的 token 预算（无论是成本还是 context window）时，分段审查 + 序列化状态是唯一的出路。这和 jj 处理超大型变更的策略是同一个道理——不是一次搞定，而是切碎、消化、汇总、再继续。</p>
-<hr>
-<h2 id="可验证：进度可视化"><a href="#可验证：进度可视化" class="headerlink" title="可验证：进度可视化"></a>可验证：进度可视化</h2><p>jj 审查的进度是透明的——<code>jj diff --stat</code> 告诉你还剩多少文件。LLM 审查也应该有类似的可视化。</p>
-<p>具体来说，审查进度可以这样设计：</p>
+}</script><link rel="stylesheet" href="/css/my-footer.css"><link rel="stylesheet" href="/css/my-callout.css"><link rel="stylesheet" href="/css/zhaizhai-card.css"><script src="/js/ai-summary.js"></script><link rel="stylesheet" href="/css/ai-summary.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-color: #FFFFFB;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/we-events"><i class="fa-fw fas fa-calendar-alt"></i><span> we-events</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/code-reviewer"><i class="fa-fw fas fa-code"></i><span> code-reviewer</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/liucai"><i class="fa-fw fas fa-palette"></i><span> liucai</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 摘摘</span></a></li><li><a class="site-page child" href="/reading/"><i class="fa-fw fas fa-book-open"></i><span> 读书</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">因受</span></a><a class="nav-page-title" href="/"><span class="site-name">agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/we-events"><i class="fa-fw fas fa-calendar-alt"></i><span> we-events</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/code-reviewer"><i class="fa-fw fas fa-code"></i><span> code-reviewer</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/liucai"><i class="fa-fw fas fa-palette"></i><span> liucai</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 摘摘</span></a></li><li><a class="site-page child" href="/reading/"><i class="fa-fw fas fa-book-open"></i><span> 读书</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-07T16:00:00.000Z" title="发表于 2026-06-08 00:00:00">2026-06-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-09T08:08:54.739Z" title="更新于 2026-07-09 16:08:54">2026-07-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/">LLM</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>20分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9A%E6%8A%8A%E6%B5%8B%E8%AF%95%20Agent%20%E6%8E%A5%E8%BF%9B%E6%B5%81%E6%B0%B4%E7%BA%BF%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E6%B5%81%E3%80%81%E9%97%A8%E7%A6%81%E4%B8%8E%20Lazy%20Load%20%E7%9A%84%20Harness%20%E5%AE%9E%E8%B7%B5-1783581463787.png"></p>
+<h2 id="1-引子"><a href="#1-引子" class="headerlink" title="1.  引子"></a>1.  引子</h2><p>你大概已经试过：把缺陷管理系统里的 Bug 链接丢给 Agent，让它「帮忙回归一下」。十分钟后它交上来一份像模像样的测试用例，步骤清晰、预期明确——但你不敢直接用。</p>
+<p>因为你不知道它有没有读过修复 MR；不知道用例标题里是业务语言还是接口参数字段名；不知道它有没有在共享测试环境上偷偷跑过 curl；更不知道这份 Markdown 是模板产物，还是模型凭记忆「手写」的——而后者往往过不了你们内部的格式校验。</p>
+<p><strong>核心矛盾</strong>和 UI 生成、内容审核类 Agent 惊人地相似：</p>
 <table>
 <thead>
 <tr>
-<th>文件</th>
-<th>状态</th>
-<th>结论</th>
+<th>阶段</th>
+<th>测试 Agent 的对应表现</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>src/api.py</td>
-<td>已审</td>
-<td>结构合理，命名需改进</td>
+<td>能生成</td>
+<td>能写用例、能写报告、能复述需求</td>
 </tr>
 <tr>
-<td>src/db.py</td>
-<td>已审</td>
-<td>缺少连接池，已标注</td>
+<td>不敢上线</td>
+<td>产物路径乱、阶段乱跳、副作用不可控、无法复现</td>
 </tr>
 <tr>
-<td>src/utils.py</td>
-<td>审查中</td>
-<td>—</td>
-</tr>
-<tr>
-<td>src/config.py</td>
-<td>待审</td>
-<td>—</td>
+<td>中间差什么</td>
+<td><strong>Harness</strong>：路由、阶段、证据、门禁、确认</td>
 </tr>
 </tbody></table>
-<p>这是一个简单的标记，但它的存在改变了审查体验——你不必猜测 LLM 看到了哪些文件、跳过了哪些。它既是进度提示，也是质量审计的基础。</p>
+<p>本文介绍 <strong>agent-next</strong>——我们在复杂 B 端系统测试中长期迭代的一套 Harness 工程。它不是「更大的 Prompt」，而是 <strong>可版本化、可机器校验、可跨 Cursor / Hermes 复用</strong> 的仓库结构。其他行业的测试同事可以只替换 <code>knowledge/</code> 和 workflow 表头，保留骨架。</p>
 <hr>
-<h2 id="还要更深一层：从消费到操作"><a href="#还要更深一层：从消费到操作" class="headerlink" title="还要更深一层：从消费到操作"></a>还要更深一层：从消费到操作</h2><p>前面几点是”把 jj 的工作流模式翻译给 LLM”，但 Gesoff 的工作流里有一个更深层的转变——<strong>审查者从消费者变成了操作者</strong>。</p>
-<p>传统的 web UI 审查中，审查者是 diff 的<strong>消费者</strong>：你看别人写的差异，然后给出评价。Gesoff 的工作流里，审查者在本地<strong>操作</strong>这些变更，用自己的操作来标记判断——squash 一个文件等于说”这没问题”。</p>
-<p>这对 LLM 审查的启示是：</p>
-<p><strong>“消费”模式的局限</strong>——只让 LLM 读 diff 然后给意见，信息流是单向的。模型只能对已有的代码做出反应，无法验证自己的判断。你问它”这段代码有 bug 吗”，它可能猜错但你没法发现，因为它不会去跑测试来确认。</p>
-<p><strong>“操作”模式的潜力</strong>——让 LLM 在本地仓库中直接操作变更，用执行来验证判断：</p>
+<h2 id="2-背景：为什么「一个大-Skill-长对话」会失败"><a href="#2-背景：为什么「一个大-Skill-长对话」会失败" class="headerlink" title="2.  背景：为什么「一个大 Skill + 长对话」会失败"></a>2.  背景：为什么「一个大 Skill + 长对话」会失败</h2><h3 id="2-1-三类高频任务，一套动作，不同阶段"><a href="#2-1-三类高频任务，一套动作，不同阶段" class="headerlink" title="2.1.  三类高频任务，一套动作，不同阶段"></a>2.1.  三类高频任务，一套动作，不同阶段</h3><table>
+<thead>
+<tr>
+<th>任务类型</th>
+<th>典型入口</th>
+<th>若混用同一 Prompt 会怎样</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>特性测试</td>
+<td>PRD、需求单、特性 MR</td>
+<td>容易跳过需求澄清直接写用例</td>
+</tr>
+<tr>
+<td>Bug 回归</td>
+<td>Bug ID、修复 commit、「帮我在浏览器验一下」</td>
+<td>用户一句「验证」就跳到执行阶段</td>
+</tr>
+<tr>
+<td>发布验收</td>
+<td>版本号、tag、环境、全量回归窗口</td>
+<td>范围未锁就做自动化</td>
+</tr>
+</tbody></table>
+<p>三类任务共享下游能力（读代码、写用例、匹配自动化、执行、写报告），但 <strong>阶段顺序与准入证据不同</strong>。Harness 的第一职责就是把入口拆开。</p>
+<h3 id="2-2-真实踩坑：一次-Bug-回归的失败路径"><a href="#2-2-真实踩坑：一次-Bug-回归的失败路径" class="headerlink" title="2.2.  真实踩坑：一次 Bug 回归的失败路径"></a>2.2.  真实踩坑：一次 Bug 回归的失败路径</h3><p>某次禅道 Bug #1649 回归，Agent 的实际轨迹是：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">用户：回归 bug 1649</span><br><span class="line">  → 跳过 Intake / Change Scope / Impact</span><br><span class="line">  → 手写 VC-01 用例（非 TC-001 模板）</span><br><span class="line">  → 产物落在 runs/ 而非 outputs/</span><br><span class="line">  → 未跑 copy_template / stage_gate</span><br><span class="line">  → 事后补英文结构文档，仍非模板产物</span><br></pre></td></tr></tbody></table></figure>
+
+<p>对照表：</p>
 <table>
 <thead>
 <tr>
-<th>消费模式</th>
-<th>操作模式</th>
+<th>Harness 缺失点</th>
+<th>具体后果</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>“这段代码有 bug”</td>
-<td>复现 crash，确认后再报告</td>
+<td>无阶段门禁</td>
+<td>用户说「验浏览器」就直奔 Execution</td>
 </tr>
 <tr>
-<td>“这个变量命名不好”</td>
-<td>重命名后运行测试，确认无破坏</td>
+<td>无模板强制</td>
+<td>无 YAML frontmatter，校验脚本直接失败</td>
 </tr>
 <tr>
-<td>“这个逻辑应该抽成函数”</td>
-<td>直接重构，编译通过后给出 diff</td>
+<td>无路径约定</td>
+<td>运行态目录与交付物目录混用</td>
 </tr>
 <tr>
-<td>“这个边界条件没处理”</td>
-<td>补一个测试用例，运行通过后附加到 PR</td>
+<td>无机器校验</td>
+<td>格式问题靠人眼最后才发现</td>
+</tr>
+<tr>
+<td>上下文膨胀</td>
+<td>整本 workflow 塞进会话，关键规则被「读不全」</td>
 </tr>
 </tbody></table>
-<p>这是一个彻底的角色转换：<strong>LLM 不是审查的观察者，而是审查的操作者。</strong> 它把自己的审查意见落实为可验证的代码变更，然后用户只需要 review 这些变更——一个 meta-review，而不是从头读 diff。</p>
-<p>这种模式已经在一些代理式 IDE 中初步出现了。Cursor Agent 可以在审查过程中直接修改代码，Claude Code 可以运行测试来验证假设。它们不再满足于告诉你”这里有风险”，而是会直接修给你看。</p>
+<p><strong>设计原则由此固定</strong>：规则进仓库、进工具、进门禁；事故教训不写进个人 MEMORY 了事。</p>
 <hr>
-<h2 id="可行性：哪些现在就能做，哪些还需要等"><a href="#可行性：哪些现在就能做，哪些还需要等" class="headerlink" title="可行性：哪些现在就能做，哪些还需要等"></a>可行性：哪些现在就能做，哪些还需要等</h2><p><strong>现在就能做的：</strong></p>
+<h2 id="3-agent-next-是什么：仓库即-Harness"><a href="#3-agent-next-是什么：仓库即-Harness" class="headerlink" title="3.  agent-next 是什么：仓库即 Harness"></a>3.  agent-next 是什么：仓库即 Harness</h2><p>agent-next 是一个 <strong>以 Git 仓库为载体的测试 Agent 操作系统</strong>。模型是可替换的；Harness 是团队资产。</p>
+<p>一句话分工：</p>
+<blockquote>
+<p><strong>Router 指路，Workflow 定阶段，Skill 承载专长，Knowledge 解释领域，Tool 执行门禁。</strong></p>
+</blockquote>
+<h3 id="3-1-设计目标"><a href="#3-1-设计目标" class="headerlink" title="3.1.  设计目标"></a>3.1.  设计目标</h3><ul>
+<li>默认上下文 <strong>尽量小</strong>：Router + 当前阶段一篇 <code>phases/*.md</code>。</li>
+<li>任务 <strong>必须先选 workflow entry</strong>，再允许写产物。</li>
+<li>Skill <strong>按阶段加载</strong>，且 <code>skill_receipts[]</code> 记录路径与 sha256（证明真的读过）。</li>
+<li>源码证据走本地 <code>repositories/dev</code>、<code>test</code>、<code>tools</code> 镜像，少猜远程。</li>
+<li>领域知识在 <code>knowledge/</code>，与「本次 MR / 缺陷单」等来源证据分离。</li>
+<li>运行记忆落在 <code>runs/&lt;run-id&gt;/state.json</code>，不依赖聊天上下文。</li>
+<li>缺陷系统写入、共享环境执行、数据注入、SSH、部署、远程仓库写操作 <strong>须用户确认</strong>。</li>
+</ul>
+<h3 id="3-2-明确不做的事"><a href="#3-2-明确不做的事" class="headerlink" title="3.2.  明确不做的事"></a>3.2.  明确不做的事</h3><ul>
+<li>不把全流程塞进一个五千行 Skill。</li>
+<li>不把用例/报告等交付物当源码配置提交进 Git。</li>
+<li>不让 Agent 从服务名/README <strong>猜 API 路径</strong>——须从用户 curl 或浏览器 Network 追踪。</li>
+<li>不做「单轮对话轨迹自动写回 Skill」的 Online 自进化（见第 8 节）。</li>
+</ul>
+<h3 id="3-3-仓库目录结构"><a href="#3-3-仓库目录结构" class="headerlink" title="3.3.  仓库目录结构"></a>3.3.  仓库目录结构</h3><p>agent-next 把 Harness 落在 <strong>一个 Git 仓库</strong>里。目录按五层职责划分；Agent 默认只读入口层 + 当前流程层 + 本阶段技能层，其余按需打开。</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">agent-next/</span><br><span class="line">├── AGENTS.md                      # Codex 等工作区自动注入的硬约束</span><br><span class="line">├── config/</span><br><span class="line">│   ├── projects.yaml              # 项目 ↔ repositories/ 本地镜像路由，比如自动化脚本，工具等</span><br><span class="line">│   └── README.md</span><br><span class="line">├── docs/</span><br><span class="line">├── workflows/</span><br><span class="line">│   ├── index.md                   # 三 entry 路由、Skill 索引、首次动作清单</span><br><span class="line">│   ├── stage-gates.md             # 全局门禁 + Machine Rules By Phase 表</span><br><span class="line">│   ├── bug-regression/</span><br><span class="line">│   │   ├── README.md              # 交付物路由表、阶段索引（不展开步骤正文）</span><br><span class="line">│   │   └── phases/                # 01-bug-intake.md … 每阶段一篇（Lazy Load）</span><br><span class="line">│   ├── feature-testing/</span><br><span class="line">│   │   ├── README.md</span><br><span class="line">│   │   └── phases/</span><br><span class="line">│   └── release-acceptance/</span><br><span class="line">│       ├── README.md</span><br><span class="line">│       └── phases/</span><br><span class="line">├── skills/</span><br><span class="line">│   ├── agent-next/SKILL.md        # Router：选 entry、phase_doc、停损</span><br><span class="line">│   ├── epvs-requirement/          # 下游职能 Skill（示例项目前缀 epvs-）</span><br><span class="line">│   ├── epvs-test-points/</span><br><span class="line">│   ├── epvs-test-cases/</span><br><span class="line">│   │   └── references/            # 格式细则、写作纪律（写产物前必读）</span><br><span class="line">│   ├── epvs-automation/</span><br><span class="line">│   ├── epvs-reporting/</span><br><span class="line">│   ├── epvs-acceptance/</span><br><span class="line">│   ├── epvs-zentao-sync/</span><br><span class="line">│   └── epvs-data-injection/</span><br><span class="line">├── knowledge/                     # 可复用领域知识（与本次 MR/缺陷单分离）</span><br><span class="line">│   ├── epvs/                      # 术语、UI、计算规范、测试场景等</span><br><span class="line">│   ├── epvs-runtime/</span><br><span class="line">│   └── schemas/</span><br><span class="line">├── templates/                     # TEMPLATE-*.md；产物须经 copy_template 生成</span><br><span class="line">├── tools/                         # 机器层脚本（见下表）</span><br><span class="line">├── schemas/                       # run-state 等 JSON Schema</span><br><span class="line">├── tests/                         # tools / gate / phase 的单元测试</span><br><span class="line">├── runs/                          # 仅运行态：runs/&lt;run-id&gt;/state.json（gitignore）</span><br><span class="line">├── outputs/                       # 交付物：v1/、v2/、shared/（gitignore）</span><br><span class="line">└── repositories/                  # 本地镜像：dev/、test/、tools/（gitignore）</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>目录与五层 Harness 的对应关系</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>目录 / 文件</th>
+<th>Harness 层级</th>
+<th>Agent 典型读法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AGENTS.md</code>、<code>skills/agent-next/</code></td>
+<td>① 入口层</td>
+<td>每任务首轮</td>
+</tr>
+<tr>
+<td><code>workflows/index.md</code>、<code>&lt;entry&gt;/README.md</code>、<code>&lt;entry&gt;/phases/*.md</code>、<code>stage-gates.md</code></td>
+<td>② 流程层</td>
+<td>index + README 各一次；<strong>每阶段只读一篇</strong> phase</td>
+</tr>
+<tr>
+<td><code>skills/epvs-*/SKILL.md</code> 与 <code>references/</code></td>
+<td>③ 技能层</td>
+<td>仅当前 phase 声明的 Skill</td>
+</tr>
+<tr>
+<td><code>runs/</code>、<code>outputs/</code>、<code>repositories/</code>、<code>knowledge/</code></td>
+<td>④ 证据层</td>
+<td>写 state / 取证 / 写产物 / 查领域时</td>
+</tr>
+<tr>
+<td><code>tools/</code>、<code>templates/</code>、<code>schemas/</code></td>
+<td>⑤ 机器层</td>
+<td>通过 CLI 调用，不全文塞进上下文</td>
+</tr>
+</tbody></table>
+<p><strong><code>tools/</code> 核心脚本</strong>（其余为辅助校验或知识维护）：</p>
+<table>
+<thead>
+<tr>
+<th>脚本</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>run_state.py</code></td>
+<td>创建与更新 <code>runs/&lt;run-id&gt;/state.json</code></td>
+</tr>
+<tr>
+<td><code>phase_doc.py</code></td>
+<td>解析当前阶段 md 路径；<code>--list-phases</code> 列全表</td>
+</tr>
+<tr>
+<td><code>phases.py</code></td>
+<td>阶段名权威列表（与 <code>stage_gate.py</code> 共用）</td>
+</tr>
+<tr>
+<td><code>copy_template.py</code></td>
+<td>从 <code>templates/</code> 生成带 frontmatter 的产物</td>
+</tr>
+<tr>
+<td><code>stage_gate.py</code></td>
+<td>当前 phase 能否标记完成</td>
+</tr>
+<tr>
+<td><code>validate_artifact.py</code> / <code>validate_test_cases.py</code></td>
+<td>产物格式机审</td>
+</tr>
+<tr>
+<td><code>validate_run_state.py</code></td>
+<td>state 字段与 schema 校验</td>
+</tr>
+</tbody></table>
+<p><strong>边界说明</strong>（fork 时建议保留）：</p>
+<ul>
+<li><strong><code>runs/</code> 与 <code>outputs/</code> 分离</strong>：前者是运行记忆与 gate 记录，后者是给人审的交付物；混用是 Bug #1649 类事故的高频根因。</li>
+<li><strong><code>repositories/</code> 不进 Git</strong>：放被测系统与自动化工程的本地 clone；路径由 <code>config/projects.yaml</code> 解析。</li>
+<li><strong><code>knowledge/</code> 可整棵替换</strong>：保留 <code>_index.md</code> + <code>related[].path</code> 跳转约定即可；业务无关的 epvs 内容换成你们自己的术语与页面说明。</li>
+<li><strong>权威来源</strong>：阶段顺序以 <code>tools/phases.py</code> 为准；过关以 <code>tools/stage_gate.py</code> 为准；文档与代码冲突时 <strong>以代码为准</strong>（详见仓库 <code>docs/design.md</code> 的 Source Of Truth 表）。</li>
+</ul>
+<hr>
+<h2 id="4-五层-Harness-架构（展开说明）"><a href="#4-五层-Harness-架构（展开说明）" class="headerlink" title="4.  五层 Harness 架构（展开说明）"></a>4.  五层 Harness 架构（展开说明）</h2><h3 id="4-1-总览图"><a href="#4-1-总览图" class="headerlink" title="4.1.  总览图"></a>4.1.  总览图</h3><p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9A%E6%8A%8A%E6%B5%8B%E8%AF%95%20Agent%20%E6%8E%A5%E8%BF%9B%E6%B5%81%E6%B0%B4%E7%BA%BF%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E6%B5%81%E3%80%81%E9%97%A8%E7%A6%81%E4%B8%8E%20Lazy%20Load%20%E7%9A%84%20Harness%20%E5%AE%9E%E8%B7%B5-1783581174161.png"></p>
+<blockquote>
+<p>说明：Mermaid 节点里避免使用 <code>|</code> 等特殊字符；产物目录在实现上分为 <code>v1</code>、<code>v2</code>、<code>shared</code> 三棵输出树。</p>
+</blockquote>
+<h3 id="4-2-①-入口层：谁在第一屏被加载？"><a href="#4-2-①-入口层：谁在第一屏被加载？" class="headerlink" title="4.2.  ① 入口层：谁在第一屏被加载？"></a>4.2.  ① 入口层：谁在第一屏被加载？</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>物理位置</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>硬约束</td>
+<td>仓库 <code>AGENTS.md</code></td>
+<td>Cursor 等工作区自动注入</td>
+</tr>
+<tr>
+<td>会话硬约束</td>
+<td>Hermes <code>SOUL.md</code></td>
+<td>每个新会话注入；<strong>不会</strong>读 profile 里的 AGENTS</td>
+</tr>
+<tr>
+<td>Router Skill</td>
+<td><code>skills/agent-next/SKILL.md</code>（约 70 行）</td>
+<td>选 entry、声明 phase、指向 phase_doc</td>
+</tr>
+<tr>
+<td>路由索引</td>
+<td><code>workflows/index.md</code></td>
+<td>三入口 + Skill 索引 + 首次动作清单</td>
+</tr>
+</tbody></table>
+<p><strong>关键设计</strong>：Router 极薄。它不写用例、不上传缺陷系统、不跑自动化——只做调度与停损（gate 失败即停）。</p>
+<h3 id="4-3-②-流程层：阶段即文件"><a href="#4-3-②-流程层：阶段即文件" class="headerlink" title="4.3.  ② 流程层：阶段即文件"></a>4.3.  ② 流程层：阶段即文件</h3><p>每个 entry 对应一个目录：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">workflows/bug-regression/</span><br><span class="line">  README.md                 # 交付物路由表 + 阶段索引（~55 行）</span><br><span class="line">  phases/</span><br><span class="line">    01-bug-intake.md        # 当前阶段才读（~20–35 行）</span><br><span class="line">    02-change-scope.md</span><br><span class="line">    ...</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Lazy Load 解析器</strong>（机器可查路径，避免 Agent 猜文件名）：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 tools/phase_doc.py --entry bug-regression --phase <span class="string">"Change Scope"</span></span><br><span class="line"><span class="comment"># → workflows/bug-regression/phases/02-change-scope.md</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>阶段名称的 <strong>唯一权威</strong> 在 <code>tools/phases.py</code>，与 <code>stage_gate.py</code> 共用同一列表——文档与代码不一致时，<strong>以代码为准</strong>。</p>
+<p><code>workflows/stage-gates.md</code> 保留 <strong>Machine Rules By Phase</strong> 表；人类可读的长散文已压缩，避免与机器规则三重重复。</p>
+<h3 id="4-4-③-技能层：窄-Skill-references"><a href="#4-4-③-技能层：窄-Skill-references" class="headerlink" title="4.4.  ③ 技能层：窄 Skill + references"></a>4.4.  ③ 技能层：窄 Skill + references</h3><p>Router 之外是一组 <strong>按职能拆分的 Skill</strong>（仓库目录名带项目前缀，文中按职能称呼即可）：</p>
+<table>
+<thead>
+<tr>
+<th>职能 Skill</th>
+<th>负责什么</th>
+<th>Bug 回归典型阶段</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需求/缺陷摄入</td>
+<td>读 PRD、需求单、Bug 单</td>
+<td>Bug Intake</td>
+</tr>
+<tr>
+<td>测试点/影响分析</td>
+<td>变更范围、风险、影响面</td>
+<td>Change Scope、Impact</td>
+</tr>
+<tr>
+<td>测试用例</td>
+<td>用例设计、覆盖匹配</td>
+<td>Coverage Match、补用例</td>
+</tr>
+<tr>
+<td>自动化</td>
+<td>分类、生成、执行计划</td>
+<td>Decision 之后可选</td>
+</tr>
+<tr>
+<td>报告</td>
+<td>结项、追溯</td>
+<td>Regression Report</td>
+</tr>
+<tr>
+<td>缺陷同步</td>
+<td>写回缺陷系统（须确认）</td>
+<td>可选</td>
+</tr>
+</tbody></table>
+<p><strong>格式细则不进 Router</strong>，而在 <code>skills/*/references/</code>——例如用例标题必须用 <code>TC-001：业务描述</code>，禁止 <code>VC-01</code>、禁止把 API 字段名当标题。写产物前 <strong>强制先读 reference</strong>，并记入 <code>knowledge_used</code>。</p>
+<h3 id="4-5-④-证据层：三类数据，三种用途"><a href="#4-5-④-证据层：三类数据，三种用途" class="headerlink" title="4.5.  ④ 证据层：三类数据，三种用途"></a>4.5.  ④ 证据层：三类数据，三种用途</h3><figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">runs/&lt;run-id&gt;/          ← 仅运行态（state.json、gate 记录）</span><br><span class="line">outputs/v1|v2|shared/   ← 交付物（用例、报告、变更范围文档）</span><br><span class="line">repositories/           ← 本地源码/自动化/工具链镜像（证据来源）</span><br><span class="line">knowledge/              ← 可复用领域知识（非本次 MR 原文）</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Run State 核心字段</strong>（节选）：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+<th>门禁为何关心</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>entry</code> / <code>phase</code></td>
+<td>当前 workflow 位置</td>
+<td>防止跳阶段</td>
+</tr>
+<tr>
+<td><code>workflow</code></td>
+<td>如 <code>workflows/bug-regression/README.md</code></td>
+<td>审计用的索引路径</td>
+</tr>
+<tr>
+<td><code>product_line</code></td>
+<td><code>v1</code> 或 <code>v2</code> 等产品线标识</td>
+<td>决定 outputs 子树</td>
+</tr>
+<tr>
+<td><code>skill_receipts[]</code></td>
+<td>读过哪个 SKILL.md + sha256</td>
+<td>防止「声称加载未加载」</td>
+</tr>
+<tr>
+<td><code>repository_evidence[]</code></td>
+<td>看过哪些文件/commit</td>
+<td>防止空口分析</td>
+</tr>
+<tr>
+<td><code>knowledge_used[]</code></td>
+<td>用过哪些知识页</td>
+<td>与 <code>knowledge_not_applicable:</code> 二选一</td>
+</tr>
+<tr>
+<td><code>artifacts[]</code></td>
+<td>产物路径、类型、产出阶段</td>
+<td>与磁盘文件、模板校验联动</td>
+</tr>
+<tr>
+<td><code>notes[]</code></td>
+<td><code>bug_intake:</code>、<code>decision_path:</code> 等前缀</td>
+<td>结构化 intake / 决策</td>
+</tr>
+<tr>
+<td><code>confirmations[]</code></td>
+<td>副作用是否已确认</td>
+<td>阻断未授权操作</td>
+</tr>
+</tbody></table>
+<h3 id="4-6-⑤-机器层：把「应该」变成「能不能过」"><a href="#4-6-⑤-机器层：把「应该」变成「能不能过」" class="headerlink" title="4.6.  ⑤ 机器层：把「应该」变成「能不能过」"></a>4.6.  ⑤ 机器层：把「应该」变成「能不能过」</h3><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>输入</th>
+<th>输出/效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>run_state.py</code></td>
+<td>CLI 参数</td>
+<td>更新 <code>state.json</code>；<code>--entry</code> 可自动填 <code>workflow</code> README 路径</td>
+</tr>
+<tr>
+<td><code>phase_doc.py</code></td>
+<td>entry + phase</td>
+<td>打印当前阶段 md 路径；<code>--list-phases</code> 列全表</td>
+</tr>
+<tr>
+<td><code>copy_template.py</code></td>
+<td>模板名 + 目标路径</td>
+<td>带 frontmatter 的合规 Markdown 骨架</td>
+</tr>
+<tr>
+<td><code>validate_test_cases.py</code></td>
+<td>用例文件</td>
+<td>标题、章节、receipt 等机审</td>
+</tr>
+<tr>
+<td><code>validate_artifact.py</code></td>
+<td>其他模板产物</td>
+<td>frontmatter + section 标记</td>
+</tr>
+<tr>
+<td><code>stage_gate.py</code></td>
+<td><code>state.json</code></td>
+<td>当前 phase 能否标记完成；失败打印缺什么</td>
+</tr>
+</tbody></table>
+<p><strong>半监督闭环</strong>（与 UI 自动化生产实践同构）：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Agent 生成 → copy_template → validate_*（机审）→ 人审关键节点 → stage_gate（阶段机审）</span><br><span class="line">                ↑                                                      |</span><br><span class="line">                └──────── 踩坑规则 offline 沉淀到 Skill / tools ───────┘</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4-7-一次阶段推进的数据流（Bug-回归示例）"><a href="#4-7-一次阶段推进的数据流（Bug-回归示例）" class="headerlink" title="4.7.  一次阶段推进的数据流（Bug 回归示例）"></a>4.7.  一次阶段推进的数据流（Bug 回归示例）</h3><p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9A%E6%8A%8A%E6%B5%8B%E8%AF%95%20Agent%20%E6%8E%A5%E8%BF%9B%E6%B5%81%E6%B0%B4%E7%BA%BF%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E6%B5%81%E3%80%81%E9%97%A8%E7%A6%81%E4%B8%8E%20Lazy%20Load%20%E7%9A%84%20Harness%20%E5%AE%9E%E8%B7%B5-1783581197275.png"></p>
+<p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9A%E6%8A%8A%E6%B5%8B%E8%AF%95%20Agent%20%E6%8E%A5%E8%BF%9B%E6%B5%81%E6%B0%B4%E7%BA%BF%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E6%B5%81%E3%80%81%E9%97%A8%E7%A6%81%E4%B8%8E%20Lazy%20Load%20%E7%9A%84%20Harness%20%E5%AE%9E%E8%B7%B5-1783584303289.png"><br>执行log：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">────────────────────────────────────────</span><br><span class="line">● 我有一个问题单需要回归，http://192.168.31.85:63380/bug-view-1664.html</span><br><span class="line">────────────────────────────────────────</span><br><span class="line"></span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Bug 1664 已获取。按照 agent-next 流程开始路由。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</span><br><span class="line"></span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    开始正式 Bug 回归流程。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 1: Bug Intake。先加载所需 skill，创建 run state，读知识库。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 1 Bug Intake — PASSED。进入 Phase 2: Change Scope。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    后端新增了重叠检测 API。现在检查前端 (op-envision) 是否调用了这个 API。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    前端代码已找到。读取关键文件。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    现在掌握了完整的变更范围。创建 Phase 2 Change Scope 产物。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 2 Change Scope — PASSED。进入 Phase 3: Impact Analysis。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 3 Impact Analysis — PASSED。进入 Phase 4: Coverage Match。</span><br><span class="line">╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 4 Coverage Match — PASSED。进入 Phase 5: Decision Gate。</span><br><span class="line">╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 5 Decision Gate — PASSED。进入 Phase 6: Regression Plan。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 6 Regression Plan — PASSED。进入 Phase 7: Execution。开始浏览器验证。</span><br><span class="line">╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</span><br><span class="line">───────────────────────────────</span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Phase 1-7 全部完成并通过验证。</span><br><span class="line">╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><br><span class="line"></span><br><span class="line">╭─ ⚕ Hermes ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</span><br><span class="line">    Bug 1664 回归分析全部 8 阶段完成，PASSED。</span><br><span class="line"></span><br><span class="line">    最终产物</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    outputs/v1/</span><br><span class="line">    ├── regression/</span><br><span class="line">    │   ├── bug-1664-change-scope.md       # 变更范围</span><br><span class="line">    │   ├── bug-1664-impact-analysis.md    # 风险分析</span><br><span class="line">    │   ├── bug-1664-coverage-match.md     # 覆盖匹配</span><br><span class="line">    │   └── bug-1664-regression-plan.md    # 回归计划</span><br><span class="line">    ├── test-cases/</span><br><span class="line">    │   └── bug-1664-regression-cases.md   # 4条用例</span><br><span class="line">    └── reports/</span><br><span class="line">        └── bug-1664-regression-report.md  # 回归报告</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    回归结论: passed — 原 Bug 修复确认，4 条用例全部通过。无后续动作。</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h2 id="5-三条-Workflow-与-Bug-回归阶段（可照抄结构）"><a href="#5-三条-Workflow-与-Bug-回归阶段（可照抄结构）" class="headerlink" title="5.  三条 Workflow 与 Bug 回归阶段（可照抄结构）"></a>5.  三条 Workflow 与 Bug 回归阶段（可照抄结构）</h2><h3 id="5-1-三个-Entry"><a href="#5-1-三个-Entry" class="headerlink" title="5.1.  三个 Entry"></a>5.1.  三个 Entry</h3><table>
+<thead>
+<tr>
+<th>Entry</th>
+<th>何时用</th>
+<th>阶段数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>feature-testing</code></td>
+<td>PRD、需求单、特性 MR</td>
+<td>8（含 Optional）</td>
+</tr>
+<tr>
+<td><code>bug-regression</code></td>
+<td>Bug ID、修复 MR、回归请求</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>release-acceptance</code></td>
+<td>版本、tag、发布验收</td>
+<td>6</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-Bug-回归八阶段（目标-产出）"><a href="#5-2-Bug-回归八阶段（目标-产出）" class="headerlink" title="5.2.  Bug 回归八阶段（目标 / 产出）"></a>5.2.  Bug 回归八阶段（目标 / 产出）</h3><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>目标</th>
+<th>关键产出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bug Intake</td>
+<td>锁定缺陷上下文与修复来源</td>
+<td><code>bug_intake:</code>、<code>bug_surface:</code>（<strong>无 artifact 文件</strong>）</td>
+</tr>
+<tr>
+<td>Change Scope</td>
+<td>弄清改了什么</td>
+<td><code>change_scope</code> 模板文件</td>
+</tr>
+<tr>
+<td>Impact Analysis</td>
+<td>影响面与回归风险</td>
+<td><code>risk_analysis</code></td>
+</tr>
+<tr>
+<td>Coverage Match</td>
+<td>现有覆盖与缺口</td>
+<td><code>coverage_match</code></td>
+</tr>
+<tr>
+<td>Decision Gate</td>
+<td>选执行路径</td>
+<td><code>decision_path:</code></td>
+</tr>
+<tr>
+<td>Regression Plan</td>
+<td>策略与补用例计划</td>
+<td><code>regression_plan</code>、可选 <code>test_cases</code></td>
+</tr>
+<tr>
+<td>Execution</td>
+<td>执行（可选）</td>
+<td><code>execution_record</code> 或 skip 说明</td>
+</tr>
+<tr>
+<td>Regression Report</td>
+<td>结项</td>
+<td><code>regression_report</code></td>
+</tr>
+</tbody></table>
+<p><strong>交付物路由</strong>（<code>bug_surface</code> 决定根目录）：</p>
+<table>
+<thead>
+<tr>
+<th>bug_surface</th>
+<th>输出根目录</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>frontend</code></td>
+<td><code>outputs/v1</code> 或 <code>outputs/v2</code></td>
+<td>与 <code>product_line</code> 对齐的前端缺陷</td>
+</tr>
+<tr>
+<td><code>backend</code></td>
+<td><code>outputs/shared</code></td>
+<td>接口、服务、数据层</td>
+</tr>
+<tr>
+<td><code>other</code></td>
+<td><code>outputs/shared</code></td>
+<td>基础设施、跨端、难归类</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-Lazy-Load-带来的上下文收益"><a href="#5-3-Lazy-Load-带来的上下文收益" class="headerlink" title="5.3.  Lazy Load 带来的上下文收益"></a>5.3.  Lazy Load 带来的上下文收益</h3><table>
+<thead>
+<tr>
+<th>读法</th>
+<th>约 Markdown 行数（Bug 回归 @ Change Scope）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>旧：单文件 workflow + 长篇 gate 散文</td>
+<td>400+</td>
+</tr>
+<tr>
+<td>新：README + 单 phase + stage-gates 机器表</td>
+<td><strong>~100</strong></td>
+</tr>
+</tbody></table>
+<p>哲学与「知识先编译、再按需读取」一致：<strong>不要把手册全文每轮塞进上下文。</strong></p>
+<hr>
+<h2 id="6-Skill-自进化：离线归并，而非在线堆-MEMORY"><a href="#6-Skill-自进化：离线归并，而非在线堆-MEMORY" class="headerlink" title="6.  Skill 自进化：离线归并，而非在线堆 MEMORY"></a>6.  Skill 自进化：离线归并，而非在线堆 MEMORY</h2><p>企业场景里，单轮轨迹直接写回 Skill 容易过拟合、越改越臃肿（与 Trace2Skill 等方案指出的单轨迹问题一致）。</p>
+<table>
+<thead>
+<tr>
+<th>沉淀位置</th>
+<th>适合什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>会话 MEMORY</td>
+<td>个人习惯、本机路径</td>
+</tr>
+<tr>
+<td><code>skills/</code> + <code>workflows/</code></td>
+<td>团队一致规则</td>
+</tr>
+<tr>
+<td><code>tools/stage_gate.py</code></td>
+<td>必须 100% 执行的校验</td>
+</tr>
+</tbody></table>
+<p>推荐路径：<strong>多轮踩坑 → 离线归纳 → 人审 → 合并进 Skill/tools → rsync 到 Hermes profile</strong>。</p>
+<hr>
+<h2 id="7-Knowledge-与-Source-Evidence-的边界"><a href="#7-Knowledge-与-Source-Evidence-的边界" class="headerlink" title="7.  Knowledge 与 Source Evidence 的边界"></a>7.  Knowledge 与 Source Evidence 的边界</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>例子</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Source evidence</td>
+<td>MR diff、缺陷单步骤、用户 curl</td>
+<td>证明「这次改了什么」</td>
+</tr>
+<tr>
+<td>Knowledge</td>
+<td>术语表、指标口径、页面说明</td>
+<td>解释「业务上该怎样」</td>
+</tr>
+</tbody></table>
+<p>加载规则：</p>
 <ol>
-<li><p><strong>迭代式审查 prompt</strong>——把大 PR 拆成小 chunk，每轮只审查一个 chunk，累积摘要传给下一轮。不需要任何特殊工具，只是 prompt engineering。</p>
-</li>
-<li><p><strong>审查进度表</strong>——在 prompt 中维护一个 Markdown 表格，记录每个文件的审查状态。LLM 每轮更新这个表格。人类可读、可审计。</p>
-</li>
-<li><p><strong>分阶段反馈</strong>——第一阶段只看结构和设计（不读具体代码），第二阶段读关键模块的核心逻辑，第三阶段做逐行细审。每个阶段的输出作为下阶段的上下文。</p>
-</li>
+<li>从 <code>knowledge/_index.md</code>（或领域子索引）出发。</li>
+<li>只沿 <code>related[].path</code> 跳转，禁止凭文件名瞎猜。</li>
+<li>打开过的路径写入 <code>knowledge_used</code>——门禁检查 <strong>used</strong>，不是口头声称。</li>
 </ol>
-<p><strong>需要工具支持的：</strong></p>
+<hr>
+<h2 id="8-案例对照：Bug-1649"><a href="#8-案例对照：Bug-1649" class="headerlink" title="8.  案例对照：Bug #1649"></a>8.  案例对照：Bug #1649</h2><h3 id="8-1-无-Harness"><a href="#8-1-无-Harness" class="headerlink" title="8.1.  无 Harness"></a>8.1.  无 Harness</h3><figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">用户给 Bug ID + 「浏览器验证」</span><br><span class="line">  → 直接写 VC-01 用例</span><br><span class="line">  → 猜 API 端口/路径（与实际网关路径不符）</span><br><span class="line">  → 产物写在 runs/</span><br><span class="line">  → 无合规 state.json</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="8-2-有-Harness（阶段不可跳）"><a href="#8-2-有-Harness（阶段不可跳）" class="headerlink" title="8.2.  有 Harness（阶段不可跳）"></a>8.2.  有 Harness（阶段不可跳）</h3><figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. skill_view("agent-next") → index → bug-regression</span><br><span class="line">2. phase_doc → Bug Intake；notes: bug_surface: backend</span><br><span class="line">3. stage_gate PASSED → Change Scope → change_scope 模板产物</span><br><span class="line">4. Impact → Coverage → decision_path: supplement_cases</span><br><span class="line">5. copy_template test-cases → validate_test_cases → stage_gate</span><br><span class="line">6. Execution：沿用用户 Network 面板里的 URL 与 Cookie</span><br><span class="line">7. regression_report + traceability</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>已写入 Router Pitfalls 的纪律</strong>：</p>
+<ul>
+<li>Bug Intake <strong>没有</strong> artifact，只有 <code>notes[]</code>。</li>
+<li>用户说「浏览器验证」也不能跳过 Scope / Impact / Coverage / Decision。</li>
+<li>API 须从用户真实请求追踪；先确认产品线/版本（功能可能只存在于某一端）。</li>
+<li>未确认不得 merge MR、force-push、切分支 push。</li>
+</ul>
+<hr>
+<h2 id="9-Cursor-与-Hermes-双端落地"><a href="#9-Cursor-与-Hermes-双端落地" class="headerlink" title="9.  Cursor 与 Hermes 双端落地"></a>9.  Cursor 与 Hermes 双端落地</h2><table>
+<thead>
+<tr>
+<th>载体</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>仓库 <code>AGENTS.md</code></td>
+<td>Cursor 自动注入</td>
+</tr>
+<tr>
+<td>Hermes <code>SOUL.md</code></td>
+<td>每会话注入；须手写 agent-next 硬规则</td>
+</tr>
+<tr>
+<td><code>skills/</code> rsync 到 profile</td>
+<td>Hermes 侧 Skill 与仓库对齐</td>
+</tr>
+<tr>
+<td><code>workflows/</code> 留在项目仓库</td>
+<td>须在仓库根执行 <code>phase_doc</code> / <code>stage_gate</code>，或 cwd 指向仓库</td>
+</tr>
+</tbody></table>
+<p><strong>常见坑</strong>：<code>~/.hermes/profiles/coding/AGENTS.md</code> <strong>不会</strong>自动注入；规则可以写在 <code>SOUL.md</code> 或通过 <code>skill_view("agent-next")</code> 加载。</p>
+<hr>
+<h2 id="10-Skills-从「整本手册」到-Lazy-Load：改造经验"><a href="#10-Skills-从「整本手册」到-Lazy-Load：改造经验" class="headerlink" title="10.  Skills 从「整本手册」到 Lazy Load：改造经验"></a>10.  Skills 从「整本手册」到 Lazy Load：改造经验</h2><p>本节记录 agent-next 在 <code>dev</code> 分支上的一次 <strong>Harness 瘦身</strong>：不是重写业务逻辑，而是把原先塞进 Router / 单体 workflow / 长篇 gate 散文里的规则，<strong>拆成可按阶段加载的文件</strong>，并用 <code>phase_doc.py</code> 让 Agent 不必猜路径。</p>
+<h3 id="10-1-旧模式为什么撑不住"><a href="#10-1-旧模式为什么撑不住" class="headerlink" title="10.1.  旧模式为什么撑不住"></a>10.1.  旧模式为什么撑不住</h3><p>Lazy Load 之前，三类文档叠在一起，每轮会话都在抢上下文：</p>
+<table>
+<thead>
+<tr>
+<th>载体</th>
+<th>旧形态</th>
+<th>问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Router <code>skills/agent-next/SKILL.md</code></td>
+<td>~160 行，混有路由、阶段说明、踩坑</td>
+<td>Router 变「第二本 workflow」</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>单体 <code>workflows/bug-regression.md</code>（~370 行）</td>
+<td>八阶段全文一次读入，后半段规则常被截断</td>
+</tr>
+<tr>
+<td><code>workflows/stage-gates.md</code></td>
+<td>~630 行散文 + 表格</td>
+<td>Agent 重复通读；与 <code>stage_gate.py</code> 重复叙述</td>
+</tr>
+<tr>
+<td>下游 Skill</td>
+<td>Required Reading 指向单体 workflow</td>
+<td>阶段推进后仍引用已过期路径</td>
+</tr>
+</tbody></table>
+<p>体感症状与第 2 节 Bug #1649 一致：<strong>不是模型不会写用例，而是阶段表、gate 表、Pitfalls 在同一窗口里读不全</strong>，于是跳步、手写产物、路径写错。</p>
+<h3 id="10-2-改造目标：三件事分开"><a href="#10-2-改造目标：三件事分开" class="headerlink" title="10.2.  改造目标：三件事分开"></a>10.2.  改造目标：三件事分开</h3><table>
+<thead>
+<tr>
+<th>职责</th>
+<th>改造后放在哪</th>
+<th>大约行数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>指路</strong>（选 entry、声明读法）</td>
+<td>Router + <code>workflows/index.md</code></td>
+<td>Router ~70 行；index ~83 行</td>
+</tr>
+<tr>
+<td><strong>路由表</strong>（产物路径、阶段索引）</td>
+<td><code>workflows/&lt;entry&gt;/README.md</code></td>
+<td>~55–65 行 / entry</td>
+</tr>
+<tr>
+<td><strong>阶段动作</strong>（本步目标、Skill、Gate）</td>
+<td><code>workflows/&lt;entry&gt;/phases/NN-*.md</code></td>
+<td>~15–35 行 / phase</td>
+</tr>
+<tr>
+<td><strong>机器门禁</strong></td>
+<td><code>stage-gates.md</code> 机器表 + <code>stage_gate.py</code></td>
+<td>gate 文档 ~174 行</td>
+</tr>
+</tbody></table>
+<p>哲学不变：<strong>Router 只调度，不写用例；阶段细节不进 Router；gate 以代码为准。</strong></p>
+<h3 id="10-3-我们实际做的四步（可复用顺序）"><a href="#10-3-我们实际做的四步（可复用顺序）" class="headerlink" title="10.3.  我们实际做的四步（可复用顺序）"></a>10.3.  我们实际做的四步（可复用顺序）</h3><h4 id="10-3-1-拆-workflow：README-phases"><a href="#10-3-1-拆-workflow：README-phases" class="headerlink" title="10.3.1.  拆 workflow：README + phases"></a>10.3.1.  拆 workflow：README + phases</h4><p>以 <code>bug-regression</code> 为试点：</p>
 <ol>
-<li><p><strong>审查状态持久化</strong>——跨对话的审查状态传递。目前需要用外部文件或数据库来存累积摘要和工作进度。短期内可以在文件系统上用 JSON/Markdown 做简单的 checkpoint。</p>
-</li>
-<li><p><strong>本地代码操作</strong>——让 LLM 直接操作本地仓库的代码变更（而不是光读 diff）。这需要代理式工具的支持（Cursor、Claude Code 等），纯 Web 端的 Code Review 做不到。</p>
-</li>
-<li><p><strong>自动化评论提交</strong>——LLM 审查完所有文件后，自动把 inline 评论批量提交到 PR 平台。类似 Gesoff 正在构思的 <code>jj interdiff</code> 脚本。</p>
-</li>
+<li>把 <strong>Deliverable Routing</strong>（<code>bug_surface</code> → <code>outputs/</code> 根目录、模板类型）留在 <code>README.md</code>。</li>
+<li>每个阶段一个 <code>phases/NN-&lt;slug&gt;.md</code>，统一小模板：</li>
 </ol>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">目标 / 输入 / 产出</span><br><span class="line">Skills / Environment</span><br><span class="line">Gate（人读）+ Machine（机读关键字）</span><br><span class="line">Next</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li><code>README</code> 只保留阶段 <strong>索引表</strong>（阶段名 → 文件名），不展开步骤正文。</li>
+<li>删除单体 <code>workflows/bug-regression.md</code> 等 stub，避免 Agent 继续 <code>read_file</code> 旧路径。</li>
+</ol>
+<p><code>feature-testing</code>、<code>release-acceptance</code> 按同一目录结构复制，保证三个 entry <strong>形状一致</strong>。</p>
+<h4 id="10-3-2-加解析器：phase-doc-py-phases-py"><a href="#10-3-2-加解析器：phase-doc-py-phases-py" class="headerlink" title="10.3.2.  加解析器：phase_doc.py + phases.py"></a>10.3.2.  加解析器：<code>phase_doc.py</code> + <code>phases.py</code></h4><p>阶段名的权威列表只在 <code>tools/phases.py</code> 维护一份，与 <code>stage_gate.py</code> 共用——避免「文档写 Change Scope、代码认 Scope Change」类漂移。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 tools/phase_doc.py --entry bug-regression --phase <span class="string">"Change Scope"</span></span><br><span class="line"><span class="comment"># → workflows/bug-regression/phases/02-change-scope.md</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Router 的 Required Reading 改为显式禁令：</p>
+<blockquote>
+<p>不要在一轮里读完所有 <code>phases/*.md</code>；每阶段只 <code>phase_doc</code> 一次。</p>
+</blockquote>
+<h4 id="10-3-3-瘦-Router，重-Pitfalls"><a href="#10-3-3-瘦-Router，重-Pitfalls" class="headerlink" title="10.3.3.  瘦 Router，重 Pitfalls"></a>10.3.3.  瘦 Router，重 Pitfalls</h4><p><code>skills/agent-next/SKILL.md</code> 删掉可下放到 phase 的段落，只保留：</p>
+<ul>
+<li>读序：<code>index</code> → <code>README</code>（首次）→ <strong>当前 phase</strong> → <code>stage-gates</code> 机器段</li>
+<li><code>run_state</code> / <code>skill_receipts</code> / 确认门禁</li>
+<li><strong>Pitfalls</strong>（从事故 offline 合并的纪律：Bug Intake 无 artifact、禁止跳步、API 须从用户 Network 追踪等）</li>
+</ul>
+<p>事故教训 <strong>进 Pitfalls 或 tools</strong>，不进 phase 正文重复三遍。</p>
+<h4 id="10-3-4-压缩-stage-gates-md"><a href="#10-3-4-压缩-stage-gates-md" class="headerlink" title="10.3.4.  压缩 stage-gates.md"></a>10.3.4.  压缩 <code>stage-gates.md</code></h4><p>保留：Global Blocking Actions、Machine Rules By Phase 大表、与 <code>PHASE_RULES</code> 对齐的列。</p>
+<p>删除或缩短：逐阶段散文复述（「本阶段要做 A、B、C…」已搬到 <code>phases/*.md</code>）。</p>
+<p>Agent 侧约定：<strong>优先读机器表</strong>；全文仅在人类审计时需要。</p>
+<h3 id="10-4-下游-Skill-怎么改"><a href="#10-4-下游-Skill-怎么改" class="headerlink" title="10.4.  下游 Skill 怎么改"></a>10.4.  下游 Skill 怎么改</h3><p>Lazy Load 后，<strong>下游 Skill 不再指向单体 workflow 文件</strong>，Required Reading 统一为：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. phase_doc.py → 当前 phases/*.md</span><br><span class="line">2. stage-gates.md（写产物前）</span><br><span class="line">3. 本 Skill 的 references/*（如 case-writing-rules.md）</span><br><span class="line">4. templates/TEMPLATE-*.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以 <code>epvs-test-cases</code> 为例：把「读 <code>workflows/bug-regression.md</code>」改成「读 <code>phase_doc</code> 输出路径」。否则 Router 已 Lazy，下游仍拉整本旧 workflow，<strong>上下文节省被抵消</strong>。</p>
+<p><code>run_state.py</code> 默认把 <code>state.workflow</code> 设为 <code>workflows/&lt;entry&gt;/README.md</code>（不再是已删除的单体路径）——旧 state 不迁移会在 gate 或路径校验处暴露，属于 <strong>刻意的破坏式提醒</strong>。</p>
+<h3 id="10-5-双端同步：仓库改完不等于-Agent-会用"><a href="#10-5-双端同步：仓库改完不等于-Agent-会用" class="headerlink" title="10.5.  双端同步：仓库改完不等于 Agent 会用"></a>10.5.  双端同步：仓库改完不等于 Agent 会用</h3><table>
+<thead>
+<tr>
+<th>动作</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rsync -a --delete skills/ ~/.hermes/profiles/coding/skills/</code></td>
+<td>Hermes 侧 Router / 下游 Skill 与仓库一致</td>
+</tr>
+<tr>
+<td>更新 <code>SOUL.md</code> 读法</td>
+<td>写清 <code>phase_doc</code>、禁止跳步、Intake 前无副作用</td>
+</tr>
+<tr>
+<td><strong>新开 Hermes 会话</strong></td>
+<td>避免旧会话 MEMORY 仍引用 <code>bug-regression.md</code></td>
+</tr>
+<tr>
+<td>跑 <code>tests/test_phase_doc.py</code> + 全量测试</td>
+<td>阶段名、workflow 路径、gate 规则不散架</td>
+</tr>
+</tbody></table>
+<p>Cursor 侧依赖仓库 <code>AGENTS.md</code> 自动注入；改 workflow 目录结构后记得同步 <code>AGENTS.md</code> 里的路径示例。</p>
+<h3 id="10-6-改造中的坑与验收信号"><a href="#10-6-改造中的坑与验收信号" class="headerlink" title="10.6.  改造中的坑与验收信号"></a>10.6.  改造中的坑与验收信号</h3><table>
+<thead>
+<tr>
+<th>坑</th>
+<th>现象</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>旧路径幽灵</td>
+<td><code>File not found: .../bug-regression.md</code></td>
+<td>改读 <code>README.md</code> + <code>phase_doc</code>；清 Hermes MEMORY</td>
+</tr>
+<tr>
+<td>Router 与 phase 重复</td>
+<td>两处维护阶段表，改一处漏一处</td>
+<td>阶段表只在 <code>README</code> 索引 + <code>phases.py</code></td>
+</tr>
+<tr>
+<td>下游 Skill 未改</td>
+<td>单阶段仍注入 300+ 行旧 workflow</td>
+<td>批量改 Required Reading 首条</td>
+</tr>
+<tr>
+<td>gate 散文复读</td>
+<td>每阶段 Token 多 ~2.8K</td>
+<td>只读 Machine 表；见第 5.3 节对比</td>
+</tr>
+<tr>
+<td><code>state.workflow</code> 旧值</td>
+<td>gate 或 validate 报 workflow 路径</td>
+<td>用 <code>run_state</code> 重写或新建 run-id</td>
+</tr>
+</tbody></table>
+<p><strong>验收 Lazy Load 是否生效</strong>（与机器门禁同等重要）：</p>
+<ul>
+<li>每个阶段日志里 <strong>仅一次</strong> <code>phase_doc.py</code>，且只 <code>read_file</code> <strong>一个</strong> <code>phases/*.md</code></li>
+<li>首轮不出现「连续读取 8 个 phase 文件」</li>
+<li><code>state.workflow</code> 形如 <code>workflows/bug-regression/README.md</code></li>
+<li>Router 行数稳定在 ~70 行量级；单体 workflow 文件在仓库中 <strong>不存在</strong></li>
+</ul>
+<h3 id="10-7-量化收益（Bug-回归-Change-Scope）"><a href="#10-7-量化收益（Bug-回归-Change-Scope）" class="headerlink" title="10.7.  量化收益（Bug 回归 @ Change Scope）"></a>10.7.  量化收益（Bug 回归 @ Change Scope）</h3><table>
+<thead>
+<tr>
+<th>读法</th>
+<th align="right">约 Markdown 行数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>旧：单体 workflow + 长篇 gate 散文 + 胖 Router</td>
+<td align="right">400+</td>
+</tr>
+<tr>
+<td>新：README + 单 phase + gate 机器段 + 瘦 Router</td>
+<td align="right"><strong>~100</strong></td>
+</tr>
+</tbody></table>
+<p>整单八阶段规则类 Token 约 <strong>16K–17K</strong>（推荐读法），相对旧 Harness 规则部分约省 <strong>一半</strong>；估算口径与第 5.3 节一致。</p>
+<h3 id="10-8-给其他团队的一句话建议"><a href="#10-8-给其他团队的一句话建议" class="headerlink" title="10.8.  给其他团队的一句话建议"></a>10.8.  给其他团队的一句话建议</h3><p>若你已在用「一个大 Skill + 长 workflow」，<strong>不要先加 Prompt</strong>，先问：</p>
+<ol>
+<li>阶段能否 <strong>一文件一阶段</strong>？</li>
+<li>路径能否 <strong>机器解析</strong>（<code>phase_doc</code> 或等价物）？</li>
+<li>Router 能否瘦到 <strong>只指路 + Pitfalls</strong>？</li>
+<li>gate 能否 <strong>表格 + 脚本</strong>，散文是否可删？</li>
+</ol>
+<p>四问都能答「是」，再改下游 Skill 的 Required Reading 并做一次 <strong>故意删除旧 stub</strong> 的破坏性发布——逼 Agent 和新会话走新路径。Lazy Load 的价值不在少写几百行 Markdown，而在 <strong>让「当前阶段该读什么」变成可执行、可审计的单次动作</strong>。</p>
 <hr>
-<h2 id="坦率地说：几件我还不太确定的事"><a href="#坦率地说：几件我还不太确定的事" class="headerlink" title="坦率地说：几件我还不太确定的事"></a>坦率地说：几件我还不太确定的事</h2><p><strong>LLM 的收敛质量可靠吗？</strong> 人类在 squash 一个文件时，知道什么是”看完了”——LLM 呢？它可能会漏掉关键问题但自信满满地给出”这个文件没问题”的结论。如果收敛的质量不可靠，整个增量策略就建立在流沙上。目前的缓解措施是让收敛摘要包含具体依据（”因为 X、Y、Z 原因，这个文件在功能上正确”），而不是笼统的判断。</p>
-<p><strong>增量策略会不会丢失跨文件的关联性？</strong> 一个变更的 bug 往往不在单个文件里，而在多个文件的交互中。如果你把它们分开审查，可能每个文件看着都没问题，但合在一起就有问题。Gesoff 的应对是审查者对整个变更有一个”大局理解”之后再逐文件细审——但 LLM 没有这个先验的大局理解。可能需要第一阶段做全局速览，第二阶段再做增量收敛。</p>
-<p><strong>操作模式的反馈回路成本多高？</strong> 让 LLM 跑测试、改代码来验证自己的审查判断，听起来很对，但每次操作都有延迟和成本。如果 PR 里有 30 个需要验证的点，全部跑一遍可能比人肉身审查还慢。需要区分”哪些判断值得验证”和”哪些靠读代码就够了”。</p>
-<hr>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>Gesoff 的工作流给我的真正启发不是 jj 的命令行技巧，而是它重新定义了审查者和代码变更之间的关系。审查不是”从外部评价代码”，而是”在内部逐步消耗变更”。</p>
-<p>把这个思路应用到 LLM 审查中，核心的迁移不是技术栈（不需要 LLM 学会 jj），而是<strong>将审查从一次性反应改造成一个迭代的、可收敛、可暂停、可验证的过程</strong>。</p>
-<p>当你的 PR 大到”一次性看不过来”的时候，也许问题不在于工具不够强，而在于你试图一次性看完它。</p>
-<hr>
-<p><em>这篇文章的部分想法来源于 Ben Gesoff 的 <a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9iZW4uZ2Vzb2ZmLnVrL3Bvc3RzL3Jldmlld2luZy1sYXJnZS1jaGFuZ2VzLXdpdGgtamov">Reviewing large changes with Jujutsu</a>。</em></p>
+<h2 id="11-结语"><a href="#11-结语" class="headerlink" title="11.  结语"></a>11.  结语</h2><p>回到开篇那个矛盾：测试 Agent 往往写得出来，却不敢直接用。差距通常不在模型能力，而在 <strong>过程能否被检查、复现和阻断副作用</strong>。agent-next 把这件事做成仓库里的固定结构——模型可替换，Harness 留在 Git 里当团队资产。</p>
+<p>它的分工一句话说清：</p>
+<blockquote>
+<p><strong>Router 指路，Workflow 定阶段，Skill 承载专长，Knowledge 解释领域，Tool 执行门禁。</strong></p>
+</blockquote>
+<p>特性测试、Bug 回归、发布验收共用同一套五层目录；差别只在 <code>workflows/index.md</code> 选哪个 entry、当前 <code>phase</code> 对应哪一篇 <code>phases/*.md</code>。一次合规推进，至少经过这条链：<code>index</code> 选路 → <code>phase_doc.py</code> 读本阶段 → 按阶段加载 Skill 并登记 <code>skill_receipts[]</code> → <code>copy_template.py</code> 写入 <code>outputs/</code> → <code>validate_*</code> 与 <code>stage_gate.py</code> 裁决能否进入下一阶段。Router 不写用例、不上传缺陷、不跑自动化；<code>stage_gate.py</code> 失败即停，不猜、不跳步。</p>
+<p>Lazy Load 是上述结构的默认读法：每轮只展开当前阶段那一篇 phase 文档，门禁以脚本为准。整本 workflow 塞进一轮，规则读不全，Harness 就等于没起作用。纪律也不靠聊天记忆——踩坑经人审后写入 Skill Pitfalls 与 <code>tools/</code>，会话 MEMORY 只留个人习惯。</p>
+<p>若要在其他业务复用，fork <a target="_blank" rel="external nofollow noopener noreferrer" href="/go.html?u=aHR0cHM6Ly9naXRodWIuY29tL3Bob2VuaW5lL3Rlc3QtYWdlbnQtbmV4dA"><code>test-agent-next</code></a>（<code>dev</code> 分支），替换 <code>knowledge/</code> 与 workflow 表头；建议保留 <code>runs/</code> 与 <code>outputs/</code> 分离、<code>copy_template</code>、validate 与 gate 这一套。换领域不换骨架，换模型不必重搭流程。</p>
 <!-- hexo injector body_end start --> <script data-pjax="">if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
     var parent = document.getElementById('recent-posts');
     var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/常用工具/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🛠️ 常用工具 (23)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/操作系统/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🖥️ 操作系统 (10)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/百味人生/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍵 百味人生 (4)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/知识积累/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">📚 知识积累 (5)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/算法分析/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🧠 算法分析 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/系统架构/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🏗️ 系统架构 (2)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/编程语法/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">👩‍💻 编程语法 (19)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/人工智能/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🤖 人工智能 (4)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item" style="visibility: hidden"></div><a class="magnet_link_more"  href="https://blog.phoenine.top/categories" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
@@ -327,7 +965,7 @@
   else if (epage === cpage){
     butterfly_swiper_injector_config();
   }
-  </script><script defer="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.js"></script><script defer="" data-pjax="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper_init.js"></script><!-- hexo injector body_end end --></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top/posts/88d4d675/">https://blog.phoenine.top/posts/88d4d675/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.phoenine.top" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/llm/">llm</a><a class="post-meta__tags" href="/tags/code-review/">code-review</a><a class="post-meta__tags" href="/tags/jujutsu/">jujutsu</a><a class="post-meta__tags" href="/tags/workflow/">workflow</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer=""></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/b9117924/" title="利用Skill将Apple Books高亮同步到Obsidian"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/%E5%88%A9%E7%94%A8Skill%E5%B0%86Apple%20Books%E9%AB%98%E4%BA%AE%E5%90%8C%E6%AD%A5%E5%88%B0Obsidian-1779349059684.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">利用Skill将Apple Books高亮同步到Obsidian</div></div><div class="info-2"><div class="info-item-1">这是一篇关于「用 Hermes Agent 把 Apple Books 高亮自动同步到 KnowledgeOS」 的技术记录。包括 SQLite 数据解剖、Skill 设计思路、核心 Python 脚本解析、以及迭代过程中的几次设计回头。 适合 Obsidian 读书笔记深度用户、想给 AI Agent 设计可复用 skill 的开发者。</div></div></div></a></nav><hr class="custom-hr"><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Phoenine</div><div class="author-info-description">中年危机 | 码字困难户</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Jujutsu-%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5%E5%B7%A5%E4%BD%9C%E6%B5%81%EF%BC%8C%E5%AF%B9-LLM-%E5%81%9A%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5%E6%9C%89%E4%BB%80%E4%B9%88%E5%90%AF%E5%8F%91%EF%BC%9F"><span class="toc-text">Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A1%E6%9F%A5%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">审查的本质是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%EF%BC%9A%E4%B8%80%E6%AC%A1%E5%8F%AA%E6%B6%88%E5%8C%96%E4%B8%80%E4%B8%AA-chunk"><span class="toc-text">增量：一次只消化一个 chunk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B6%E6%95%9B%EF%BC%9A%E6%8A%8A%E2%80%9D%E7%9C%8B%E5%AE%8C%E4%BA%86%E2%80%9D%E5%8F%98%E6%88%90%E4%B8%80%E6%AE%B5%E6%91%98%E8%A6%81"><span class="toc-text">收敛：把”看完了”变成一段摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E6%9A%82%E5%81%9C%EF%BC%9ALLM-%E4%B8%8D%E9%9C%80%E8%A6%81%EF%BC%8C%E4%BD%86%E6%B5%81%E7%A8%8B%E9%9C%80%E8%A6%81"><span class="toc-text">可暂停：LLM 不需要，但流程需要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%AA%8C%E8%AF%81%EF%BC%9A%E8%BF%9B%E5%BA%A6%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-text">可验证：进度可视化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%98%E8%A6%81%E6%9B%B4%E6%B7%B1%E4%B8%80%E5%B1%82%EF%BC%9A%E4%BB%8E%E6%B6%88%E8%B4%B9%E5%88%B0%E6%93%8D%E4%BD%9C"><span class="toc-text">还要更深一层：从消费到操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%A1%8C%E6%80%A7%EF%BC%9A%E5%93%AA%E4%BA%9B%E7%8E%B0%E5%9C%A8%E5%B0%B1%E8%83%BD%E5%81%9A%EF%BC%8C%E5%93%AA%E4%BA%9B%E8%BF%98%E9%9C%80%E8%A6%81%E7%AD%89"><span class="toc-text">可行性：哪些现在就能做，哪些还需要等</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9D%A6%E7%8E%87%E5%9C%B0%E8%AF%B4%EF%BC%9A%E5%87%A0%E4%BB%B6%E6%88%91%E8%BF%98%E4%B8%8D%E5%A4%AA%E7%A1%AE%E5%AE%9A%E7%9A%84%E4%BA%8B"><span class="toc-text">坦率地说：几件我还不太确定的事</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-text">最后</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/88d4d675/" title="Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？">Jujutsu 的代码审查工作流，对 LLM 做代码审查有什么启发？</a><time datetime="2026-06-07T16:00:00.000Z" title="发表于 2026-06-08 00:00:00">2026-06-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b9117924/" title="利用Skill将Apple Books高亮同步到Obsidian">利用Skill将Apple Books高亮同步到Obsidian</a><time datetime="2026-05-21T07:27:29.801Z" title="发表于 2026-05-21 15:27:29">2026-05-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/eb21c9cc/" title="AI Agent 测试工作流复盘">AI Agent 测试工作流复盘</a><time datetime="2026-05-09T02:58:07.017Z" title="发表于 2026-05-09 10:58:07">2026-05-09</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="my-footer-svg-div">
+  </script><script defer="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.js"></script><script defer="" data-pjax="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper_init.js"></script><!-- hexo injector body_end end --></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top/posts/88d4d675/">https://blog.phoenine.top/posts/88d4d675/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.phoenine.top" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hermes/">Hermes</a><a class="post-meta__tags" href="/tags/Skills/">Skills</a><a class="post-meta__tags" href="/tags/workflow/">workflow</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer=""></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/b9117924/" title="利用Skill将Apple Books高亮同步到Obsidian"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/%E5%88%A9%E7%94%A8Skill%E5%B0%86Apple%20Books%E9%AB%98%E4%BA%AE%E5%90%8C%E6%AD%A5%E5%88%B0Obsidian-1779349059684.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">利用Skill将Apple Books高亮同步到Obsidian</div></div><div class="info-2"><div class="info-item-1">这是一篇关于「用 Hermes Agent 把 Apple Books 高亮自动同步到 KnowledgeOS」 的技术记录。包括 SQLite 数据解剖、Skill 设计思路、核心 Python 脚本解析、以及迭代过程中的几次设计回头。 适合 Obsidian 读书笔记深度用户、想给 AI Agent 设计可复用 skill 的开发者。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/eb21c9cc/" title="AI Agent 测试工作流复盘"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/AI%20Agent%20%E6%B5%8B%E8%AF%95%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%A4%8D%E7%9B%98-1779177530967.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-09</div><div class="info-item-2">AI Agent 测试工作流复盘</div></div><div class="info-2"><div class="info-item-1">这是一篇关于「用 AI Agent 搭建测试工作流」的技术复盘。记录了我用 Hermes Agent 将禅道、GitLab、飞书、知识库整合为一条自动化测试用例管线的过程——包括设计思路、真实跑通的数据、以及几个让我印象深刻的低级错误。适合对 AI 工程化落地感兴趣的测试开发、DevOps 和效率工具爱好者。</div></div></div></a><a class="pagination-related" href="/posts/b9117924/" title="利用Skill将Apple Books高亮同步到Obsidian"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/%E5%88%A9%E7%94%A8Skill%E5%B0%86Apple%20Books%E9%AB%98%E4%BA%AE%E5%90%8C%E6%AD%A5%E5%88%B0Obsidian-1779349059684.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-21</div><div class="info-item-2">利用Skill将Apple Books高亮同步到Obsidian</div></div><div class="info-2"><div class="info-item-1">这是一篇关于「用 Hermes Agent 把 Apple Books 高亮自动同步到 KnowledgeOS」 的技术记录。包括 SQLite 数据解剖、Skill 设计思路、核心 Python 脚本解析、以及迭代过程中的几次设计回头。 适合 Obsidian 读书笔记深度用户、想给 AI Agent 设计可复用 skill 的开发者。</div></div></div></a></div></div><hr class="custom-hr"><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Phoenine</div><div class="author-info-description">中年危机 | 码字困难户</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%BC%95%E5%AD%90"><span class="toc-text">1.  引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%83%8C%E6%99%AF%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E3%80%8C%E4%B8%80%E4%B8%AA%E5%A4%A7-Skill-%E9%95%BF%E5%AF%B9%E8%AF%9D%E3%80%8D%E4%BC%9A%E5%A4%B1%E8%B4%A5"><span class="toc-text">2.  背景：为什么「一个大 Skill + 长对话」会失败</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%B8%89%E7%B1%BB%E9%AB%98%E9%A2%91%E4%BB%BB%E5%8A%A1%EF%BC%8C%E4%B8%80%E5%A5%97%E5%8A%A8%E4%BD%9C%EF%BC%8C%E4%B8%8D%E5%90%8C%E9%98%B6%E6%AE%B5"><span class="toc-text">2.1.  三类高频任务，一套动作，不同阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%9C%9F%E5%AE%9E%E8%B8%A9%E5%9D%91%EF%BC%9A%E4%B8%80%E6%AC%A1-Bug-%E5%9B%9E%E5%BD%92%E7%9A%84%E5%A4%B1%E8%B4%A5%E8%B7%AF%E5%BE%84"><span class="toc-text">2.2.  真实踩坑：一次 Bug 回归的失败路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-agent-next-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9A%E4%BB%93%E5%BA%93%E5%8D%B3-Harness"><span class="toc-text">3.  agent-next 是什么：仓库即 Harness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87"><span class="toc-text">3.1.  设计目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%98%8E%E7%A1%AE%E4%B8%8D%E5%81%9A%E7%9A%84%E4%BA%8B"><span class="toc-text">3.2.  明确不做的事</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E4%BB%93%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-text">3.3.  仓库目录结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%BA%94%E5%B1%82-Harness-%E6%9E%B6%E6%9E%84%EF%BC%88%E5%B1%95%E5%BC%80%E8%AF%B4%E6%98%8E%EF%BC%89"><span class="toc-text">4.  五层 Harness 架构（展开说明）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%80%BB%E8%A7%88%E5%9B%BE"><span class="toc-text">4.1.  总览图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E2%91%A0-%E5%85%A5%E5%8F%A3%E5%B1%82%EF%BC%9A%E8%B0%81%E5%9C%A8%E7%AC%AC%E4%B8%80%E5%B1%8F%E8%A2%AB%E5%8A%A0%E8%BD%BD%EF%BC%9F"><span class="toc-text">4.2.  ① 入口层：谁在第一屏被加载？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E2%91%A1-%E6%B5%81%E7%A8%8B%E5%B1%82%EF%BC%9A%E9%98%B6%E6%AE%B5%E5%8D%B3%E6%96%87%E4%BB%B6"><span class="toc-text">4.3.  ② 流程层：阶段即文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E2%91%A2-%E6%8A%80%E8%83%BD%E5%B1%82%EF%BC%9A%E7%AA%84-Skill-references"><span class="toc-text">4.4.  ③ 技能层：窄 Skill + references</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E2%91%A3-%E8%AF%81%E6%8D%AE%E5%B1%82%EF%BC%9A%E4%B8%89%E7%B1%BB%E6%95%B0%E6%8D%AE%EF%BC%8C%E4%B8%89%E7%A7%8D%E7%94%A8%E9%80%94"><span class="toc-text">4.5.  ④ 证据层：三类数据，三种用途</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E2%91%A4-%E6%9C%BA%E5%99%A8%E5%B1%82%EF%BC%9A%E6%8A%8A%E3%80%8C%E5%BA%94%E8%AF%A5%E3%80%8D%E5%8F%98%E6%88%90%E3%80%8C%E8%83%BD%E4%B8%8D%E8%83%BD%E8%BF%87%E3%80%8D"><span class="toc-text">4.6.  ⑤ 机器层：把「应该」变成「能不能过」</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-7-%E4%B8%80%E6%AC%A1%E9%98%B6%E6%AE%B5%E6%8E%A8%E8%BF%9B%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%88Bug-%E5%9B%9E%E5%BD%92%E7%A4%BA%E4%BE%8B%EF%BC%89"><span class="toc-text">4.7.  一次阶段推进的数据流（Bug 回归示例）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%B8%89%E6%9D%A1-Workflow-%E4%B8%8E-Bug-%E5%9B%9E%E5%BD%92%E9%98%B6%E6%AE%B5%EF%BC%88%E5%8F%AF%E7%85%A7%E6%8A%84%E7%BB%93%E6%9E%84%EF%BC%89"><span class="toc-text">5.  三条 Workflow 与 Bug 回归阶段（可照抄结构）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%B8%89%E4%B8%AA-Entry"><span class="toc-text">5.1.  三个 Entry</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Bug-%E5%9B%9E%E5%BD%92%E5%85%AB%E9%98%B6%E6%AE%B5%EF%BC%88%E7%9B%AE%E6%A0%87-%E4%BA%A7%E5%87%BA%EF%BC%89"><span class="toc-text">5.2.  Bug 回归八阶段（目标 / 产出）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-Lazy-Load-%E5%B8%A6%E6%9D%A5%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E6%94%B6%E7%9B%8A"><span class="toc-text">5.3.  Lazy Load 带来的上下文收益</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Skill-%E8%87%AA%E8%BF%9B%E5%8C%96%EF%BC%9A%E7%A6%BB%E7%BA%BF%E5%BD%92%E5%B9%B6%EF%BC%8C%E8%80%8C%E9%9D%9E%E5%9C%A8%E7%BA%BF%E5%A0%86-MEMORY"><span class="toc-text">6.  Skill 自进化：离线归并，而非在线堆 MEMORY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Knowledge-%E4%B8%8E-Source-Evidence-%E7%9A%84%E8%BE%B9%E7%95%8C"><span class="toc-text">7.  Knowledge 与 Source Evidence 的边界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E6%A1%88%E4%BE%8B%E5%AF%B9%E7%85%A7%EF%BC%9ABug-1649"><span class="toc-text">8.  案例对照：Bug #1649</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E6%97%A0-Harness"><span class="toc-text">8.1.  无 Harness</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E6%9C%89-Harness%EF%BC%88%E9%98%B6%E6%AE%B5%E4%B8%8D%E5%8F%AF%E8%B7%B3%EF%BC%89"><span class="toc-text">8.2.  有 Harness（阶段不可跳）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Cursor-%E4%B8%8E-Hermes-%E5%8F%8C%E7%AB%AF%E8%90%BD%E5%9C%B0"><span class="toc-text">9.  Cursor 与 Hermes 双端落地</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-Skills-%E4%BB%8E%E3%80%8C%E6%95%B4%E6%9C%AC%E6%89%8B%E5%86%8C%E3%80%8D%E5%88%B0-Lazy-Load%EF%BC%9A%E6%94%B9%E9%80%A0%E7%BB%8F%E9%AA%8C"><span class="toc-text">10.  Skills 从「整本手册」到 Lazy Load：改造经验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-%E6%97%A7%E6%A8%A1%E5%BC%8F%E4%B8%BA%E4%BB%80%E4%B9%88%E6%92%91%E4%B8%8D%E4%BD%8F"><span class="toc-text">10.1.  旧模式为什么撑不住</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-%E6%94%B9%E9%80%A0%E7%9B%AE%E6%A0%87%EF%BC%9A%E4%B8%89%E4%BB%B6%E4%BA%8B%E5%88%86%E5%BC%80"><span class="toc-text">10.2.  改造目标：三件事分开</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-3-%E6%88%91%E4%BB%AC%E5%AE%9E%E9%99%85%E5%81%9A%E7%9A%84%E5%9B%9B%E6%AD%A5%EF%BC%88%E5%8F%AF%E5%A4%8D%E7%94%A8%E9%A1%BA%E5%BA%8F%EF%BC%89"><span class="toc-text">10.3.  我们实际做的四步（可复用顺序）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#10-3-1-%E6%8B%86-workflow%EF%BC%9AREADME-phases"><span class="toc-text">10.3.1.  拆 workflow：README + phases</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10-3-2-%E5%8A%A0%E8%A7%A3%E6%9E%90%E5%99%A8%EF%BC%9Aphase-doc-py-phases-py"><span class="toc-text">10.3.2.  加解析器：phase_doc.py + phases.py</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10-3-3-%E7%98%A6-Router%EF%BC%8C%E9%87%8D-Pitfalls"><span class="toc-text">10.3.3.  瘦 Router，重 Pitfalls</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10-3-4-%E5%8E%8B%E7%BC%A9-stage-gates-md"><span class="toc-text">10.3.4.  压缩 stage-gates.md</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-4-%E4%B8%8B%E6%B8%B8-Skill-%E6%80%8E%E4%B9%88%E6%94%B9"><span class="toc-text">10.4.  下游 Skill 怎么改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-5-%E5%8F%8C%E7%AB%AF%E5%90%8C%E6%AD%A5%EF%BC%9A%E4%BB%93%E5%BA%93%E6%94%B9%E5%AE%8C%E4%B8%8D%E7%AD%89%E4%BA%8E-Agent-%E4%BC%9A%E7%94%A8"><span class="toc-text">10.5.  双端同步：仓库改完不等于 Agent 会用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-6-%E6%94%B9%E9%80%A0%E4%B8%AD%E7%9A%84%E5%9D%91%E4%B8%8E%E9%AA%8C%E6%94%B6%E4%BF%A1%E5%8F%B7"><span class="toc-text">10.6.  改造中的坑与验收信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-7-%E9%87%8F%E5%8C%96%E6%94%B6%E7%9B%8A%EF%BC%88Bug-%E5%9B%9E%E5%BD%92-Change-Scope%EF%BC%89"><span class="toc-text">10.7.  量化收益（Bug 回归 @ Change Scope）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-8-%E7%BB%99%E5%85%B6%E4%BB%96%E5%9B%A2%E9%98%9F%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E5%BB%BA%E8%AE%AE"><span class="toc-text">10.8.  给其他团队的一句话建议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E7%BB%93%E8%AF%AD"><span class="toc-text">11.  结语</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/88d4d675/" title="agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践">agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</a><time datetime="2026-06-07T16:00:00.000Z" title="发表于 2026-06-08 00:00:00">2026-06-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b9117924/" title="利用Skill将Apple Books高亮同步到Obsidian">利用Skill将Apple Books高亮同步到Obsidian</a><time datetime="2026-05-21T07:27:29.801Z" title="发表于 2026-05-21 15:27:29">2026-05-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/eb21c9cc/" title="AI Agent 测试工作流复盘">AI Agent 测试工作流复盘</a><time datetime="2026-05-09T02:58:07.017Z" title="发表于 2026-05-09 10:58:07">2026-05-09</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="my-footer-svg-div">
   <svg class="my-footer-wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
   <path class="my-footer-wave-path" d="M851.8,100c125,0,288.3-45,348.2-64V0H0v44c3.7-1,7.3-1.9,11-2.9C80.7,22,151.7,10.8,223.5,6.3C276.7,2.9,330,4,383,9.8 c52.2,5.7,103.3,16.2,153.4,32.8C623.9,71.3,726.8,100,851.8,100z"></path>
   </svg>
