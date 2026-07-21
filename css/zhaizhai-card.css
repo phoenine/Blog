@@ -31,6 +31,12 @@
   animation: zhaizhai-flip-in 0.42s ease both;
 }
 
+/* Return the previous card slightly faster before the next card opens. */
+.zhaizhai-flip-card.is-switching-out .zhaizhai-face-front {
+  animation-duration: 0.26s;
+  animation-timing-function: ease-out;
+}
+
 .zhaizhai-flip-card.is-flipped .zhaizhai-face-front {
   display: none;
 }
