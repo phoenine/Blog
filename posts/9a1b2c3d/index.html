@@ -1,0 +1,1123 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动 | 因受</title><meta name="author" content="Phoenine"><meta name="copyright" content="Phoenine"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFB"><meta name="description" content="拆解 agent-next 中 Skills 与 Workflow 的职责边界、receipt 闭环、Fail Closed 门禁与 Lazy Load 阶段驱动设计。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动">
+<meta property="og:url" content="https://blog.phoenine.top/posts/9a1b2c3d/index.html">
+<meta property="og:site_name" content="因受">
+<meta property="og:description" content="拆解 agent-next 中 Skills 与 Workflow 的职责边界、receipt 闭环、Fail Closed 门禁与 Lazy Load 阶段驱动设计。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784024299518.png">
+<meta property="article:published_time" content="2026-07-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-21T05:53:16.790Z">
+<meta property="article:author" content="Phoenine">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="Skills">
+<meta property="article:tag" content="workflow">
+<meta property="article:tag" content="feature-testing">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784024299518.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动",
+  "url": "https://blog.phoenine.top/posts/9a1b2c3d/",
+  "image": "https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784024299518.png",
+  "datePublished": "2026-07-13T16:00:00.000Z",
+  "dateModified": "2026-07-21T05:53:16.790Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phoenine",
+      "url": "https://blog.phoenine.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.phoenine.top/posts/9a1b2c3d/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="//busuanzi.ibruce.info"><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFB')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"2VAUX2CNGR","apiKey":"ef0bc8a1efbb6e767ae83c08eec018fb","indexName":"blog","hitsPerPage":6,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/my-footer.css"><link rel="stylesheet" href="/css/my-callout.css"><link rel="stylesheet" href="/css/zhaizhai-card.css"><script src="/js/ai-summary.js"></script><link rel="stylesheet" href="/css/ai-summary.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-color: #FFFFFB;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">70</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/we-events"><i class="fa-fw fas fa-calendar-alt"></i><span> we-events</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/code-reviewer"><i class="fa-fw fas fa-code"></i><span> code-reviewer</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/liucai"><i class="fa-fw fas fa-palette"></i><span> liucai</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 摘摘</span></a></li><li><a class="site-page child" href="/reading/"><i class="fa-fw fas fa-book-open"></i><span> 读书</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">因受</span></a><a class="nav-page-title" href="/"><span class="site-name">agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-archive"></i><span> 归档</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-timeline"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-list"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:randomPost();"><i class="fa-fw fa-solid fa-shuffle"></i><span> 随机</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-project-diagram"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/amazon-scraper"><i class="fa-fw fas fa-spider"></i><span> amazon-scraper</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/we-events"><i class="fa-fw fas fa-calendar-alt"></i><span> we-events</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/code-reviewer"><i class="fa-fw fas fa-code"></i><span> code-reviewer</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://github.com/phoenine/liucai"><i class="fa-fw fas fa-palette"></i><span> liucai</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-coffee"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/artitalk/"><i class="fa-fw fas fa-comments"></i><span> 摘摘</span></a></li><li><a class="site-page child" href="/reading/"><i class="fa-fw fas fa-book-open"></i><span> 读书</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-13T16:00:00.000Z" title="发表于 2026-07-14 00:00:00">2026-07-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-21T05:53:16.790Z" title="更新于 2026-07-21 13:53:16">2026-07-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/">LLM</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784024299518.png"></p>
+<h2 id="1-引子"><a href="#1-引子" class="headerlink" title="1.  引子"></a>1.  引子</h2><p>上一篇文章讲的是 agent-next 这套 Harness 怎么接进测试流水线：入口怎么选、阶段怎么推进、状态怎么落盘、门禁怎么挡住越界动作。</p>
+<p>这一篇不再从 Harness 全景展开，而是往里拆一层：<strong>Skills 和 Workflow 到底怎么分工</strong>。</p>
+<p>如果你长期让 Agent 写测试用例，大概率会遇到一个很熟悉的问题：它不是不会写，而是太容易把事情混在一起。</p>
+<p>用户说“帮我看下这个需求”，它可能直接开始写用例；用户说“验证一下”，它可能跳过影响分析去跑浏览器；你让它遵守用例模板，它这次记住了，下次又漏了 frontmatter；你把流程、格式、领域知识、执行纪律全塞进一个 Prompt，短期看起来省事，长期一定会变成一份越来越难维护的“大手册”。</p>
+<p>agent-next 在这里做了一个比较克制的选择：</p>
+<blockquote>
+<p>不指望 Prompt 变得越来越聪明，而是让职责边界变得越来越硬。</p>
+</blockquote>
+<p>这篇文章的主线就是这句话。</p>
+<p>一句话分工仍然是：</p>
+<blockquote>
+<p><strong>Router 指路，Workflow 定阶段，Skill 承载专长，Knowledge 解释领域，Tool 执行门禁。</strong></p>
+</blockquote>
+<p>后面会用 feature-testing 做例子，但重点不是“产线产量趋势视图”这个具体业务，而是 agent-next 怎么把一个测试 Agent 拆成可路由、可审计、可替换的阶段系统。</p>
+<hr>
+<h2 id="2-为什么不是一个大-Prompt"><a href="#2-为什么不是一个大-Prompt" class="headerlink" title="2.  为什么不是一个大 Prompt"></a>2.  为什么不是一个大 Prompt</h2><p>最直接的做法当然是写一个很长的 Prompt。</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">所有入口</span><br><span class="line">  → 一个超长 Prompt</span><br><span class="line">  → 里面放流程、格式、领域知识、工具纪律</span><br><span class="line">  → Agent 自己判断当前应该做哪一步</span><br><span class="line">  → 输出 Markdown / 执行命令 / 写外部系统</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个方案在 demo 里很顺。因为 demo 通常只有一个任务、一条路径、少量规则，Agent 只要把结果写得像样就可以。</p>
+<p>但真实测试任务不是这样。特性测试、Bug 回归、发布验收共享很多能力，却有完全不同的入口、阶段和准入证据。把它们塞进一个 Prompt 后，常见问题会一起出现：</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Prompt 同时负责流程和技能</td>
+<td>改一个阶段规则，可能影响其它阶段</td>
+</tr>
+<tr>
+<td>所有知识一次加载</td>
+<td>上下文膨胀，关键规则反而被稀释</td>
+</tr>
+<tr>
+<td>格式规则靠模型记忆</td>
+<td>产物缺 frontmatter、标题格式漂移</td>
+</tr>
+<tr>
+<td>执行纪律靠模型自觉</td>
+<td>可能提前写 ZenTao、跑共享环境、跳过确认</td>
+</tr>
+<tr>
+<td>阶段完成靠口头声明</td>
+<td>无法证明 Agent 真的读过某个 Skill</td>
+</tr>
+</tbody></table>
+<p>agent-next 没有继续把 Prompt 做厚，而是把“规则”拆到几类仓库资产里。</p>
+<table>
+<thead>
+<tr>
+<th>资产</th>
+<th>负责什么</th>
+<th>不负责什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Router</td>
+<td>选择 entry、定位当前 phase</td>
+<td>不写需求、用例、报告</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>定义阶段顺序、输入输出、当前阶段 required skills</td>
+<td>不承载领域细节</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>说明当前阶段怎么做</td>
+<td>不决定全流程顺序</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>放格式细则、转换规则、写作纪律</td>
+<td>不做阶段路由</td>
+</tr>
+<tr>
+<td>Knowledge</td>
+<td>放可复用领域知识</td>
+<td>不替代本次任务证据</td>
+</tr>
+<tr>
+<td>Tool / Gate</td>
+<td>校验状态、模板、receipt、artifact</td>
+<td>不靠自然语言判断通过</td>
+</tr>
+</tbody></table>
+<p>上一篇讲的是这套 Harness 的整体骨架；这篇讲的是骨架里的边界为什么要这样切。</p>
+<hr>
+<h2 id="3-职责边界图"><a href="#3-职责边界图" class="headerlink" title="3.  职责边界图"></a>3.  职责边界图</h2><p>先看一张完整链路图。</p>
+<p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784023311129.png" alt="607"></p>
+<p>我更喜欢把它理解成六个问题：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>回答的问题</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Router</td>
+<td>现在去哪？</td>
+<td>feature-testing、bug-regression、release-acceptance</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>下一步是什么？</td>
+<td>Intake → Requirement Specification → Risk Analysis</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>这一步怎么做？</td>
+<td>需求分析、测试点设计、自动化分类</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>格式和细则是什么？</td>
+<td>用例写作规则、自动化转换规则</td>
+</tr>
+<tr>
+<td>Knowledge</td>
+<td>领域知识是什么？</td>
+<td>ePVS 术语、页面规则、计算口径</td>
+</tr>
+<tr>
+<td>Tool / Gate</td>
+<td>机器是否允许继续？</td>
+<td><code>stage_gate.py</code>、<code>validate_test_cases.py</code></td>
+</tr>
+</tbody></table>
+<p>这几个问题不能混。</p>
+<p>Router 一旦开始写用例，入口层就会变胖；Workflow 一旦塞进大量业务说明，Lazy Load 就失去意义；Skill 一旦接管流程顺序，下游阶段就容易跳；Knowledge 一旦混进本次任务证据，后续复盘时很难判断结论来自哪里。</p>
+<p>拆开以后，每一层都能单独演进：</p>
+<ul>
+<li>换领域：替换 <code>knowledge/</code> 和 workflow 表头。</li>
+<li>换流程：新增或修改 <code>workflows/&lt;entry&gt;/phases/*.md</code>。</li>
+<li>换技能：更新某个 <code>skills/&lt;name&gt;/SKILL.md</code>。</li>
+<li>换格式：更新 references 或 templates。</li>
+<li>换模型：Harness 不变，只换 provider。</li>
+</ul>
+<p>这里的稳定性不是来自某个万能 Prompt，而是来自边界不被打穿。</p>
+<hr>
+<h2 id="4-Skill：窄职责，不接管流程"><a href="#4-Skill：窄职责，不接管流程" class="headerlink" title="4.  Skill：窄职责，不接管流程"></a>4.  Skill：窄职责，不接管流程</h2><p>在 agent-next 里，Skill 不是一本大手册，而是一个很小的能力包：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">skills/&lt;name&gt;/</span><br><span class="line">├── SKILL.md</span><br><span class="line">└── references/</span><br><span class="line">    └── ...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以 ePVS 测试为例，目录大概长这样：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">skills/</span><br><span class="line">├── agent-next/SKILL.md              # Router，只调度不写用例</span><br><span class="line">├── epvs-requirement/                # 需求摄入 + 规格</span><br><span class="line">├── epvs-test-points/                # 风险分析 + 测试点</span><br><span class="line">├── epvs-test-cases/                 # 测试用例设计</span><br><span class="line">│   └── references/case-writing-rules.md</span><br><span class="line">├── epvs-automation/                 # 自动化分类 + 生成 + 执行协调</span><br><span class="line">│   └── references/</span><br><span class="line">│       ├── automation-conversion-rules.md</span><br><span class="line">│       └── webtest-patterns.md</span><br><span class="line">├── envision-apitest/                # API 自动化落地</span><br><span class="line">├── envision-webtest/                # Web/UI 自动化落地</span><br><span class="line">├── epvs-reporting/                  # 报告 + 结项</span><br><span class="line">├── epvs-zentao-sync/                # 禅道同步，条件加载</span><br><span class="line">├── epvs-data-injection/             # 数据注入，条件加载</span><br><span class="line">└── epvs-acceptance/                 # 发布验收</span><br></pre></td></tr></tbody></table></figure>
+
+<p>为什么要这么碎？</p>
+<p>因为一个“全能 Skill”看起来方便，实际会带来几个问题：</p>
+<ol>
+<li>每次加载都要读一堆当前阶段用不到的规则。</li>
+<li>修改自动化规则时，可能影响需求分析阶段。</li>
+<li>格式细则、执行纪律、业务知识互相挤在一起。</li>
+<li>门禁无法精确验证当前阶段该读的 Skill 是否真的被读过。</li>
+</ol>
+<p>所以 Skill 的边界要小到可以被阶段声明、被 receipt 记录、被 gate 校验。</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>负责</th>
+<th>不负责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>epvs-requirement</code></td>
+<td>Intake、需求规格</td>
+<td>不写测试用例</td>
+</tr>
+<tr>
+<td><code>epvs-test-points</code></td>
+<td>风险、测试点</td>
+<td>不上传 ZenTao</td>
+</tr>
+<tr>
+<td><code>epvs-test-cases</code></td>
+<td>用例设计、格式纪律</td>
+<td>不决定是否执行自动化</td>
+</tr>
+<tr>
+<td><code>epvs-automation</code></td>
+<td>分类、转换计划、执行协调</td>
+<td>不直接替代 API/Web 工程规则</td>
+</tr>
+<tr>
+<td><code>envision-apitest</code></td>
+<td>YAML + pytest API 自动化</td>
+<td>不处理 Web PageObject</td>
+</tr>
+<tr>
+<td><code>envision-webtest</code></td>
+<td>Playwright + pytest UI 自动化</td>
+<td>不写纯接口 YAML</td>
+</tr>
+</tbody></table>
+<p>自动化这块最能体现这层拆分。</p>
+<p><code>epvs-automation</code> 先解析测试用例，再判断每条用例的 <code>target</code> 和 <code>level</code>：</p>
+<table>
+<thead>
+<tr>
+<th>等级</th>
+<th>含义</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>A0</code></td>
+<td>selector、接口、数据稳定</td>
+<td>可进入实现或执行计划</td>
+</tr>
+<tr>
+<td><code>A1</code></td>
+<td>可自动化，但缺 selector、fixture、PageObject 或上下文参数</td>
+<td>先补支撑能力</td>
+</tr>
+<tr>
+<td><code>M0</code></td>
+<td>半自动，需要截图、图表、视觉或人工判断</td>
+<td>生成辅助步骤和证据</td>
+</tr>
+<tr>
+<td><code>N0</code></td>
+<td>不适合自动化或风险过高</td>
+<td>保留手工并记录原因</td>
+</tr>
+</tbody></table>
+<p>分类完成后，再落到具体工程：</p>
+<table>
+<thead>
+<tr>
+<th>target</th>
+<th>后续 Skill</th>
+<th>仓库</th>
+<th>典型产物</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>api</code></td>
+<td><code>envision-apitest</code></td>
+<td><code>repositories/test/envision-apitest</code></td>
+<td><code>testcases/data/*.yaml</code></td>
+</tr>
+<tr>
+<td><code>web</code></td>
+<td><code>envision-webtest</code></td>
+<td><code>repositories/test/envision-webtest</code></td>
+<td>Playwright + pytest cases</td>
+</tr>
+<tr>
+<td><code>hybrid</code></td>
+<td><code>envision-webtest</code></td>
+<td><code>repositories/test/envision-webtest</code></td>
+<td>UI 路径 + Network/API 观察</td>
+</tr>
+<tr>
+<td><code>manual</code></td>
+<td>不进入自动化仓库</td>
+<td>无</td>
+<td>手工证据要求</td>
+</tr>
+</tbody></table>
+<p>也就是说，<code>epvs-automation</code> 管“怎么分类、怎么计划、怎么记录追溯”，<code>envision-apitest</code> 和 <code>envision-webtest</code> 管“在具体测试仓库里怎么落地”。这比一个自动化大 Prompt 更啰嗦一点，但更容易维护，也更容易审。</p>
+<hr>
+<h2 id="5-Workflow：定义阶段，不承载知识"><a href="#5-Workflow：定义阶段，不承载知识" class="headerlink" title="5.  Workflow：定义阶段，不承载知识"></a>5.  Workflow：定义阶段，不承载知识</h2><p>Workflow 只解决一件事：<strong>阶段顺序</strong>。</p>
+<p>agent-next 当前有三个入口：</p>
+<table>
+<thead>
+<tr>
+<th>Entry</th>
+<th>何时用</th>
+<th>阶段数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>feature-testing</code></td>
+<td>PRD、需求单、特性 MR</td>
+<td>8（含可选）</td>
+</tr>
+<tr>
+<td><code>bug-regression</code></td>
+<td>Bug ID、修复 MR</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>release-acceptance</code></td>
+<td>版本、tag、发布验收</td>
+<td>6（含可选）</td>
+</tr>
+</tbody></table>
+<p>目录形态是：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">workflows/&lt;entry&gt;/</span><br><span class="line">├── README.md</span><br><span class="line">└── phases/</span><br><span class="line">    ├── 01-intake.md</span><br><span class="line">    ├── 02-requirement-specification.md</span><br><span class="line">    └── ...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>每个 phase 文件只保留当前阶段最小必要信息：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">目标 / 输入 / 产出</span><br><span class="line">Skills / Environment / Repository</span><br><span class="line">Gate / Machine</span><br><span class="line">Prev → Next</span><br></pre></td></tr></tbody></table></figure>
+
+<p>它不写长篇领域说明，不写用例标题规范，也不写 API 自动化工程的具体细节。</p>
+<p>原因很现实：</p>
+<ul>
+<li>Workflow 是流程资产，应该稳定、短小、可索引。</li>
+<li>Knowledge 是领域资产，会随业务迁移。</li>
+<li>Reference 是格式资产，会随产物规则变化。</li>
+<li>Tool 是执行资产，应该用代码校验，不靠自然语言。</li>
+</ul>
+<p>如果 Workflow 开始承载一切，Lazy Load 很快就会失效。Router 瘦了，下游 Skill 却又拉回一本 workflow 大书，最后只是换了一个地方堆 Prompt。</p>
+<hr>
+<h2 id="6-receipt：把“读过-Skill”变成证据"><a href="#6-receipt：把“读过-Skill”变成证据" class="headerlink" title="6.  receipt：把“读过 Skill”变成证据"></a>6.  receipt：把“读过 Skill”变成证据</h2><p>仅靠 Agent 说“我已经读过这个 Skill”没有意义。</p>
+<p>agent-next 要求每次加载 Skill 后写入 <code>skill_receipts[]</code>：</p>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">{</span></span><br><span class="line">  <span class="attr">"skill_receipts"</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">{</span></span><br><span class="line">      <span class="attr">"skill"</span><span class="punctuation">:</span> <span class="string">"epvs-test-cases"</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">"path"</span><span class="punctuation">:</span> <span class="string">"skills/epvs-test-cases/SKILL.md"</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">"sha256"</span><span class="punctuation">:</span> <span class="string">"e675403ea2c8987a7a9c69ac04595711753a0cf040f3cd39c0b118868588696e"</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">"supports_phase"</span><span class="punctuation">:</span> <span class="string">"Test Design"</span></span><br><span class="line">    <span class="punctuation">}</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">}</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>它把“读过 Skill”从一句聊天里的声明，变成 run state 里的证据。</p>
+<p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784023447587.png" alt="704"></p>
+<p>这个闭环很小，但很有用。</p>
+<p>没有 receipt，Skill 只是 Prompt 建议；有了 receipt，Skill 就进入机器可检查的状态。Gate 不需要相信模型，只需要检查 state。</p>
+<p>Reference 也是同样逻辑。例如写测试用例前必须读 <code>case-writing-rules.md</code>，并记录 <code>case_rules_receipt:</code>。即使用例内容看起来没问题，只要这个证据缺失，阶段就不能完成。</p>
+<hr>
+<h2 id="7-Lazy-Load-的重点：Not-Loaded"><a href="#7-Lazy-Load-的重点：Not-Loaded" class="headerlink" title="7.  Lazy Load 的重点：Not Loaded"></a>7.  Lazy Load 的重点：Not Loaded</h2><p>Lazy Load 经常被理解成“这一阶段加载了什么”。但更关键的是另一半：<strong>这一阶段没有加载什么</strong>。</p>
+<p>如果 Phase 2 只是写需求规格，它就不应该加载自动化、报告、ZenTao 写入、发布验收。少加载不是省 token 的小技巧，而是在减少 Agent 可以误用的规则。</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Loaded</th>
+<th>Not Loaded</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Intake</td>
+<td><code>agent-next</code>, <code>epvs-requirement</code>, workflow index, current phase</td>
+<td>automation、reporting、ZenTao write、acceptance</td>
+</tr>
+<tr>
+<td>Requirement Specification</td>
+<td><code>epvs-requirement</code>, relevant knowledge, source evidence</td>
+<td>test-cases、automation、execution</td>
+</tr>
+<tr>
+<td>Test Design</td>
+<td><code>epvs-test-points</code>, <code>epvs-test-cases</code>, case rules</td>
+<td>ZenTao write、API/Web execution、release acceptance</td>
+</tr>
+<tr>
+<td>Optional Case Sync Or Generation</td>
+<td><code>epvs-zentao-sync</code> and/or <code>epvs-automation</code></td>
+<td>reporting、bug report unless needed</td>
+</tr>
+<tr>
+<td>Optional Case Execute</td>
+<td><code>epvs-automation</code>, <code>envision-apitest</code> / <code>envision-webtest</code></td>
+<td>requirement authoring、risk authoring</td>
+</tr>
+<tr>
+<td>Optional Test Report</td>
+<td><code>epvs-reporting</code></td>
+<td>new case writing、new automation generation</td>
+</tr>
+</tbody></table>
+<p>传统 Prompt 的倾向是“为了保险，多给一点上下文”。agent-next 反过来：</p>
+<blockquote>
+<p>当前阶段用不到的东西，不应该进入上下文。</p>
+</blockquote>
+<p>原因很简单：</p>
+<ol>
+<li>Context 是有限资源。</li>
+<li>Workflow 是阶段性的。</li>
+<li>Knowledge 是条件性的。</li>
+<li>Tool 是执行性的，不需要全文读进 Prompt。</li>
+</ol>
+<p>Lazy Load 的收益不只是 token 下降，而是 Agent 的注意力变窄了：它更难跳阶段，更难把报告规则带进用例阶段，也更难在需求阶段误触发自动化。</p>
+<hr>
+<h2 id="8-Stage-Gate：Fail-Closed"><a href="#8-Stage-Gate：Fail-Closed" class="headerlink" title="8.  Stage Gate：Fail Closed"></a>8.  Stage Gate：Fail Closed</h2><p>Stage Gate 不是提示词里的 checklist，而是机器门禁。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 tools/stage_gate.py --state runs/&lt;run-id&gt;/state.json</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Gate 检查的不是“Agent 觉得做完了没有”，而是 state 和 artifact 是否满足规则。</p>
+<table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>检查什么</th>
+<th>防什么问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Run state</td>
+<td><code>runs/&lt;run-id&gt;/state.json</code> 是否存在</td>
+<td>对话丢失后无法复盘</td>
+</tr>
+<tr>
+<td>Product line</td>
+<td><code>v1</code> / <code>v2</code> 是否记录</td>
+<td>产物路径和分支选错</td>
+</tr>
+<tr>
+<td>Skill receipt</td>
+<td>required skills 是否有 path + sha256</td>
+<td>Agent 声称读过但没读</td>
+</tr>
+<tr>
+<td>Template</td>
+<td>artifact 是否由 <code>copy_template.py</code> 生成</td>
+<td>手写 Markdown 格式漂移</td>
+</tr>
+<tr>
+<td>Artifact validation</td>
+<td><code>validate_artifact.py</code> / <code>validate_test_cases.py</code></td>
+<td>缺 frontmatter 或必填段落</td>
+</tr>
+<tr>
+<td>Confirmation</td>
+<td>写 ZenTao、共享环境执行、数据变更前是否确认</td>
+<td>Agent 擅自执行副作用</td>
+</tr>
+<tr>
+<td>Traceability</td>
+<td>REQ → RISK → TP → TC → AUTO → RUN</td>
+<td>无法从报告追溯到需求</td>
+</tr>
+</tbody></table>
+<p>这就是 Fail Closed：证据不完整时，默认失败。</p>
+<p>Prompt 可以漏读，模型可以误判，阶段可以被用户催着跳。但 Gate 不允许在证据缺失时宣称完成。</p>
+<hr>
+<h2 id="9-Agent-生命周期总时序"><a href="#9-Agent-生命周期总时序" class="headerlink" title="9.  Agent 生命周期总时序"></a>9.  Agent 生命周期总时序</h2><p>把上面的边界串起来，一次阶段推进大致是这样：</p>
+<p><img src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784023586694.png"></p>
+<p>这张图里没有一个步骤要求模型“自己记住所有规则”。规则在仓库里，证据在 state 里，校验在工具里。</p>
+<h3 id="9-1-跟着-Agent-走一次"><a href="#9-1-跟着-Agent-走一次" class="headerlink" title="9.1.  跟着 Agent 走一次"></a>9.1.  跟着 Agent 走一次</h3><p>只看图还是有点抽象。我们拿 Test Design 阶段走一遍，看看 Agent 在一个阶段里到底怎么“想”。</p>
+<p>用户不会说“请进入 feature-testing 的 Test Design 阶段”。用户通常只会说：“需求和风险都整理好了，帮我把测试点和用例补出来。”</p>
+<p>这时 Agent 的第一步不是写用例，而是先定位自己在哪。</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">用户意图：补测试点和测试用例</span><br><span class="line">  → Router 确认仍在 feature-testing</span><br><span class="line">  → Workflow 确认当前 phase 是 Test Design</span><br><span class="line">  → phase_doc.py 解析 04-test-design.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p>读完 phase 后，Agent 才知道这一阶段的边界：</p>
+<ul>
+<li>输入不是原始需求，而是上游 <code>requirement_spec</code> 和 <code>risk_analysis</code>。</li>
+<li>输出不是一份随手写的 Markdown，而是 <code>test_points</code> 和 <code>test_cases</code> 两个 artifact。</li>
+<li>必须加载 <code>epvs-test-points</code> 和 <code>epvs-test-cases</code>。</li>
+<li>写用例前必须读取 <code>case-writing-rules.md</code>。</li>
+</ul>
+<p>接下来才进入 Skill 和 Reference：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Load epvs-test-points</span><br><span class="line">Load epvs-test-cases</span><br><span class="line">Record skill_receipts[]</span><br><span class="line">Read references/case-writing-rules.md</span><br><span class="line">Record case_rules_receipt:</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这一步很像人做测试设计前先翻团队规范。区别是，Agent 不能只说“我看过了”，而要把 receipt 写进 run state。后面的 Gate 会检查这个证据。</p>
+<p>然后才是生成产物。Agent 不会新建一个空 Markdown 文件，而是先走模板：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">copy_template.py --template test-points</span><br><span class="line">copy_template.py --template test-cases</span><br></pre></td></tr></tbody></table></figure>
+
+<p>模板给出 frontmatter、artifact type、producer phase、source artifacts、validation 等结构。Agent 在这个结构里填内容，才能保证后续工具读得懂。</p>
+<p>产物写完也不是结束。Agent 还要把它交给机器校验：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">validate_artifact.py --artifact-type test_points</span><br><span class="line">validate_test_cases.py --artifact-file ...</span><br><span class="line">stage_gate.py --state runs/&lt;run-id&gt;/state.json</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果 <code>case_rules_receipt:</code> 缺了，或者 <code>test_cases</code> 不是从模板创建的，即使内容看起来合理，阶段也不能通过。Gate 不关心 Agent 的解释，只看证据是否完整。</p>
+<p>所以一次阶段推进，真正的顺序是：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">User request</span><br><span class="line">  → Router 定位 entry</span><br><span class="line">  → Workflow 定位 phase</span><br><span class="line">  → Phase 声明输入、输出、required skills</span><br><span class="line">  → Skill 给出做法</span><br><span class="line">  → Reference 给出细则</span><br><span class="line">  → Knowledge 补领域语义</span><br><span class="line">  → Template 约束产物结构</span><br><span class="line">  → Artifact 落到 outputs/</span><br><span class="line">  → Gate 校验证据</span><br><span class="line">  → Next Phase</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这就是 agent-next 里“思考”的形状：模型负责在边界内完成内容判断，Harness 负责决定它能不能进入下一步。</p>
+<hr>
+<h2 id="10-feature-testing-压缩案例"><a href="#10-feature-testing-压缩案例" class="headerlink" title="10.  feature-testing 压缩案例"></a>10.  feature-testing 压缩案例</h2><p>下面用“产线产量趋势视图”这个 feature-testing 任务做一个压缩版案例。业务细节不展开，重点看每个阶段如何体现职责边界。</p>
+<h3 id="10-1-阶段表"><a href="#10-1-阶段表" class="headerlink" title="10.1.  阶段表"></a>10.1.  阶段表</h3><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>输入</th>
+<th>输出</th>
+<th>Required Skills</th>
+<th>Gate 关注点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Intake</td>
+<td>ZenTao Task / Requirement、设计文档、代码分支</td>
+<td><code>notes[]</code>、<code>knowledge_plan</code></td>
+<td><code>agent-next</code>, <code>epvs-requirement</code></td>
+<td><code>intake_input:</code>、product_line、知识计划</td>
+</tr>
+<tr>
+<td>Requirement Specification</td>
+<td>Intake 证据、源码、knowledge</td>
+<td><code>requirement_spec</code></td>
+<td><code>epvs-requirement</code></td>
+<td>模板、artifact metadata、source evidence</td>
+</tr>
+<tr>
+<td>Risk Analysis</td>
+<td>需求规格、源码证据</td>
+<td><code>risk_analysis</code></td>
+<td><code>epvs-test-points</code></td>
+<td>风险矩阵、repository evidence</td>
+</tr>
+<tr>
+<td>Test Design</td>
+<td>需求规格、风险分析</td>
+<td><code>test_points</code>, <code>test_cases</code></td>
+<td><code>epvs-test-points</code>, <code>epvs-test-cases</code></td>
+<td><code>case_rules_receipt:</code>、<code>validate_test_cases.py</code></td>
+</tr>
+<tr>
+<td>Optional Case Sync Or Generation</td>
+<td>已确认用例</td>
+<td>ZenTao 同步结果、<code>automation_classification</code></td>
+<td><code>epvs-zentao-sync</code> and/or <code>epvs-automation</code></td>
+<td>用户确认、自动化分类</td>
+</tr>
+<tr>
+<td>Optional Case Execute</td>
+<td>用例、环境、测试仓库</td>
+<td><code>execution_record</code></td>
+<td><code>epvs-automation</code>, API/Web Skill</td>
+<td>环境确认、执行证据</td>
+</tr>
+<tr>
+<td>Optional Bug Report</td>
+<td>失败证据</td>
+<td><code>bug_report</code></td>
+<td><code>epvs-reporting</code>, <code>epvs-zentao-sync</code></td>
+<td>bug 证据、写入确认</td>
+</tr>
+<tr>
+<td>Optional Test Report</td>
+<td>全链路证据</td>
+<td><code>run_summary</code></td>
+<td><code>epvs-reporting</code></td>
+<td>traceability、报告 artifact</td>
+</tr>
+</tbody></table>
+<p>这张表给的是全局视图。真正能看出 Workflow 在驱动的，是后半段几个阶段怎么一层层收窄：先把需求和风险变成测试点，再把测试点变成用例，再把用例分到 API/Web 自动化，最后把执行证据收束成报告。</p>
+<h3 id="10-2-Test-Design：把风险变成可执行用例"><a href="#10-2-Test-Design：把风险变成可执行用例" class="headerlink" title="10.2.  Test Design：把风险变成可执行用例"></a>10.2.  Test Design：把风险变成可执行用例</h3><p>Test Design 阶段加载 <code>epvs-test-points</code> 和 <code>epvs-test-cases</code>。它不是从需求直接“生成一批用例”，而是沿着前两个阶段的产物往下走：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">requirement_spec</span><br><span class="line">  → risk_analysis</span><br><span class="line">  → test_points</span><br><span class="line">  → test_cases</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个案例里，最终产出：</p>
+<ul>
+<li><code>outputs/v2/test-points/产线产量趋势视图-test-points.md</code>：10 个测试点。</li>
+<li><code>outputs/v2/test-cases/产线产量趋势视图-test-cases.md</code>：19 条测试用例。</li>
+</ul>
+<p>这里的 Gate 关注两件事。</p>
+<p>第一，测试用例必须从 <code>copy_template.py --template test-cases</code> 生成，不能手写一个看起来像 Markdown 的文件。第二，写用例前必须读取 <code>skills/epvs-test-cases/references/case-writing-rules.md</code>，并记录 <code>case_rules_receipt:</code>。也就是说，用例不是“写出来就算完成”，而是要带着格式规则的读取证据和 <code>validate_test_cases.py</code> 的校验结果一起进入下一阶段。</p>
+<h3 id="10-3-Automation：先分类，再落仓库"><a href="#10-3-Automation：先分类，再落仓库" class="headerlink" title="10.3.  Automation：先分类，再落仓库"></a>10.3.  Automation：先分类，再落仓库</h3><p>Optional Case Sync Or Generation 阶段有两个方向：同步到 ZenTao，或者做自动化分类。这个案例里两件事都做了：19 条用例上传到 ZenTao（IDs 2558-2576），随后进入自动化分类。</p>
+<p>自动化不是把 19 条用例直接丢给某个测试仓库。<code>epvs-automation</code> 先判断每条用例适合哪条轨道、自动化等级是什么、还缺不缺 fixture、selector 或 PageObject。分类结果是：</p>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th align="right">数量</th>
+<th>后续 Skill</th>
+<th>落地形态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>API</td>
+<td align="right">12</td>
+<td><code>envision-apitest</code></td>
+<td>YAML 数据驱动 + pytest</td>
+</tr>
+<tr>
+<td>Web</td>
+<td align="right">7</td>
+<td><code>envision-webtest</code></td>
+<td>Playwright + pytest + PageObject/ViewObject</td>
+</tr>
+</tbody></table>
+<p>这一步的重点不是执行，而是把“能不能自动化、在哪里自动化、需要补什么能力”说清楚。对于新分类出来的用例，不能从 classification 直接跳到 execution；必须先有 conversion plan、测试仓库草稿和窄范围验证。</p>
+<h3 id="10-4-Execution：执行证据不是一句-pass"><a href="#10-4-Execution：执行证据不是一句-pass" class="headerlink" title="10.4.  Execution：执行证据不是一句 pass"></a>10.4.  Execution：执行证据不是一句 pass</h3><p>Optional Case Execute 阶段才真正执行自动化。这个阶段加载 <code>epvs-automation</code>，再根据轨道加载 <code>envision-apitest</code> 或 <code>envision-webtest</code>。</p>
+<p>API 轨道进入 <code>repositories/test/envision-apitest</code>，核心文件是 <code>27_get_line_jph.yaml</code>。用例通过 YAML 描述请求路径、参数和 <code>assert_data</code>，再由 pytest 参数化执行。这个案例里，API 分类 12 条，其中 11 条进入执行并通过，1 条因为环境 ClickHouse 查询超时标记为 <code>is_run=false</code>，不计入执行通过率。</p>
+<p>Web 轨道进入 <code>repositories/test/envision-webtest</code>，核心文件是 <code>test_s03_jph_trend.py</code>。它不是散写 selector，而是通过 PageObject/ViewObject 表达用户路径、结构树、Tab、图表和下钻动作。这个案例里，Web 7 条全部通过。</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">API:  11 pass, 1 skip, 0 fail</span><br><span class="line">Web:  7 pass, 0 fail</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Gate 在这里关心的不是“终端里有没有绿色输出”，而是执行命令、目标环境、测试仓库分支、结果摘要和产物路径是否被记录到 execution record 里。共享环境执行前，还必须有用户确认。</p>
+<h3 id="10-5-Report：把链路收束起来"><a href="#10-5-Report：把链路收束起来" class="headerlink" title="10.5.  Report：把链路收束起来"></a>10.5.  Report：把链路收束起来</h3><p>Optional Test Report 阶段加载 <code>epvs-reporting</code>，产出 <code>run_summary</code>。这一步不是简单写一句“测试通过”，而是把上游证据串起来：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">REQ-SPEC-001</span><br><span class="line">  → RISK-001</span><br><span class="line">  → TP-001</span><br><span class="line">  → TC-SET-001</span><br><span class="line">  → AUTO-CLASS-001</span><br><span class="line">  → RUN-SUMMARY-001</span><br></pre></td></tr></tbody></table></figure>
+
+<p>最终报告落在：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">outputs/v2/reports/产线产量趋势视图-run-summary.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p>到这里，Workflow 的作用才完整显出来：每个阶段不是孤立产物，而是把上一个阶段的证据继续结构化，直到最后可以从运行报告追溯回需求、风险、测试点、用例、自动化分类和执行记录。</p>
+<h3 id="10-6-outputs-目录结构"><a href="#10-6-outputs-目录结构" class="headerlink" title="10.6.  outputs/ 目录结构"></a>10.6.  outputs/ 目录结构</h3><p>Markdown 交付物统一落在 <code>outputs/</code>，不和运行状态、自动化工程混在一起：</p>
+<figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">outputs/</span><br><span class="line">├── requirements/</span><br><span class="line">│   └── 产线产量趋势视图-requirement-spec.md</span><br><span class="line">├── risks/</span><br><span class="line">│   └── 产线产量趋势视图-risk-analysis.md</span><br><span class="line">├── test-points/</span><br><span class="line">│   └── 产线产量趋势视图-test-points.md</span><br><span class="line">├── test-cases/</span><br><span class="line">│   └── 产线产量趋势视图-test-cases.md</span><br><span class="line">├── automation/</span><br><span class="line">│   └── 产线产量趋势视图-classification.md</span><br><span class="line">├── execution/</span><br><span class="line">│   └── 产线产量趋势视图-execution-record.md</span><br><span class="line">└── reports/</span><br><span class="line">    └── 产线产量趋势视图-run-summary.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p>对应边界是：</p>
+<ul>
+<li><code>outputs/</code>：人审交付物。</li>
+<li><code>runs/&lt;run-id&gt;/</code>：run state、receipt、门禁证据、中间规格。</li>
+<li><code>repositories/test/envision-apitest</code>：API 自动化工程。</li>
+<li><code>repositories/test/envision-webtest</code>：Web/UI 自动化工程。</li>
+</ul>
+<h3 id="10-7-最终交付清单"><a href="#10-7-最终交付清单" class="headerlink" title="10.7.  最终交付清单"></a>10.7.  最终交付清单</h3><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>状态</th>
+<th>产物</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需求分析</td>
+<td>完成</td>
+<td>需求说明书</td>
+</tr>
+<tr>
+<td>风险分析</td>
+<td>完成</td>
+<td>10 项风险矩阵</td>
+</tr>
+<tr>
+<td>测试设计</td>
+<td>完成</td>
+<td>10 测试点 + 19 测试用例</td>
+</tr>
+<tr>
+<td>禅道上传</td>
+<td>完成</td>
+<td>19 条用例（IDs 2558-2576）</td>
+</tr>
+<tr>
+<td>自动化分类</td>
+<td>完成</td>
+<td>API 12 条 / Web 7 条</td>
+</tr>
+<tr>
+<td>API 执行</td>
+<td>11/11 通过，1 条配置跳过</td>
+<td><code>27_get_line_jph.yaml</code></td>
+</tr>
+<tr>
+<td>Web 执行</td>
+<td>7/7 通过</td>
+<td><code>test_s03_jph_trend.py</code></td>
+</tr>
+<tr>
+<td>运行报告</td>
+<td>完成</td>
+<td><code>outputs/v2/reports/产线产量趋势视图-run-summary.md</code></td>
+</tr>
+</tbody></table>
+<p>这张表的意义不是展示业务复杂度，而是展示链路完整性：从 requirement 到 risk、test point、test case、automation、execution、report，每一步都有对应 artifact 和 gate evidence。</p>
+<hr>
+<h2 id="11-传统-Prompt-vs-agent-next"><a href="#11-传统-Prompt-vs-agent-next" class="headerlink" title="11.  传统 Prompt vs agent-next"></a>11.  传统 Prompt vs agent-next</h2><p>最后放在一起看，两种模式的差异会更明显。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统 Prompt</th>
+<th>agent-next</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>规则存放</td>
+<td>全塞进 Prompt</td>
+<td>Router / Workflow / Skill / Reference / Tool 分层</td>
+</tr>
+<tr>
+<td>流程推进</td>
+<td>模型自行判断</td>
+<td>Workflow + Phase</td>
+</tr>
+<tr>
+<td>技能加载</td>
+<td>一次性读大段上下文</td>
+<td>当前阶段 required skills</td>
+</tr>
+<tr>
+<td>领域知识</td>
+<td>混在 Prompt</td>
+<td><code>knowledge/</code> 按需读取</td>
+</tr>
+<tr>
+<td>格式校验</td>
+<td>靠模型遵守</td>
+<td>template + validator</td>
+</tr>
+<tr>
+<td>是否读过 Skill</td>
+<td>只能相信模型</td>
+<td><code>skill_receipts[]</code></td>
+</tr>
+<tr>
+<td>阶段完成</td>
+<td>模型声明</td>
+<td><code>stage_gate.py</code> fail closed</td>
+</tr>
+<tr>
+<td>维护方式</td>
+<td>Prompt 越来越长</td>
+<td>各层资产独立演进</td>
+</tr>
+</tbody></table>
+<p>传统 Agent 希望 Prompt 足够聪明；agent-next 希望流程足够可靠。</p>
+<p>这不是否定模型能力，而是不把系统可靠性押在模型记忆上。</p>
+<hr>
+<h2 id="12-结语"><a href="#12-结语" class="headerlink" title="12.  结语"></a>12.  结语</h2><p>Skills 和 Workflow 的价值，不是把测试流程写得更复杂，而是把职责拆到足够清楚。</p>
+<p>Router 只回答现在去哪。Workflow 只回答下一步是什么。Skill 只回答这一步怎么做。Reference 只回答格式和细则。Knowledge 只回答领域知识。Tool 和 Gate 只回答能不能继续。</p>
+<p>Prompt 可以犯错，Gate 不允许越界。</p>
+<p>Skill 可以升级，Workflow 可以替换，Knowledge 可以迁移，Tool 可以验证。</p>
+<p>真正稳定的不是 Prompt，而是职责边界。</p>
+<p>最后希望大家可以点赞评论～</p>
+<!-- hexo injector body_end start --> <script data-pjax="">if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/常用工具/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🛠️ 常用工具 (24)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/操作系统/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🖥️ 操作系统 (10)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/百味人生/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍵 百味人生 (4)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/知识积累/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">📚 知识积累 (5)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/算法分析/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🧠 算法分析 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/系统架构/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🏗️ 系统架构 (2)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/编程语法/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">👩‍💻 编程语法 (19)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://blog.phoenine.top/categories/人工智能/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🤖 人工智能 (5)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item" style="visibility: hidden"></div><a class="magnet_link_more"  href="https://blog.phoenine.top/categories" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #f2f2f2;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: #5E7F74}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style>#catalog_magnet .magnet_item:nth-child(n+7){display:none !important;}</style><script data-pjax="">
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/b53f2424/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105084433789.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-11-05</span><a class="blog-slider__title" href="posts/b53f2424/" alt="">使用Midscene实现AI自动化测试</a><div class="blog-slider__text">Midscene.js是一款AI驱动的UI自动化工具，支持自然语言操作与视觉+文本识别，可与Playwright、Chrome插件集成，兼容多模型，适合快速迭代的测试场景。</div><a class="blog-slider__button" href="posts/b53f2424/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/aed033e2/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105145726546.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-09-20</span><a class="blog-slider__title" href="posts/aed033e2/" alt="">像玩 RPG 一样坚持习惯-Notion积分打卡v3.0</a><div class="blog-slider__text">Notion积分打卡3.0将习惯养成游戏化，首页展示修行之路、成长曲线成长每日；任务分主线，完成可解锁称号、徽章；积分可兑换奖励商城物品，变化直观；系统提供称号，让坚持像打RPG一样有剧情与奖励。</div><a class="blog-slider__button" href="posts/aed033e2/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/13bfb908/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/image-20250920185703323.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-09-20</span><a class="blog-slider__title" href="posts/13bfb908/" alt="">使用「Notion - 记忆闪卡 」模版高效学习</a><div class="blog-slider__text">Notion记忆闪卡模版将费曼学习法与间隔重复结合，卡片要求用通俗语言讲解，自动生成复习时间，三种学习状态（初学、巩固、熟练）清晰可见。支持技术、工具、职场等多领域知识，内置工具墙与书摘区，帮助学习者系统化记忆、快速复习，提升学习效率。</div><a class="blog-slider__button" href="posts/13bfb908/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/fa332fd9/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028155325008.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2025-05-20</span><a class="blog-slider__title" href="posts/fa332fd9/" alt="">OpenManus 核心代码详细分析</a><div class="blog-slider__text">本文档提供了对 OpenManus 项目核心代码文件的深入分析，包括代码结构、算法逻辑、设计思想和实现细节。通过对关键源码的解读，帮助开发者更好地理解 OpenManus 的内部工作机制。</div><a class="blog-slider__button" href="posts/fa332fd9/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/26a8de56/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251028174209087.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/26a8de56/" alt="">Linux中的pushd和popd</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="posts/26a8de56/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/88d4d675/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9A%E6%8A%8A%E6%B5%8B%E8%AF%95%20Agent%20%E6%8E%A5%E8%BF%9B%E6%B5%81%E6%B0%B4%E7%BA%BF%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E6%B5%81%E3%80%81%E9%97%A8%E7%A6%81%E4%B8%8E%20Lazy%20Load%20%E7%9A%84%20Harness%20%E5%AE%9E%E8%B7%B5-1783581463787.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2026-06-08</span><a class="blog-slider__title" href="posts/88d4d675/" alt="">agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</a><div class="blog-slider__text">agent-next 测试 Harness 实践：五层架构、运行态数据流、Lazy Load、Skills 改造经验、机器门禁与 Hermes 落地。</div><a class="blog-slider__button" href="posts/88d4d675/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/e8974565/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/%E5%85%AC%E4%BC%97%E5%8F%B7%E6%B4%BB%E5%8A%A8%E6%80%BB%E6%98%AF%E9%94%99%E8%BF%87%EF%BC%9F%E6%88%91%E5%81%9A%E4%BA%86%E4%B8%80%E4%B8%AA%E8%87%AA%E5%8A%A8%E6%95%B4%E7%90%86%E5%B7%A5%E5%85%B7-1784615296068.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2026-07-21</span><a class="blog-slider__title" href="posts/e8974565/" alt="">公众号活动总是错过？我做了一个自动整理工具</a><div class="blog-slider__text">一个解决「周末带娃去哪儿」问题的开源工具——自动采集公众号文章、LLM 抽取活动信息、导出日历。</div><a class="blog-slider__button" href="posts/e8974565/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="posts/1b782ceb/" alt=""><img width="48" height="48" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/file-20251105154427143.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2021-04-22</span><a class="blog-slider__title" href="posts/1b782ceb/" alt="">探索Notion中节省时间的神器 - Button</a><div class="blog-slider__text">Notion按钮可插入块、添加页面、编辑页面、打开页面等功能，帮助快速完成重复任务、管理项目，提升效率，成为节省时间的实用工具，高效使用。</div><a class="blog-slider__button" href="posts/1b782ceb/" alt="">详情   </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper.min.js"></script><script defer="" data-pjax="" src="https://cdn.jsdelivr.net/npm/hexo-butterfly-swiper@1.0.12/lib/swiper_init.js"></script><!-- hexo injector body_end end --></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top">Phoenine</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.phoenine.top/posts/9a1b2c3d/">https://blog.phoenine.top/posts/9a1b2c3d/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.phoenine.top" target="_blank">因受</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hermes/">Hermes</a><a class="post-meta__tags" href="/tags/Skills/">Skills</a><a class="post-meta__tags" href="/tags/workflow/">workflow</a><a class="post-meta__tags" href="/tags/feature-testing/">feature-testing</a></div><div class="post-share"><div class="social-share" data-image="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9ASkills%20%E4%B8%8E%20Workflow%E2%80%94%E2%80%94%E6%B5%8B%E8%AF%95%20Agent%20%E7%9A%84%E8%81%8C%E8%B4%A3%E6%8B%86%E5%88%86%E4%B8%8E%E9%98%B6%E6%AE%B5%E9%A9%B1%E5%8A%A8-1784024299518.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer=""></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/e8974565/" title="公众号活动总是错过？我做了一个自动整理工具"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/%E5%85%AC%E4%BC%97%E5%8F%B7%E6%B4%BB%E5%8A%A8%E6%80%BB%E6%98%AF%E9%94%99%E8%BF%87%EF%BC%9F%E6%88%91%E5%81%9A%E4%BA%86%E4%B8%80%E4%B8%AA%E8%87%AA%E5%8A%A8%E6%95%B4%E7%90%86%E5%B7%A5%E5%85%B7-1784615296068.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">公众号活动总是错过？我做了一个自动整理工具</div></div><div class="info-2"><div class="info-item-1">一个解决「周末带娃去哪儿」问题的开源工具——自动采集公众号文章、LLM 抽取活动信息、导出日历。</div></div></div></a><a class="pagination-related" href="/posts/88d4d675/" title="agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9A%E6%8A%8A%E6%B5%8B%E8%AF%95%20Agent%20%E6%8E%A5%E8%BF%9B%E6%B5%81%E6%B0%B4%E7%BA%BF%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E6%B5%81%E3%80%81%E9%97%A8%E7%A6%81%E4%B8%8E%20Lazy%20Load%20%E7%9A%84%20Harness%20%E5%AE%9E%E8%B7%B5-1783581463787.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</div></div><div class="info-2"><div class="info-item-1">agent-next 测试 Harness 实践：五层架构、运行态数据流、Lazy Load、Skills 改造经验、机器门禁与 Hermes 落地。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/88d4d675/" title="agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/agent-next%EF%BC%9A%E6%8A%8A%E6%B5%8B%E8%AF%95%20Agent%20%E6%8E%A5%E8%BF%9B%E6%B5%81%E6%B0%B4%E7%BA%BF%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E6%B5%81%E3%80%81%E9%97%A8%E7%A6%81%E4%B8%8E%20Lazy%20Load%20%E7%9A%84%20Harness%20%E5%AE%9E%E8%B7%B5-1783581463787.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-08</div><div class="info-item-2">agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</div></div><div class="info-2"><div class="info-item-1">agent-next 测试 Harness 实践：五层架构、运行态数据流、Lazy Load、Skills 改造经验、机器门禁与 Hermes 落地。</div></div></div></a><a class="pagination-related" href="/posts/eb21c9cc/" title="AI Agent 测试工作流复盘"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/AI%20Agent%20%E6%B5%8B%E8%AF%95%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%A4%8D%E7%9B%98-1779177530967.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-09</div><div class="info-item-2">AI Agent 测试工作流复盘</div></div><div class="info-2"><div class="info-item-1">这是一篇关于「用 AI Agent 搭建测试工作流」的技术复盘。记录了我用 Hermes Agent 将禅道、GitLab、飞书、知识库整合为一条自动化测试用例管线的过程——包括设计思路、真实跑通的数据、以及几个让我印象深刻的低级错误。适合对 AI 工程化落地感兴趣的测试开发、DevOps 和效率工具爱好者。</div></div></div></a><a class="pagination-related" href="/posts/b9117924/" title="利用Skill将Apple Books高亮同步到Obsidian"><img class="cover" src="https://wechat-2025-1258175280.cos.ap-nanjing.myqcloud.com/images/%E5%88%A9%E7%94%A8Skill%E5%B0%86Apple%20Books%E9%AB%98%E4%BA%AE%E5%90%8C%E6%AD%A5%E5%88%B0Obsidian-1779349059684.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-21</div><div class="info-item-2">利用Skill将Apple Books高亮同步到Obsidian</div></div><div class="info-2"><div class="info-item-1">这是一篇关于「用 Hermes Agent 把 Apple Books 高亮自动同步到 KnowledgeOS」 的技术记录。包括 SQLite 数据解剖、Skill 设计思路、核心 Python 脚本解析、以及迭代过程中的几次设计回头。 适合 Obsidian 读书笔记深度用户、想给 AI Agent 设计可复用 skill 的开发者。</div></div></div></a></div></div><hr class="custom-hr"><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Phoenine</div><div class="author-info-description">中年危机 | 码字困难户</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">70</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://wpa.qq.com/msgrd?v=3&amp;uin=19974979&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="/social/wechat/" target="_blank" title="WeChatChat"><i class="fab fa-weixin"></i></a><a class="social-icon" href="https://github.com/phoenine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:sparkbye@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%BC%95%E5%AD%90"><span class="toc-text">1.  引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E4%B8%80%E4%B8%AA%E5%A4%A7-Prompt"><span class="toc-text">2.  为什么不是一个大 Prompt</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%81%8C%E8%B4%A3%E8%BE%B9%E7%95%8C%E5%9B%BE"><span class="toc-text">3.  职责边界图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Skill%EF%BC%9A%E7%AA%84%E8%81%8C%E8%B4%A3%EF%BC%8C%E4%B8%8D%E6%8E%A5%E7%AE%A1%E6%B5%81%E7%A8%8B"><span class="toc-text">4.  Skill：窄职责，不接管流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Workflow%EF%BC%9A%E5%AE%9A%E4%B9%89%E9%98%B6%E6%AE%B5%EF%BC%8C%E4%B8%8D%E6%89%BF%E8%BD%BD%E7%9F%A5%E8%AF%86"><span class="toc-text">5.  Workflow：定义阶段，不承载知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-receipt%EF%BC%9A%E6%8A%8A%E2%80%9C%E8%AF%BB%E8%BF%87-Skill%E2%80%9D%E5%8F%98%E6%88%90%E8%AF%81%E6%8D%AE"><span class="toc-text">6.  receipt：把“读过 Skill”变成证据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Lazy-Load-%E7%9A%84%E9%87%8D%E7%82%B9%EF%BC%9ANot-Loaded"><span class="toc-text">7.  Lazy Load 的重点：Not Loaded</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-Stage-Gate%EF%BC%9AFail-Closed"><span class="toc-text">8.  Stage Gate：Fail Closed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Agent-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%80%BB%E6%97%B6%E5%BA%8F"><span class="toc-text">9.  Agent 生命周期总时序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-%E8%B7%9F%E7%9D%80-Agent-%E8%B5%B0%E4%B8%80%E6%AC%A1"><span class="toc-text">9.1.  跟着 Agent 走一次</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-feature-testing-%E5%8E%8B%E7%BC%A9%E6%A1%88%E4%BE%8B"><span class="toc-text">10.  feature-testing 压缩案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-%E9%98%B6%E6%AE%B5%E8%A1%A8"><span class="toc-text">10.1.  阶段表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-Test-Design%EF%BC%9A%E6%8A%8A%E9%A3%8E%E9%99%A9%E5%8F%98%E6%88%90%E5%8F%AF%E6%89%A7%E8%A1%8C%E7%94%A8%E4%BE%8B"><span class="toc-text">10.2.  Test Design：把风险变成可执行用例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-3-Automation%EF%BC%9A%E5%85%88%E5%88%86%E7%B1%BB%EF%BC%8C%E5%86%8D%E8%90%BD%E4%BB%93%E5%BA%93"><span class="toc-text">10.3.  Automation：先分类，再落仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-4-Execution%EF%BC%9A%E6%89%A7%E8%A1%8C%E8%AF%81%E6%8D%AE%E4%B8%8D%E6%98%AF%E4%B8%80%E5%8F%A5-pass"><span class="toc-text">10.4.  Execution：执行证据不是一句 pass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-5-Report%EF%BC%9A%E6%8A%8A%E9%93%BE%E8%B7%AF%E6%94%B6%E6%9D%9F%E8%B5%B7%E6%9D%A5"><span class="toc-text">10.5.  Report：把链路收束起来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-6-outputs-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-text">10.6.  outputs/ 目录结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-7-%E6%9C%80%E7%BB%88%E4%BA%A4%E4%BB%98%E6%B8%85%E5%8D%95"><span class="toc-text">10.7.  最终交付清单</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E4%BC%A0%E7%BB%9F-Prompt-vs-agent-next"><span class="toc-text">11.  传统 Prompt vs agent-next</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E7%BB%93%E8%AF%AD"><span class="toc-text">12.  结语</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/e8974565/" title="公众号活动总是错过？我做了一个自动整理工具">公众号活动总是错过？我做了一个自动整理工具</a><time datetime="2026-07-21T05:49:00.000Z" title="发表于 2026-07-21 13:49:00">2026-07-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/9a1b2c3d/" title="agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动">agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动</a><time datetime="2026-07-13T16:00:00.000Z" title="发表于 2026-07-14 00:00:00">2026-07-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/88d4d675/" title="agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践">agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</a><time datetime="2026-06-07T16:00:00.000Z" title="发表于 2026-06-08 00:00:00">2026-06-08</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="my-footer-svg-div">
+  <svg class="my-footer-wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+  <path class="my-footer-wave-path" d="M851.8,100c125,0,288.3-45,348.2-64V0H0v44c3.7-1,7.3-1.9,11-2.9C80.7,22,151.7,10.8,223.5,6.3C276.7,2.9,330,4,383,9.8 c52.2,5.7,103.3,16.2,153.4,32.8C623.9,71.3,726.8,100,851.8,100z"></path>
+  </svg>
+</div>
+<div class="my-footer-content-div">
+<div class="my-footer-content">
+    <div class="my-footer-content-column">
+        <div class="my-footer-logo">
+            <a class="my-footer-logo-link" href="/">
+                <span class="hidden-link-text">LOGO</span>
+                <img src="/img/footer/qlogo_white_no_words.png" style="height:40%; width:40%">
+            </a>
+        </div>
+        <div class="my-footer-menu">
+            <h2 class="my-footer-menu-name">开始</h2>
+            <ul id="menu-get-started" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a href="/about/">关于本站</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="my-footer-content-column">
+        <div class="my-footer-menu">
+            <h2 class="my-footer-menu-name">快速链接</h2>
+            <ul id="menu-company" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a>&nbsp;⨯&nbsp;<a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a>
+                </li>
+                <li class="menu-item menu-item-type-taxonomy menu-item-object-category">
+                    <a href="/archives/">时间轴</a>&nbsp;|&nbsp;<a href="/DO_NOT_render/cosmoscope/cosmoscope_trim.html">关系图</a>&nbsp;|&nbsp;<a href="/categories/">分类</a>
+                </li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a target="_blank" rel="noopener" href="https://blog.uuanqin.top/p/91b7dad/">同款页脚</a>
+                </li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                    <a href="https://www.foreverblog.cn/" rel="noopener external nofollow noreferrer" target="_blank"> <img class="img-foreverblog" src="/img/footer/forever_logo_en_default_white.png" alt="" style="width:auto;height:21px;margin-top:6px"> </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="my-footer-content-column">
+        <div class="my-footer-menu">
+            <h2 class="my-footer-menu-name">法律声明</h2>
+            <ul id="menu-legal" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-170434">
+                    <a href="/pages/privacy.html">隐私政策</a>
+                </li>
+            </ul>
+        </div>
+        <div class="my-footer-call-to-action">
+            <h2 class="my-footer-call-to-action-title">联系本站</h2>
+            <ul id="menu-legal" class="my-footer-menu-list">
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-170434">
+                    <a href="/DO_NOT_render/wechatOA/index.html">微信公众号</a>
+                </li>
+
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-170434">
+                    <a class="my-footer-call-to-action-link" href="mailto:contact@phoenine.top" target="_self">
+                        cont<span style="display:none">@</span><!-- >@ -->act@<span style="display:none">@</span>phoe<!-- >@. -->nine<span style="display:none">@</span>.top
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+    <div class="my-footer-content-column">
+        <ul id="menu-get-started" class="my-footer-menu-list">
+            <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                <a href="https://notbyai.fyi/" target="_blank" rel="external nofollow noopener noreferrer"><img class="img-not-ai" src="/img/footer/Written-By-Human-Not-By-AI-Badge-white.svg" alt="Written by Human, Not by AI"></a>
+            </li>
+            <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                <a href="/pages/cc.html"><img src="/img/footer/by-nc-sa.svg" alt="署名-非商业性使用-相同方式共享 4.0 国际"></a>
+            </li>
+
+            <li class="menu-item menu-item-type-post_type menu-item-object-product">
+                ©2022-2025 By Phoenine
+            </li>
+        </ul>
+    </div>
+
+    <div class="my-footer-social-links"> <svg class="my-footer-social-amoeba-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236 54">
+        <path class="my-footer-social-amoeba-path" d="M223.06,43.32c-.77-7.2,1.87-28.47-20-32.53C187.78,8,180.41,18,178.32,20.7s-5.63,10.1-4.07,16.7-.13,15.23-4.06,15.91-8.75-2.9-6.89-7S167.41,36,167.15,33a18.93,18.93,0,0,0-2.64-8.53c-3.44-5.5-8-11.19-19.12-11.19a21.64,21.64,0,0,0-18.31,9.18c-2.08,2.7-5.66,9.6-4.07,16.69s.64,14.32-6.11,13.9S108.35,46.5,112,36.54s-1.89-21.24-4-23.94S96.34,0,85.23,0,57.46,8.84,56.49,24.56s6.92,20.79,7,24.59c.07,2.75-6.43,4.16-12.92,2.38s-4-10.75-3.46-12.38c1.85-6.6-2-14-4.08-16.69a21.62,21.62,0,0,0-18.3-9.18C13.62,13.28,9.06,19,5.62,24.47A18.81,18.81,0,0,0,3,33a21.85,21.85,0,0,0,1.58,9.08,16.58,16.58,0,0,1,1.06,5A6.75,6.75,0,0,1,0,54H236C235.47,54,223.83,50.52,223.06,43.32Z"></path>
+    </svg>
+        <a class="my-footer-social-link github" href="https://github.com/phoenine" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">Github</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                <path class="my-footer-social-icon-path" d="M 16 4 C 9.371094 4 4 9.371094 4 16 C 4 21.300781 7.4375 25.800781 12.207031 27.386719 C 12.808594 27.496094 13.027344 27.128906 13.027344 26.808594 C 13.027344 26.523438 13.015625 25.769531 13.011719 24.769531 C 9.671875 25.492188 8.96875 23.160156 8.96875 23.160156 C 8.421875 21.773438 7.636719 21.402344 7.636719 21.402344 C 6.546875 20.660156 7.71875 20.675781 7.71875 20.675781 C 8.921875 20.761719 9.554688 21.910156 9.554688 21.910156 C 10.625 23.746094 12.363281 23.214844 13.046875 22.910156 C 13.15625 22.132813 13.46875 21.605469 13.808594 21.304688 C 11.144531 21.003906 8.34375 19.972656 8.34375 15.375 C 8.34375 14.0625 8.8125 12.992188 9.578125 12.152344 C 9.457031 11.851563 9.042969 10.628906 9.695313 8.976563 C 9.695313 8.976563 10.703125 8.65625 12.996094 10.207031 C 13.953125 9.941406 14.980469 9.808594 16 9.804688 C 17.019531 9.808594 18.046875 9.941406 19.003906 10.207031 C 21.296875 8.65625 22.300781 8.976563 22.300781 8.976563 C 22.957031 10.628906 22.546875 11.851563 22.421875 12.152344 C 23.191406 12.992188 23.652344 14.0625 23.652344 15.375 C 23.652344 19.984375 20.847656 20.996094 18.175781 21.296875 C 18.605469 21.664063 18.988281 22.398438 18.988281 23.515625 C 18.988281 25.121094 18.976563 26.414063 18.976563 26.808594 C 18.976563 27.128906 19.191406 27.503906 19.800781 27.386719 C 24.566406 25.796875 28 21.300781 28 16 C 28 9.371094 22.628906 4 16 4 Z "></path>
+            </svg>
+        </a>
+        <a class="my-footer-social-link email" href="mailto:sparkbye@phoenine.com" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">Email</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path class="my-footer-social-icon-path" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"></path>
+            </svg>
+        </a>
+        <a class="my-footer-social-link follow" href="https://app.follow.is/share/users/phoenine" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">Follow</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path class="my-footer-social-icon-path" d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM96 136c0-13.3 10.7-24 24-24c137 0 248 111 248 248c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-110.5-89.5-200-200-200c-13.3 0-24-10.7-24-24zm0 96c0-13.3 10.7-24 24-24c83.9 0 152 68.1 152 152c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-57.4-46.6-104-104-104c-13.3 0-24-10.7-24-24zm0 120a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+            </svg>
+        </a>
+        <a class="my-footer-social-link rss" href="/atom.xml" target="_blank" rel="external nofollow noopener noreferrer">
+            <span class="hidden-link-text">RSS</span>
+            <svg class="my-footer-social-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path class="my-footer-social-icon-path" d="M0 64C0 46.3 14.3 32 32 32c229.8 0 416 186.2 416 416c0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96C14.3 96 0 81.7 0 64zM0 416a64 64 0 1 1 128 0A64 64 0 1 1 0 416zM32 160c159.1 0 288 128.9 288 288c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224c-17.7 0-32-14.3-32-32s14.3-32 32-32z"></path>
+            </svg>
+        </a>
+
+    </div>
+</div>
+</div>
+<div class="my-footer-copyright">
+    <div class="my-footer-copyright-wrapper">
+        <p class="my-footer-copyright-text">
+            <a target="_blank" href="https://beian.miit.gov.cn/" rel="noopener external nofollow noreferrer noopener"><img class="icp-icon" src="/img/footer/icp.ico"><span>暂时没有备案</span></a>
+            &nbsp;|&nbsp;<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12011202000621" rel="noopener external nofollow noreferrer noopener"><img class="icp-icon" src="/img/footer/beian_logo.png"><span>暂时没有备案</span></a>
+            &nbsp;|&nbsp;&nbsp;
+            <span>违法与不良信息举报邮箱&nbsp;
+              cont<span style="display:none">@</span><!-- >@ -->act@<span style="display:none">@</span>phoe<!-- >@. -->nine<span style="display:none">@</span>.top
+            </span>
+        </p>
+    </div>
+</div>
+</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = `%%{init:{ 'theme':'${theme}'}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.0/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  let initFn = window.walineFn || null
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"search":false,"reaction":["/img/comments/reaction1.gif","/img/comments/reaction2.gif","/img/comments/reaction3.gif","/img/comments/reaction4.gif","/img/comments/reaction5.gif","/img/comments/reaction6.gif"],"locale":{"nick":"昵称","mail":"邮箱","link":"网站","placeholder":"都看到这了，不妨将你的真知灼见狠狠的塞满我……","requiredMeta":[],"sofa":"评论区空空如也~呜呜呜","anonymous":"匿名的野猫","login":"登录(可选)"},"emoji":["//unpkg.com/@waline/emojis@1.2.0/bilibili","//unpkg.com/@waline/emojis@1.2.0/qq","//unpkg.com/@waline/emojis@1.2.0/tieba","//unpkg.com/@waline/emojis@1.2.0/weibo"]}
+
+  const destroyWaline = ele => ele.destroy()
+
+  const initWaline = (Fn, el = document, path = window.location.pathname) => {
+    const waline = Fn({
+      el: el.querySelector('#waline-wrap'),
+      serverURL: 'https://pl.phoenine.top',
+      pageview: false,
+      dark: 'html[data-theme="dark"]',
+      comment: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyWaline = () => {
+        destroyWaline(waline)
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const loadWaline = (el, path) => {
+    if (initFn) initWaline(initFn, el, path)
+    else {
+      btf.getCSS('/css/my-waline.css')
+        .then(() => import('https://cdn.jsdelivr.net/npm/@waline/client@3.6.0/dist/waline.min.js'))
+        .then(({ init }) => {
+          initFn = init || Waline.init
+          initWaline(initFn, el, path)
+          window.walineFn = initFn
+        })
+    }
+  }
+
+  if (isShuoshuo) {
+    'Waline' === 'Waline'
+      ? window.shuoshuoComment = { loadComment: loadWaline } 
+      : window.loadOtherComment = loadWaline
+    return
+  }
+
+  if ('Waline' === 'Waline' || !false) {
+    if (false) btf.loadComment(document.getElementById('waline-wrap'),loadWaline)
+    else setTimeout(loadWaline, 0)
+  } else {
+    window.loadOtherComment = loadWaline
+  }
+})()</script></div><script src="/js/random-post.js"></script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div id="algolia-search-input"><div class="ais-SearchBox"><form class="ais-SearchBox-form" action="" role="search" novalidate=""><input class="ais-SearchBox-input" type="search" placeholder="搜索文章" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="512" aria-label="Search"><button class="ais-SearchBox-submit" type="submit" title="Submit the search query" style="display:none;"><svg class="ais-SearchBox-submitIcon" width="10" height="10" viewBox="0 0 40 40" aria-hidden="true"><path d="M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z"></path></svg></button></form></div><hr><div id="algolia-search-results"><div id="algolia-hits"><div id="algolia-hits-empty" style="display:none;"></div><div class="ais-Hits" style="display:none;"><ol class="ais-Hits-list"></ol></div></div><div class="ais-Pagination" id="algolia-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="algolia-info"><span class="ais-Stats-text"></span><a class="algolia-poweredBy" href="https://www.algolia.com/?utm_source=algoliasearch.js&amp;utm_medium=website&amp;utm_content=localhost&amp;utm_campaign=poweredby" target="_blank" aria-label="Search by Algolia" rel="noopener noreferrer"><svg class="ais-PoweredBy-logo" height="1.2em" viewBox="0 0 572 64" style="width: auto;"><path fill="#36395A" d="M16 48.3c-3.4 0-6.3-.6-8.7-1.7A12.4 12.4 0 0 1 1.9 42C.6 40 0 38 0 35.4h6.5a6.7 6.7 0 0 0 3.9 6c1.4.7 3.3 1.1 5.6 1.1 2.2 0 4-.3 5.4-1a7 7 0 0 0 3-2.4 6 6 0 0 0 1-3.4c0-1.5-.6-2.8-1.9-3.7-1.3-1-3.3-1.6-5.9-1.8l-4-.4c-3.7-.3-6.6-1.4-8.8-3.4a10 10 0 0 1-3.3-7.9c0-2.4.6-4.6 1.8-6.4a12 12 0 0 1 5-4.3c2.2-1 4.7-1.6 7.5-1.6s5.5.5 7.6 1.6a12 12 0 0 1 5 4.4c1.2 1.8 1.8 4 1.8 6.7h-6.5a6.4 6.4 0 0 0-3.5-5.9c-1-.6-2.6-1-4.4-1s-3.2.3-4.4 1c-1.1.6-2 1.4-2.6 2.4-.5 1-.8 2-.8 3.1a5 5 0 0 0 1.5 3.6c1 1 2.6 1.7 4.7 1.9l4 .3c2.8.2 5.2.8 7.2 1.8 2.1 1 3.7 2.2 4.9 3.8a9.7 9.7 0 0 1 1.7 5.8c0 2.5-.7 4.7-2 6.6a13 13 0 0 1-5.6 4.4c-2.4 1-5.2 1.6-8.4 1.6Zm35.6 0c-2.6 0-4.8-.4-6.7-1.3a13 13 0 0 1-4.7-3.5 17.1 17.1 0 0 1-3.6-10.4v-1c0-2 .3-3.8 1-5.6a13 13 0 0 1 7.3-8.3 15 15 0 0 1 6.3-1.4A13.2 13.2 0 0 1 64 24.3c1 2.2 1.6 4.6 1.6 7.2V34H39.4v-4.3h21.8l-1.8 2.2c0-2-.3-3.7-.9-5.1a7.3 7.3 0 0 0-2.7-3.4c-1.2-.7-2.7-1.1-4.6-1.1s-3.4.4-4.7 1.3a8 8 0 0 0-2.9 3.6c-.6 1.5-.9 3.3-.9 5.4 0 2 .3 3.7 1 5.3a7.9 7.9 0 0 0 2.8 3.7c1.3.8 3 1.3 5 1.3s3.8-.5 5.1-1.3c1.3-1 2.1-2 2.4-3.2h6a11.8 11.8 0 0 1-7 8.7 16 16 0 0 1-6.4 1.2ZM80 48c-2.2 0-4-.3-5.7-1a8.4 8.4 0 0 1-3.7-3.3 9.7 9.7 0 0 1-1.3-5.2c0-2 .5-3.8 1.5-5.2a9 9 0 0 1 4.3-3.1c1.8-.7 4-1 6.7-1H89v4.1h-7.5c-2 0-3.4.5-4.4 1.4-1 1-1.6 2.1-1.6 3.6s.5 2.7 1.6 3.6c1 1 2.5 1.4 4.4 1.4 1.1 0 2.2-.2 3.2-.7 1-.4 1.9-1 2.6-2 .6-1 1-2.4 1-4.2l1.7 2.1c-.2 2-.7 3.8-1.5 5.2a9 9 0 0 1-3.4 3.3 12 12 0 0 1-5.3 1Zm9.5-.7v-8.8h-1v-10c0-1.8-.5-3.2-1.4-4.1-1-1-2.4-1.4-4.2-1.4a142.9 142.9 0 0 0-10.2.4v-5.6a74.8 74.8 0 0 1 8.6-.4c3 0 5.5.4 7.5 1.2s3.4 2 4.4 3.6c1 1.7 1.4 4 1.4 6.7v18.4h-5Zm12.9 0V17.8h5v12.3h-.2c0-4.2 1-7.4 2.8-9.5a11 11 0 0 1 8.3-3.1h1v5.6h-2a9 9 0 0 0-6.3 2.2c-1.5 1.5-2.2 3.6-2.2 6.4v15.6h-6.4Zm34.4 1a15 15 0 0 1-6.6-1.3c-1.9-.9-3.4-2-4.7-3.5a15.5 15.5 0 0 1-2.7-5c-.6-1.7-1-3.6-1-5.4v-1c0-2 .4-3.8 1-5.6a15 15 0 0 1 2.8-4.9c1.3-1.5 2.8-2.6 4.6-3.5a16.4 16.4 0 0 1 13.3.2c2 1 3.5 2.3 4.8 4a12 12 0 0 1 2 6H144c-.2-1.6-1-3-2.2-4.1a7.5 7.5 0 0 0-5.2-1.7 8 8 0 0 0-4.7 1.3 8 8 0 0 0-2.8 3.6 13.8 13.8 0 0 0 0 10.3c.6 1.5 1.5 2.7 2.8 3.6s2.8 1.3 4.8 1.3c1.5 0 2.7-.2 3.8-.8a7 7 0 0 0 2.6-2c.7-1 1-2 1.2-3.2h6.2a11 11 0 0 1-2 6.2 15.1 15.1 0 0 1-11.8 5.5Zm19.7-1v-40h6.4V31h-1.3c0-3 .4-5.5 1.1-7.6a9.7 9.7 0 0 1 3.5-4.8A9.9 9.9 0 0 1 172 17h.3c3.5 0 6 1.1 7.9 3.5 1.7 2.3 2.6 5.7 2.6 10v16.8h-6.4V29.6c0-2.1-.6-3.8-1.8-5a6.4 6.4 0 0 0-4.8-1.8c-2 0-3.7.7-5 2a7.8 7.8 0 0 0-1.9 5.5v17h-6.4Zm63.8 1a12.2 12.2 0 0 1-10.9-6.2 19 19 0 0 1-1.8-7.3h1.4v12.5h-5.1v-40h6.4v19.8l-2 3.5c.2-3.1.8-5.7 1.9-7.7a11 11 0 0 1 4.4-4.5c1.8-1 3.9-1.5 6.1-1.5a13.4 13.4 0 0 1 12.8 9.1c.7 1.9 1 3.8 1 6v1c0 2.2-.3 4.1-1 6a13.6 13.6 0 0 1-13.2 9.4Zm-1.2-5.5a8.4 8.4 0 0 0 7.9-5c.7-1.5 1.1-3.3 1.1-5.3s-.4-3.8-1.1-5.3a8.7 8.7 0 0 0-3.2-3.6 9.6 9.6 0 0 0-9.2-.2 8.5 8.5 0 0 0-3.3 3.2c-.8 1.4-1.3 3-1.3 5v2.3a9 9 0 0 0 1.3 4.8 9 9 0 0 0 3.4 3c1.4.7 2.8 1 4.4 1Zm27.3 3.9-10-28.9h6.5l9.5 28.9h-6Zm-7.5 12.2v-5.7h4.9c1 0 2-.1 2.9-.4a4 4 0 0 0 2-1.4c.4-.7.9-1.6 1.2-2.7l8.6-30.9h6.2l-9.3 32.4a14 14 0 0 1-2.5 5 8.9 8.9 0 0 1-4 2.8c-1.5.6-3.4.9-5.6.9h-4.4Zm9-12.2v-5.2h6.4v5.2H248Z"></path><path fill="#003DFF" d="M534.4 9.1H528a.8.8 0 0 1-.7-.7V1.8c0-.4.2-.7.6-.8l6.5-1c.4 0 .8.2.9.6v7.8c0 .4-.4.7-.8.7zM428 35.2V.8c0-.5-.3-.8-.7-.8h-.2l-6.4 1c-.4 0-.7.4-.7.8v35c0 1.6 0 11.8 12.3 12.2.5 0 .8-.4.8-.8V43c0-.4-.3-.7-.6-.8-4.5-.5-4.5-6-4.5-7zm106.5-21.8H528c-.4 0-.7.4-.7.8v34c0 .4.3.8.7.8h6.5c.4 0 .8-.4.8-.8v-34c0-.5-.4-.8-.8-.8zm-17.7 21.8V.8c0-.5-.3-.8-.8-.8l-6.5 1c-.4 0-.7.4-.7.8v35c0 1.6 0 11.8 12.3 12.2.4 0 .8-.4.8-.8V43c0-.4-.3-.7-.7-.8-4.4-.5-4.4-6-4.4-7zm-22.2-20.6a16.5 16.5 0 0 1 8.6 9.3c.8 2.2 1.3 4.8 1.3 7.5a19.4 19.4 0 0 1-4.6 12.6 14.8 14.8 0 0 1-5.2 3.6c-2 .9-5.2 1.4-6.8 1.4a21 21 0 0 1-6.7-1.4 15.4 15.4 0 0 1-8.6-9.3 21.3 21.3 0 0 1 0-14.4 15.2 15.2 0 0 1 8.6-9.3c2-.8 4.3-1.2 6.7-1.2s4.6.4 6.7 1.2zm-6.7 27.6c2.7 0 4.7-1 6.2-3s2.2-4.3 2.2-7.8-.7-6.3-2.2-8.3-3.5-3-6.2-3-4.7 1-6.1 3c-1.5 2-2.2 4.8-2.2 8.3s.7 5.8 2.2 7.8 3.5 3 6.2 3zm-88.8-28.8c-6.2 0-11.7 3.3-14.8 8.2a18.6 18.6 0 0 0 4.8 25.2c1.8 1.2 4 1.8 6.2 1.7s.1 0 .1 0h.9c4.2-.7 8-4 9.1-8.1v7.4c0 .4.3.7.8.7h6.4a.7.7 0 0 0 .7-.7V14.2c0-.5-.3-.8-.7-.8h-13.5zm6.3 26.5a9.8 9.8 0 0 1-5.7 2h-.5a10 10 0 0 1-9.2-14c1.4-3.7 5-6.3 9-6.3h6.4v18.3zm152.3-26.5h13.5c.5 0 .8.3.8.7v33.7c0 .4-.3.7-.8.7h-6.4a.7.7 0 0 1-.8-.7v-7.4c-1.2 4-4.8 7.4-9 8h-.1a4.2 4.2 0 0 1-.5.1h-.9a10.3 10.3 0 0 1-7-2.6c-4-3.3-6.5-8.4-6.5-14.2 0-3.7 1-7.2 3-10 3-5 8.5-8.3 14.7-8.3zm.6 28.4c2.2-.1 4.2-.6 5.7-2V21.7h-6.3a9.8 9.8 0 0 0-9 6.4 10.2 10.2 0 0 0 9.1 13.9h.5zM452.8 13.4c-6.2 0-11.7 3.3-14.8 8.2a18.5 18.5 0 0 0 3.6 24.3 10.4 10.4 0 0 0 13 .6c2.2-1.5 3.8-3.7 4.5-6.1v7.8c0 2.8-.8 5-2.2 6.3-1.5 1.5-4 2.2-7.5 2.2l-6-.3c-.3 0-.7.2-.8.5l-1.6 5.5c-.1.4.1.8.5 1h.1c2.8.4 5.5.6 7 .6 6.3 0 11-1.4 14-4.1 2.7-2.5 4.2-6.3 4.5-11.4V14.2c0-.5-.4-.8-.8-.8h-13.5zm6.3 8.2v18.3a9.6 9.6 0 0 1-5.6 2h-1a10.3 10.3 0 0 1-8.8-14c1.4-3.7 5-6.3 9-6.3h6.4zM291 31.5A32 32 0 0 1 322.8 0h30.8c.6 0 1.2.5 1.2 1.2v61.5c0 1.1-1.3 1.7-2.2 1l-19.2-17a18 18 0 0 1-11 3.4 18.1 18.1 0 1 1 18.2-14.8c-.1.4-.5.7-.9.6-.1 0-.3 0-.4-.2l-3.8-3.4c-.4-.3-.6-.8-.7-1.4a12 12 0 1 0-2.4 8.3c.4-.4 1-.5 1.6-.2l14.7 13.1v-46H323a26 26 0 1 0 10 49.7c.8-.4 1.6-.2 2.3.3l3 2.7c.3.2.3.7 0 1l-.2.2a32 32 0 0 1-47.2-28.6z"></path></svg></a></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch@5.39.0/dist/lite/builds/browser.umd.min.js"></script><script src="/js/search/algolia.js?v=5.5.1"></script></div></div></body></html>
