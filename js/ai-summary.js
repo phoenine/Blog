@@ -14,9 +14,6 @@ const PROXY_API_URL = "https://ai-summary.phoenine.top/api/ai-summary/siliconflo
 // 文章容器选择器
 const siliconFlow_postSelector = "#article-container";
 
-// 字数上限（保留以备后续扩展，当前由后端处理）
-const siliconFlow_wordLimit = 1000;
-
 // 是否启用打字机动画
 const siliconFlow_typingAnimate = true;
 

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>Phoenine</name>
+  </author>
+  <generator uri="https://hexo.io/">Hexo</generator>
+  <id>https://blog.phoenine.top/</id>
+  <link href="https://blog.phoenine.top/" rel="alternate"/>
+  <link href="https://blog.phoenine.top/atom.xml" rel="self"/>
+  <rights>All rights reserved 2026, Phoenine</rights>
+  <subtitle>死锁中的苦行者</subtitle>
+  <title>因受</title>
+  <updated>2026-08-14T00:52:47.603Z</updated>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="obsidian" scheme="https://blog.phoenine.top/tags/obsidian/"/>
+    <id>https://blog.phoenine.top/posts/2c8838d4/</id>
+    <link href="https://blog.phoenine.top/posts/2c8838d4/"/>
+    <published>2026-08-06T16:00:00.000Z</published>
+    <summary>用 Codex Skills 管理学习流程，每次都要打开控制台、告诉它文章名字。做成插件之后，文章自己就在那里，改完所见即所得。</summary>
+    <title>KnowFlow：把 AI 知识工作流带回 Obsidian</title>
+    <updated>2026-08-14T00:52:47.603Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
+    <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
+    <category term="Cloudflare" scheme="https://blog.phoenine.top/tags/Cloudflare/"/>
+    <category term="Docker" scheme="https://blog.phoenine.top/tags/Docker/"/>
+    <id>https://blog.phoenine.top/posts/5a5ed66/</id>
+    <link href="https://blog.phoenine.top/posts/5a5ed66/"/>
+    <published>2026-07-24T09:02:00.000Z</published>
+    <summary>记录 we-events 从阿里云 ECS、Supabase 到 Cloudflare Tunnel 的免费部署流程，以及 Google Safe Browsing 误判排查。</summary>
+    <title>云上白嫖-we-events-部署篇</title>
+    <updated>2026-07-24T09:55:16.517Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
+    <category term="FastAPI" scheme="https://blog.phoenine.top/tags/FastAPI/"/>
+    <category term="React" scheme="https://blog.phoenine.top/tags/React/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
+    <category term="开源" scheme="https://blog.phoenine.top/tags/%E5%BC%80%E6%BA%90/"/>
+    <id>https://blog.phoenine.top/posts/e8974565/</id>
+    <link href="https://blog.phoenine.top/posts/e8974565/"/>
+    <published>2026-07-21T05:49:00.000Z</published>
+    <summary>一个解决「周末带娃去哪儿」问题的开源工具——自动采集公众号文章、LLM 抽取活动信息、导出日历。</summary>
+    <title>公众号活动总是错过？我做了一个自动整理工具</title>
+    <updated>2026-07-21T08:02:38.629Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="workflow" scheme="https://blog.phoenine.top/tags/workflow/"/>
+    <category term="Hermes" scheme="https://blog.phoenine.top/tags/Hermes/"/>
+    <category term="Skills" scheme="https://blog.phoenine.top/tags/Skills/"/>
+    <category term="feature-testing" scheme="https://blog.phoenine.top/tags/feature-testing/"/>
+    <id>https://blog.phoenine.top/posts/9a1b2c3d/</id>
+    <link href="https://blog.phoenine.top/posts/9a1b2c3d/"/>
+    <published>2026-07-13T16:00:00.000Z</published>
+    <summary>拆解 agent-next 中 Skills 与 Workflow 的职责边界、receipt 闭环、Fail Closed 门禁与 Lazy Load 阶段驱动设计。</summary>
+    <title>agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动</title>
+    <updated>2026-07-21T05:53:16.790Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="workflow" scheme="https://blog.phoenine.top/tags/workflow/"/>
+    <category term="Hermes" scheme="https://blog.phoenine.top/tags/Hermes/"/>
+    <category term="Skills" scheme="https://blog.phoenine.top/tags/Skills/"/>
+    <id>https://blog.phoenine.top/posts/88d4d675/</id>
+    <link href="https://blog.phoenine.top/posts/88d4d675/"/>
+    <published>2026-06-07T16:00:00.000Z</published>
+    <summary>agent-next 测试 Harness 实践：五层架构、运行态数据流、Lazy Load、Skills 改造经验、机器门禁与 Hermes 落地。</summary>
+    <title>agent-next：把测试 Agent 接进流水线——工作流、门禁与 Lazy Load 的 Harness 实践</title>
+    <updated>2026-07-21T07:04:47.818Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="Hermes" scheme="https://blog.phoenine.top/tags/Hermes/"/>
+    <category term="Skills" scheme="https://blog.phoenine.top/tags/Skills/"/>
+    <category term="Obsidian" scheme="https://blog.phoenine.top/tags/Obsidian/"/>
+    <category term="SQLite" scheme="https://blog.phoenine.top/tags/SQLite/"/>
+    <category term="Apple" scheme="https://blog.phoenine.top/tags/Apple/"/>
+    <id>https://blog.phoenine.top/posts/b9117924/</id>
+    <link href="https://blog.phoenine.top/posts/b9117924/"/>
+    <published>2026-05-21T09:00:00.000Z</published>
+    <summary>这是一篇关于「用 Hermes Agent 把 Apple Books 高亮自动同步到 KnowledgeOS」 的技术记录。包括 SQLite 数据解剖、Skill 设计思路、核心 Python 脚本解析、以及迭代过程中的几次设计回头。 适合 Obsidian 读书笔记深度用户、想给 AI Agent 设计可复用 skill 的开发者。</summary>
+    <title>利用Skill将Apple Books高亮同步到Obsidian</title>
+    <updated>2026-07-21T06:16:52.332Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="Hermes" scheme="https://blog.phoenine.top/tags/Hermes/"/>
+    <category term="Skills" scheme="https://blog.phoenine.top/tags/Skills/"/>
+    <id>https://blog.phoenine.top/posts/eb21c9cc/</id>
+    <link href="https://blog.phoenine.top/posts/eb21c9cc/"/>
+    <published>2026-05-09T02:58:00.000Z</published>
+    <summary>这是一篇关于「用 AI Agent 搭建测试工作流」的技术复盘。记录了我用 Hermes Agent 将禅道、GitLab、飞书、知识库整合为一条自动化测试用例管线的过程——包括设计思路、真实跑通的数据、以及几个让我印象深刻的低级错误。适合对 AI 工程化落地感兴趣的测试开发、DevOps 和效率工具爱好者。</summary>
+    <title>AI Agent 测试工作流复盘</title>
+    <updated>2026-07-21T06:16:52.330Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="obsidian" scheme="https://blog.phoenine.top/tags/obsidian/"/>
+    <id>https://blog.phoenine.top/posts/dac036fb/</id>
+    <link href="https://blog.phoenine.top/posts/dac036fb/"/>
+    <published>2026-03-30T12:52:00.000Z</published>
+    <summary>
+      <![CDATA[<html><head></head><body><p>我之前一直使用Notion管理的我的读书笔记，比如书摘之类的，参考我之前写的文章：<a href="https://mp.weixin.qq.com/s/yZVMli9_yGCCgIa_DCJqSQ">用「记忆闪卡 Dash]]>
+    </summary>
+    <title>从Notion迁移到Obsidian后，我如何管理自己的读书笔记</title>
+    <updated>2026-07-21T06:15:00.597Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="obsidian" scheme="https://blog.phoenine.top/tags/obsidian/"/>
+    <id>https://blog.phoenine.top/posts/56fdbc0b/</id>
+    <link href="https://blog.phoenine.top/posts/56fdbc0b/"/>
+    <published>2026-03-21T02:22:00.000Z</published>
+    <summary>从Notion迁移到Obsidian后，利用Codex Skills重构知识管理体系，实现本地化存储、自定义AI和插件生态支持。从而提升知识沉淀效率与自动化水平，降低学习启动门槛，形成稳定闭环流程。</summary>
+    <title>从Notion迁移到Obsidian后，我如何用Codex Skills重构知识管理</title>
+    <updated>2026-07-21T06:15:13.518Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="midscene" scheme="https://blog.phoenine.top/tags/midscene/"/>
+    <category term="自动化" scheme="https://blog.phoenine.top/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/"/>
+    <id>https://blog.phoenine.top/posts/b53f2424/</id>
+    <link href="https://blog.phoenine.top/posts/b53f2424/"/>
+    <published>2025-11-05T00:42:00.000Z</published>
+    <summary>Midscene.js是一款AI驱动的UI自动化工具，支持自然语言操作与视觉+文本识别，可与Playwright、Chrome插件集成，兼容多模型，适合快速迭代的测试场景。</summary>
+    <title>使用Midscene实现AI自动化测试</title>
+    <updated>2026-07-21T06:15:33.959Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
+    <id>https://blog.phoenine.top/posts/13bfb908/</id>
+    <link href="https://blog.phoenine.top/posts/13bfb908/"/>
+    <published>2025-09-20T10:55:00.000Z</published>
+    <summary>Notion记忆闪卡模版将费曼学习法与间隔重复结合，卡片要求用通俗语言讲解，自动生成复习时间，三种学习状态（初学、巩固、熟练）清晰可见。支持技术、工具、职场等多领域知识，内置工具墙与书摘区，帮助学习者系统化记忆、快速复习，提升学习效率。</summary>
+    <title>使用「Notion - 记忆闪卡 」模版高效学习</title>
+    <updated>2026-07-21T06:16:52.271Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
+    <id>https://blog.phoenine.top/posts/aed033e2/</id>
+    <link href="https://blog.phoenine.top/posts/aed033e2/"/>
+    <published>2025-09-20T02:19:00.000Z</published>
+    <summary>Notion积分打卡3.0将习惯养成游戏化，首页展示修行之路、成长曲线成长每日；任务分主线，完成可解锁称号、徽章；积分可兑换奖励商城物品，变化直观；系统提供称号，让坚持像打RPG一样有剧情与奖励。</summary>
+    <title>像玩 RPG 一样坚持习惯-Notion积分打卡v3.0</title>
+    <updated>2026-07-21T06:16:52.285Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <id>https://blog.phoenine.top/posts/812138c9/</id>
+    <link href="https://blog.phoenine.top/posts/812138c9/"/>
+    <published>2025-05-28T12:49:00.000Z</published>
+    <summary>这篇文章主要解决的是如何把任意 HTML 文档做成 Dash 可安装的 docset。</summary>
+    <title>Dash安装docset</title>
+    <updated>2026-07-21T06:15:10.498Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
+    <category term="space" scheme="https://blog.phoenine.top/tags/space/"/>
+    <id>https://blog.phoenine.top/posts/e1731546/</id>
+    <link href="https://blog.phoenine.top/posts/e1731546/"/>
+    <published>2025-05-20T11:57:00.000Z</published>
+    <summary>
+      <![CDATA[<html><head></head><body><blockquote>
+<p>真空是无情的，而时间也不会站在你这边。</p>
+</blockquote>
+<p><img src="https://wechat-public-1258175280.cos.ap-nanjing.]]>
+    </summary>
+    <title>在太空中没有太空服你能存活多久？</title>
+    <updated>2026-07-21T06:16:52.313Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
+    <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
+    <category term="formula" scheme="https://blog.phoenine.top/tags/formula/"/>
+    <id>https://blog.phoenine.top/posts/7438f04c/</id>
+    <link href="https://blog.phoenine.top/posts/7438f04c/"/>
+    <published>2025-05-20T11:56:00.000Z</published>
+    <summary>Notion公式总结，涵盖属性返回值、运算、日期、功能函数，兼顾Formula 2.0更新，帮助快速构建复杂公式，适合前端开发者与日常使用。支持数值、文本、日期、复选框、列表、字符串等返回类型，提供加减乘除、比较、逻辑、字符串处理、日期运算、数组操作等常用函数，配合模板快速实现任务管理、进度追踪、预算计算等场景。</summary>
+    <title>Notion常用Formula总结</title>
+    <updated>2026-07-21T06:16:52.269Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
+    <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
+    <id>https://blog.phoenine.top/posts/bbec2e61/</id>
+    <link href="https://blog.phoenine.top/posts/bbec2e61/"/>
+    <published>2025-05-20T11:56:00.000Z</published>
+    <summary>Notion Embed功能可将网页、视频、音频、云应用等嵌入页面，提升可视化与交互。使用步骤：打开页面→加号→Embed→粘贴链接或代码。常用小组件网站包括WeatherWidget+Apption、组件世界、widgetbox、indify，支持天气、日历、倒计时、时钟等。通过Embed可快速集成多媒体与工具，增强工作流。并可随时更新提升效率快速。</summary>
+    <title>Notion常见的页面小组件</title>
+    <updated>2026-07-21T06:16:52.277Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
+    <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
+    <id>https://blog.phoenine.top/posts/5cf07dd2/</id>
+    <link href="https://blog.phoenine.top/posts/5cf07dd2/"/>
+    <published>2025-05-20T11:56:00.000Z</published>
+    <summary>Notion常用快捷键汇总，涵盖Mac版键盘操作：创建新页面、跳转最近页面、插入分隔线、添加待办、折叠列表、引用块、颜色、emoji等；/命令快速插入文本、页面、列表、待办、切换、引用、链接、日期、emoji、评论、目录、模板按钮、数学公式等；数据库快捷键包括/table、/board、/calendar、/list、/gallery、/timeline、/linked；文件相关快捷键如/image、/pdf、/book、/video、/audio、/code、/file、/embed。掌握这些可大幅提升Notion使用效率。</summary>
+    <title>Notion常用快捷键汇总</title>
+    <updated>2026-07-21T06:16:52.283Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
+    <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
+    <id>https://blog.phoenine.top/posts/b0e2dd23/</id>
+    <link href="https://blog.phoenine.top/posts/b0e2dd23/"/>
+    <published>2025-05-20T11:56:00.000Z</published>
+    <summary>Notion积分打卡v2.0 通过按钮快速创建打卡页面与习惯记录，支持日常、支线、主线、副本任务四类，类似游戏任务系统。主页已锁定，需先解锁才能自定义；复制按钮时需取消同步。打卡后积分与Chat功能同步更新，支持称号与积分加成。模板免费共享，适合想用游戏化方式规划人生的用户。</summary>
+    <title>像玩游戏一样规划你的人生-Notion积分打卡v2.0</title>
+    <updated>2026-07-21T06:16:52.273Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
+    <category term="method" scheme="https://blog.phoenine.top/tags/method/"/>
+    <id>https://blog.phoenine.top/posts/67a0b627/</id>
+    <link href="https://blog.phoenine.top/posts/67a0b627/"/>
+    <published>2025-05-20T11:55:00.000Z</published>
+    <summary>
+      <![CDATA[<html><head></head><body><blockquote>
+<p>你不仅应该知道你学习的材料是什么，还应该知道为什么。</p>
+</blockquote>
+<p><img src="https://wechat-public-1258175280.cos.ap-n]]>
+    </summary>
+    <title>学习的关键 - 自我解释</title>
+    <updated>2026-07-21T06:16:52.319Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="manus" scheme="https://blog.phoenine.top/tags/manus/"/>
+    <category term="open-manus" scheme="https://blog.phoenine.top/tags/open-manus/"/>
+    <id>https://blog.phoenine.top/posts/fa332fd9/</id>
+    <link href="https://blog.phoenine.top/posts/fa332fd9/"/>
+    <published>2025-05-20T11:55:00.000Z</published>
+    <summary>本文档提供了对 OpenManus 项目核心代码文件的深入分析，包括代码结构、算法逻辑、设计思想和实现细节。通过对关键源码的解读，帮助开发者更好地理解 OpenManus 的内部工作机制。</summary>
+    <title>OpenManus 核心代码详细分析</title>
+    <updated>2026-07-21T06:16:52.335Z</updated>
+  </entry>
+</feed>

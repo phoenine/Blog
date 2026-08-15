@@ -198,6 +198,7 @@ template {
 #aside-content .aside-list > .aside-list-item .content > .name,
 #aside-content .aside-list > .aside-list-item .content > .title,
 #aside-content .aside-list > .aside-list-item .content > .comment,
+#page-header #site-title,
 #post-info .post-title,
 .pagination-related .info .info-1 .info-item-2,
 .pagination-related .info .info-2 .info-item-1,
@@ -211,6 +212,7 @@ template {
 .custom-hr:before,
 #post .post-copyright:before,
 #post #post-outdate-notice:before,
+.toggle > .toggle-button::before,
 .note:not(.no-icon)::before,
 .search-dialog hr:before {
   display: inline-block;
@@ -387,7 +389,7 @@ template {
   animation: titleScale 1s;
 }
 canvas:not(#ribbon-canvas),
-#web_bg {
+#web_bg.bg-animation {
   -webkit-animation: to_show 4s;
   -moz-animation: to_show 4s;
   -o-animation: to_show 4s;
@@ -444,14 +446,14 @@ canvas:not(#ribbon-canvas),
   animation: donate_effcet 0.3s 0.1s ease both;
 }
 .btn-effects,
-.shuoshuo-navigation button:not(:disabled),
 #aside-content .card-info #card-info-btn,
 .post-reward .reward-button,
 #rightside > div > button,
 #rightside > div > a,
 .container .btn-beautify,
 .hide-inline > .hide-button,
-.hide-block > .hide-button {
+.hide-block > .hide-button,
+.read-mode .exit-readmode {
   position: relative;
   overflow: hidden;
   -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -466,14 +468,14 @@ canvas:not(#ribbon-canvas),
   transform: translateZ(0);
 }
 .btn-effects:hover,
-.shuoshuo-navigation button:not(:disabled):hover,
 #aside-content .card-info #card-info-btn:hover,
 .post-reward .reward-button:hover,
 #rightside > div > button:hover,
 #rightside > div > a:hover,
 .container .btn-beautify:hover,
 .hide-inline > .hide-button:hover,
-.hide-block > .hide-button:hover {
+.hide-block > .hide-button:hover,
+.read-mode .exit-readmode:hover {
   -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   text-decoration: none;
@@ -484,14 +486,14 @@ canvas:not(#ribbon-canvas),
   transform: translateY(-1px) scale(1.02);
 }
 .btn-effects:active,
-.shuoshuo-navigation button:not(:disabled):active,
 #aside-content .card-info #card-info-btn:active,
 .post-reward .reward-button:active,
 #rightside > div > button:active,
 #rightside > div > a:active,
 .container .btn-beautify:active,
 .hide-inline > .hide-button:active,
-.hide-block > .hide-button:active {
+.hide-block > .hide-button:active,
+.read-mode .exit-readmode:active {
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   -o-transition-duration: 0.1s;
@@ -504,14 +506,14 @@ canvas:not(#ribbon-canvas),
   transform: translateY(0) scale(0.98);
 }
 .btn-effects i,
-.shuoshuo-navigation button:not(:disabled) i,
 #aside-content .card-info #card-info-btn i,
 .post-reward .reward-button i,
 #rightside > div > button i,
 #rightside > div > a i,
 .container .btn-beautify i,
 .hide-inline > .hide-button i,
-.hide-block > .hide-button i {
+.hide-block > .hide-button i,
+.read-mode .exit-readmode i {
   display: inline-block;
   vertical-align: middle;
   -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -521,14 +523,14 @@ canvas:not(#ribbon-canvas),
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover i,
-.shuoshuo-navigation button:not(:disabled):hover i,
 #aside-content .card-info #card-info-btn:hover i,
 .post-reward .reward-button:hover i,
 #rightside > div > button:hover i,
 #rightside > div > a:hover i,
 .container .btn-beautify:hover i,
 .hide-inline > .hide-button:hover i,
-.hide-block > .hide-button:hover i {
+.hide-block > .hide-button:hover i,
+.read-mode .exit-readmode:hover i {
   -webkit-animation: buttonIconBounce 0.6s ease-in-out;
   -moz-animation: buttonIconBounce 0.6s ease-in-out;
   -o-animation: buttonIconBounce 0.6s ease-in-out;
@@ -536,14 +538,14 @@ canvas:not(#ribbon-canvas),
   animation: buttonIconBounce 0.6s ease-in-out;
 }
 .btn-effects i + span,
-.shuoshuo-navigation button:not(:disabled) i + span,
 #aside-content .card-info #card-info-btn i + span,
 .post-reward .reward-button i + span,
 #rightside > div > button i + span,
 #rightside > div > a i + span,
 .container .btn-beautify i + span,
 .hide-inline > .hide-button i + span,
-.hide-block > .hide-button i + span {
+.hide-block > .hide-button i + span,
+.read-mode .exit-readmode i + span {
   margin-left: 6px;
   vertical-align: middle;
   -webkit-transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -553,25 +555,25 @@ canvas:not(#ribbon-canvas),
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover i + span,
-.shuoshuo-navigation button:not(:disabled):hover i + span,
 #aside-content .card-info #card-info-btn:hover i + span,
 .post-reward .reward-button:hover i + span,
 #rightside > div > button:hover i + span,
 #rightside > div > a:hover i + span,
 .container .btn-beautify:hover i + span,
 .hide-inline > .hide-button:hover i + span,
-.hide-block > .hide-button:hover i + span {
+.hide-block > .hide-button:hover i + span,
+.read-mode .exit-readmode:hover i + span {
   margin-left: 8px;
 }
 .btn-effects::before,
-.shuoshuo-navigation button:not(:disabled)::before,
 #aside-content .card-info #card-info-btn::before,
 .post-reward .reward-button::before,
 #rightside > div > button::before,
 #rightside > div > a::before,
 .container .btn-beautify::before,
 .hide-inline > .hide-button::before,
-.hide-block > .hide-button::before {
+.hide-block > .hide-button::before,
+.read-mode .exit-readmode::before {
   position: absolute;
   top: 0;
   left: -100%;
@@ -591,25 +593,25 @@ canvas:not(#ribbon-canvas),
   transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover::before,
-.shuoshuo-navigation button:not(:disabled):hover::before,
 #aside-content .card-info #card-info-btn:hover::before,
 .post-reward .reward-button:hover::before,
 #rightside > div > button:hover::before,
 #rightside > div > a:hover::before,
 .container .btn-beautify:hover::before,
 .hide-inline > .hide-button:hover::before,
-.hide-block > .hide-button:hover::before {
+.hide-block > .hide-button:hover::before,
+.read-mode .exit-readmode:hover::before {
   left: 100%;
 }
 .btn-effects > *,
-.shuoshuo-navigation button:not(:disabled) > *,
 #aside-content .card-info #card-info-btn > *,
 .post-reward .reward-button > *,
 #rightside > div > button > *,
 #rightside > div > a > *,
 .container .btn-beautify > *,
 .hide-inline > .hide-button > *,
-.hide-block > .hide-button > * {
+.hide-block > .hide-button > *,
+.read-mode .exit-readmode > * {
   position: relative;
   z-index: 2;
 }
@@ -1751,6 +1753,9 @@ body {
 *::-webkit-scrollbar-track {
   background-color: transparent;
 }
+html.with-fancybox {
+  --scrollbar-color: transparent;
+}
 input::placeholder {
   color: var(--font-color);
 }
@@ -1915,7 +1920,8 @@ blockquote > :last-child {
 @-moz-document url-prefix() {
   scrollbar-color: var(--hlscrollbar-bg) transparent;
 }
-figure.highlight table::-webkit-scrollbar-thumb {
+figure.highlight table::-webkit-scrollbar-thumb,
+.container figure.highlight.default pre::-webkit-scrollbar-thumb {
   background: var(--hlscrollbar-bg);
 }
 figure.highlight pre .deletion {
@@ -2068,6 +2074,9 @@ figure.highlight pre .javascript .function {
 .container figure.highlight .caption a:hover {
   border-bottom-color: var(--hl-color);
 }
+.container figure.highlight.default pre {
+  padding: 10px 20px;
+}
 .container figure.highlight.copy-true {
   -webkit-user-select: all;
   -moz-user-select: all;
@@ -2095,18 +2104,45 @@ figure.highlight pre .javascript .function {
   -ms-flex-align: center;
   -webkit-align-items: center;
   align-items: center;
+  overflow: hidden;
   padding: 0 8px;
   min-height: 24px;
   height: 2.15em;
   background: var(--hltools-bg);
   color: var(--hltools-color);
   font-size: 12px;
-  overflow: hidden;
+  margin-right: auto;
 }
 .container .highlight-tools > * {
-  padding: 5px;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  box-flex: 1;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  margin: 2px;
 }
 .container .highlight-tools i {
+  display: -webkit-inline-box;
+  display: -moz-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-box;
+  display: inline-flex;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  padding: 5px;
   cursor: pointer;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
@@ -2132,10 +2168,15 @@ figure.highlight pre .javascript .function {
   -moz-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding-right: 10px;
   text-transform: uppercase;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: bold;
   font-size: 1.15em;
   -webkit-user-select: none;
@@ -2143,27 +2184,6 @@ figure.highlight pre .javascript .function {
   -ms-user-select: none;
   user-select: none;
   -webkit-user-select: none;
-  padding: 2px;
-}
-.container .highlight-tools .copy-notice {
-  padding-right: 2px;
-  opacity: 0;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-  filter: alpha(opacity=0);
-  -webkit-transition: opacity 0.4s;
-  -moz-transition: opacity 0.4s;
-  -o-transition: opacity 0.4s;
-  -ms-transition: opacity 0.4s;
-  transition: opacity 0.4s;
-}
-.container .highlight-tools .code-lang {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
 }
 .container .gutter {
   -webkit-user-select: none;
@@ -2178,9 +2198,19 @@ figure.highlight pre .javascript .function {
 .container .gist table td {
   border: none;
 }
+.copy-notice {
+  position: absolute;
+  z-index: 99999;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--hltools-bg);
+  white-space: nowrap;
+  font-size: 12px;
+  pointer-events: none;
+}
 .container figure.highlight {
   margin: 0 0 24px;
-  border-radius: 7px;
+  border-radius: 8px;
   -webkit-box-shadow: 0 5px 10px 0 rgba(15,17,26,0.4);
   box-shadow: 0 5px 10px 0 rgba(15,17,26,0.4);
   -webkit-transform: translateZ(0);
@@ -2192,6 +2222,7 @@ figure.highlight pre .javascript .function {
   display: -ms-flexbox;
   display: box;
   display: flex;
+  padding: 3px;
 }
 .container figure.highlight .highlight-tools .macStyle > * {
   margin-right: 8px;
@@ -2878,8 +2909,14 @@ figure.highlight pre .javascript .function {
   -ms-flex-align: center;
   -webkit-align-items: center;
   align-items: center;
-  margin-top: 20px;
-  padding: 20px 0;
+  gap: 12px;
+  width: fit-content;
+  margin: 26px auto 4px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 /* 震動動畫 */
 }
 .shuoshuo-navigation button {
@@ -2901,86 +2938,107 @@ figure.highlight pre .javascript .function {
   -ms-flex-align: center;
   -webkit-align-items: center;
   align-items: center;
-  width: 2.7em;
-  height: 2.7em;
-  background-color: var(--btn-bg);
-  color: var(--btn-color);
-  font-size: 0.9em;
-  line-height: 2.5em;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  -ms-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--card-meta);
+  font-size: 0.78em;
+  line-height: 1;
+  opacity: 0.72;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=72)";
+  filter: alpha(opacity=72);
+  -webkit-transition: color 0.2s ease, opacity 0.2s ease, -webkit-transform 0.2s ease;
+  -moz-transition: color 0.2s ease, opacity 0.2s ease, -moz-transform 0.2s ease;
+  -o-transition: color 0.2s ease, opacity 0.2s ease, -o-transform 0.2s ease;
+  -ms-transition: color 0.2s ease, opacity 0.2s ease, -ms-transform 0.2s ease;
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
 }
 .shuoshuo-navigation button:hover:not(:disabled) {
-  background-color: var(--btn-hover-color);
+  color: var(--font-color);
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+  -webkit-transform: scale(1.08);
+  -moz-transform: scale(1.08);
+  -o-transform: scale(1.08);
+  -ms-transform: scale(1.08);
+  transform: scale(1.08);
+}
+.shuoshuo-navigation button:focus-visible {
+  outline: 2px solid var(--btn-bg);
+  outline-offset: 2px;
 }
 .shuoshuo-navigation button:disabled {
-  background: #f5f5f5;
-  color: #ccc;
-  opacity: 0.5;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-  filter: alpha(opacity=50);
+  background: transparent;
+  color: var(--card-meta);
+  opacity: 0.3;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+  filter: alpha(opacity=30);
   cursor: not-allowed;
 }
-.shuoshuo-navigation .shuoshuo-page-info {
-  margin: 0 15px;
-  color: #858585;
+.shuoshuo-navigation .shuoshuo-page-jump {
+  display: -webkit-inline-box;
+  display: -moz-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-box;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 4px;
+  color: var(--card-meta);
   white-space: nowrap;
-  font-size: 0.9em;
+  font-size: 0.86em;
+}
+.shuoshuo-navigation .shuoshuo-page-label {
+  margin-left: 2px;
+}
+.shuoshuo-navigation .shuoshuo-page-total {
+  margin-right: 2px;
 }
 .shuoshuo-navigation .shuoshuo-page-input {
-  margin-right: 12px;
-  padding: 0 15px;
-  height: 2.7em;
-  border: 1px solid var(--btn-bg);
-  background: var(--card-bg);
-  color: #858585;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--font-color);
   text-align: center;
-  font-size: 0.9em;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  -ms-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  border-radius: 6px;
+  font-size: 0.88em;
+  font-weight: 600;
+  -webkit-transition: background-color 0.2s ease, color 0.2s ease;
+  -moz-transition: background-color 0.2s ease, color 0.2s ease;
+  -o-transition: background-color 0.2s ease, color 0.2s ease;
+  -ms-transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 /* 隱藏 number 輸入框的上下箭頭 */
 /* Firefox */
+  -webkit-appearance: textfield;
   -moz-appearance: textfield;
-/* 當作為頁碼按鈕時的樣式 */
+  appearance: textfield;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
 /* 超出範圍時的紅色樣式 */
 }
 .shuoshuo-navigation .shuoshuo-page-input:focus {
   outline: none;
-  border-width: 2px;
-}
-.shuoshuo-navigation .shuoshuo-page-input:focus::placeholder {
-  color: transparent;
+  background: rgba(76,73,72,0.06);
 }
 .shuoshuo-navigation .shuoshuo-page-input::-webkit-outer-spin-button,
 .shuoshuo-navigation .shuoshuo-page-input::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
-.shuoshuo-navigation .shuoshuo-page-input.shuoshuo-page-num {
-  min-width: 40px;
-  width: 40px;
-  border: none;
-  background: #6f8b84;
-  color: var(--white);
-  font-weight: 500;
-  cursor: text;
-}
-.shuoshuo-navigation .shuoshuo-page-input.shuoshuo-page-num:focus {
-  border: 1px solid #6f8b84;
-  background: var(--white);
-  color: #333;
-}
 .shuoshuo-navigation .shuoshuo-page-input.invalid {
-  border-color: #ff4757;
-  background-color: #ffeaea;
+  background-color: rgba(255,71,87,0.08);
   color: #ff4757;
   -webkit-animation: shake 0.5s ease-in-out;
   -moz-animation: shake 0.5s ease-in-out;
@@ -4283,6 +4341,7 @@ figure.highlight pre .javascript .function {
   margin: 0;
   color: var(--white);
   font-size: 1.85em;
+  -webkit-line-clamp: 3;
 }
 @media screen and (min-width: 768px) {
   #page-header #site-title {
@@ -4842,7 +4901,7 @@ figure.highlight pre .javascript .function {
 }
 .layout .pagination > * {
   display: inline-block;
-  margin: 0 6px;
+  margin: 6px;
   width: 2.5em;
   height: 2.5em;
   line-height: 2.5em;
@@ -5159,13 +5218,13 @@ figure.highlight pre .javascript .function {
   display: none;
   padding: 0 0 15px;
   width: 100%;
-  border-radius: 6px;
 }
 .post-reward .reward-main .reward-all {
   display: inline-block;
   margin: 0;
   padding: 20px 10px;
   background: var(--reward-pop);
+  border-radius: 6px;
 }
 .post-reward .reward-main .reward-all:before {
   position: absolute;
@@ -5585,11 +5644,78 @@ figure.highlight pre .javascript .function {
   z-index: 99999 !important;
 }
 .mermaid-wrap {
+  position: relative;
   margin: 0 0 20px;
+  background: var(--card-bg);
   text-align: center;
 }
+.mermaid-wrap .mermaid-open-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  padding: 0;
+  width: 34px;
+  height: 25px;
+  border: none;
+  border-radius: 20%;
+  background: #d3d3d3;
+  -webkit-box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  color: #fff;
+  font-size: 0;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-transition: background 0.2s ease, -webkit-transform 0.2s ease;
+  -moz-transition: background 0.2s ease, -moz-transform 0.2s ease;
+  -o-transition: background 0.2s ease, -o-transform 0.2s ease;
+  -ms-transition: background 0.2s ease, -ms-transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.mermaid-wrap .mermaid-open-btn i {
+  font-size: 16px;
+  line-height: 1;
+}
+.mermaid-wrap .mermaid-open-btn:hover,
+.mermaid-wrap .mermaid-open-btn:focus-visible {
+  outline: none;
+  background: #c0c0c0;
+  -webkit-transform: translateY(-1px);
+  -moz-transform: translateY(-1px);
+  -o-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
 .mermaid-wrap > svg {
+  max-width: 100%;
   height: 100%;
+  cursor: grab;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+.mermaid-wrap > svg:active {
+  cursor: grabbing;
 }
 .utterances,
 .fb-comments iframe {
@@ -5598,12 +5724,6 @@ figure.highlight pre .javascript .function {
 #gitalk-container .gt-meta {
   margin: 0 0 0.8em;
   padding: 6px 0 16px;
-}
-.aplayer {
-  color: #4c4948;
-}
-.container .aplayer {
-  margin: 0 0 20px;
 }
 .snackbar-container.snackbar-css {
   border-radius: 5px;
@@ -5628,8 +5748,9 @@ figure.highlight pre .javascript .function {
   filter: none;
 }
 @media screen and (max-width: 768px) {
-  .fancybox__toolbar__column.is-middle {
-    display: none;
+  .fancybox__toolbar__column.is-middle,
+  .f-carousel__toolbar__column.is-middle {
+    visibility: hidden;
   }
 }
 .container .btn-center {
@@ -6353,14 +6474,44 @@ blockquote.pullquote.right {
   border-radius: 5px;
   overflow: hidden;
 }
+.toggle > .toggle-content {
+  margin: 30px 24px;
+}
 .toggle > .toggle-button {
   padding: 6px 15px;
   background: #f0f0f0;
   color: #1f2d3d;
+  list-style: none;
   cursor: pointer;
 }
-.toggle > .toggle-content {
-  margin: 30px 24px;
+.toggle > .toggle-button::-webkit-details-marker {
+  display: none;
+}
+.toggle > .toggle-button::before {
+  margin-right: 8px;
+  content: '\f0d7';
+  -webkit-transition: -webkit-transform 0.3s ease;
+  -moz-transition: -moz-transform 0.3s ease;
+  -o-transition: -o-transform 0.3s ease;
+  -ms-transition: -ms-transform 0.3s ease;
+  transition: transform 0.3s ease;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  -webkit-transform-origin: center center;
+  -moz-transform-origin: center center;
+  -o-transform-origin: center center;
+  -ms-transform-origin: center center;
+  transform-origin: center center;
+}
+.toggle[open] summary::before {
+  -webkit-transform: rotate(0);
+  -moz-transform: rotate(0);
+  -o-transform: rotate(0);
+  -ms-transform: rotate(0);
+  transform: rotate(0);
 }
 .container .inline-img {
   display: inline;
@@ -7079,9 +7230,6 @@ blockquote.pullquote.right {
 [data-theme='dark'] .container .note code {
   background: rgba(111,139,132,0.08);
 }
-[data-theme='dark'] .container .aplayer {
-  filter: brightness(0.8);
-}
 [data-theme='dark'] .container kbd {
   border-color: #696969;
   background-color: #525252;
@@ -7100,6 +7248,7 @@ blockquote.pullquote.right {
   filter: brightness(0.8);
 }
 [data-theme='dark'] .hide-button,
+[data-theme='dark'] .toggle-button,
 [data-theme='dark'] #post-outdate-notice,
 [data-theme='dark'] .error-img,
 [data-theme='dark'] .container iframe,
@@ -7109,7 +7258,7 @@ blockquote.pullquote.right {
   filter: brightness(0.8);
 }
 [data-theme='dark'] img:not(.cover) {
-  filter: brightness(0.8);
+  filter: brightness(0.88) contrast(0.95);
 }
 [data-theme='dark'] #aside-content .aside-list > .aside-list-item:not(:last-child) {
   border-bottom: 1px dashed rgba(255,255,255,0.1);
