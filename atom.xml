@@ -10,7 +10,23 @@
   <rights>All rights reserved 2026, Phoenine</rights>
   <subtitle>死锁中的苦行者</subtitle>
   <title>因受</title>
-  <updated>2026-08-14T00:52:47.603Z</updated>
+  <updated>2026-09-06T06:44:12.769Z</updated>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="Riqor" scheme="https://blog.phoenine.top/tags/Riqor/"/>
+    <category term="Agent" scheme="https://blog.phoenine.top/tags/Agent/"/>
+    <category term="测试工程" scheme="https://blog.phoenine.top/tags/%E6%B5%8B%E8%AF%95%E5%B7%A5%E7%A8%8B/"/>
+    <id>https://blog.phoenine.top/posts/b51a1a6b/</id>
+    <link href="https://blog.phoenine.top/posts/b51a1a6b/"/>
+    <published>2026-09-04T16:00:00.000Z</published>
+    <summary>把测试 Harness 从具体项目里拆成可复用骨架的过程，以及仓库里那条能自己跑完的示例流程。</summary>
+    <title>Riqor 开源，把测试 Agent 从「会写」带到「可交付」</title>
+    <updated>2026-09-06T06:44:12.769Z</updated>
+  </entry>
   <entry>
     <author>
       <name>Phoenine</name>
@@ -30,8 +46,8 @@
     </author>
     <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
-    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="Cloudflare" scheme="https://blog.phoenine.top/tags/Cloudflare/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="Docker" scheme="https://blog.phoenine.top/tags/Docker/"/>
     <id>https://blog.phoenine.top/posts/5a5ed66/</id>
     <link href="https://blog.phoenine.top/posts/5a5ed66/"/>
@@ -46,9 +62,9 @@
     </author>
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="FastAPI" scheme="https://blog.phoenine.top/tags/FastAPI/"/>
     <category term="React" scheme="https://blog.phoenine.top/tags/React/"/>
-    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="开源" scheme="https://blog.phoenine.top/tags/%E5%BC%80%E6%BA%90/"/>
     <id>https://blog.phoenine.top/posts/e8974565/</id>
     <link href="https://blog.phoenine.top/posts/e8974565/"/>
@@ -243,12 +259,12 @@
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
     <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
-    <id>https://blog.phoenine.top/posts/bbec2e61/</id>
-    <link href="https://blog.phoenine.top/posts/bbec2e61/"/>
+    <id>https://blog.phoenine.top/posts/5cf07dd2/</id>
+    <link href="https://blog.phoenine.top/posts/5cf07dd2/"/>
     <published>2025-05-20T11:56:00.000Z</published>
-    <summary>Notion Embed功能可将网页、视频、音频、云应用等嵌入页面，提升可视化与交互。使用步骤：打开页面→加号→Embed→粘贴链接或代码。常用小组件网站包括WeatherWidget+Apption、组件世界、widgetbox、indify，支持天气、日历、倒计时、时钟等。通过Embed可快速集成多媒体与工具，增强工作流。并可随时更新提升效率快速。</summary>
-    <title>Notion常见的页面小组件</title>
-    <updated>2026-07-21T06:16:52.277Z</updated>
+    <summary>Notion常用快捷键汇总，涵盖Mac版键盘操作：创建新页面、跳转最近页面、插入分隔线、添加待办、折叠列表、引用块、颜色、emoji等；/命令快速插入文本、页面、列表、待办、切换、引用、链接、日期、emoji、评论、目录、模板按钮、数学公式等；数据库快捷键包括/table、/board、/calendar、/list、/gallery、/timeline、/linked；文件相关快捷键如/image、/pdf、/book、/video、/audio、/code、/file、/embed。掌握这些可大幅提升Notion使用效率。</summary>
+    <title>Notion常用快捷键汇总</title>
+    <updated>2026-07-21T06:16:52.283Z</updated>
   </entry>
   <entry>
     <author>
@@ -257,12 +273,12 @@
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
     <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
-    <id>https://blog.phoenine.top/posts/5cf07dd2/</id>
-    <link href="https://blog.phoenine.top/posts/5cf07dd2/"/>
+    <id>https://blog.phoenine.top/posts/bbec2e61/</id>
+    <link href="https://blog.phoenine.top/posts/bbec2e61/"/>
     <published>2025-05-20T11:56:00.000Z</published>
-    <summary>Notion常用快捷键汇总，涵盖Mac版键盘操作：创建新页面、跳转最近页面、插入分隔线、添加待办、折叠列表、引用块、颜色、emoji等；/命令快速插入文本、页面、列表、待办、切换、引用、链接、日期、emoji、评论、目录、模板按钮、数学公式等；数据库快捷键包括/table、/board、/calendar、/list、/gallery、/timeline、/linked；文件相关快捷键如/image、/pdf、/book、/video、/audio、/code、/file、/embed。掌握这些可大幅提升Notion使用效率。</summary>
-    <title>Notion常用快捷键汇总</title>
-    <updated>2026-07-21T06:16:52.283Z</updated>
+    <summary>Notion Embed功能可将网页、视频、音频、云应用等嵌入页面，提升可视化与交互。使用步骤：打开页面→加号→Embed→粘贴链接或代码。常用小组件网站包括WeatherWidget+Apption、组件世界、widgetbox、indify，支持天气、日历、倒计时、时钟等。通过Embed可快速集成多媒体与工具，增强工作流。并可随时更新提升效率快速。</summary>
+    <title>Notion常见的页面小组件</title>
+    <updated>2026-07-21T06:16:52.277Z</updated>
   </entry>
   <entry>
     <author>
@@ -295,20 +311,5 @@
     </summary>
     <title>学习的关键 - 自我解释</title>
     <updated>2026-08-15T13:58:57.989Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Phoenine</name>
-    </author>
-    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
-    <category term="manus" scheme="https://blog.phoenine.top/tags/manus/"/>
-    <category term="open-manus" scheme="https://blog.phoenine.top/tags/open-manus/"/>
-    <id>https://blog.phoenine.top/posts/fa332fd9/</id>
-    <link href="https://blog.phoenine.top/posts/fa332fd9/"/>
-    <published>2025-05-20T11:55:00.000Z</published>
-    <summary>本文档提供了对 OpenManus 项目核心代码文件的深入分析，包括代码结构、算法逻辑、设计思想和实现细节。通过对关键源码的解读，帮助开发者更好地理解 OpenManus 的内部工作机制。</summary>
-    <title>OpenManus 核心代码详细分析</title>
-    <updated>2026-07-21T06:16:52.335Z</updated>
   </entry>
 </feed>
