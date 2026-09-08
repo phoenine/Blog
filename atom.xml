@@ -10,7 +10,7 @@
   <rights>All rights reserved 2026, Phoenine</rights>
   <subtitle>死锁中的苦行者</subtitle>
   <title>因受</title>
-  <updated>2026-09-06T06:44:12.769Z</updated>
+  <updated>2026-09-06T06:47:15.497Z</updated>
   <entry>
     <author>
       <name>Phoenine</name>
@@ -22,10 +22,10 @@
     <category term="测试工程" scheme="https://blog.phoenine.top/tags/%E6%B5%8B%E8%AF%95%E5%B7%A5%E7%A8%8B/"/>
     <id>https://blog.phoenine.top/posts/b51a1a6b/</id>
     <link href="https://blog.phoenine.top/posts/b51a1a6b/"/>
-    <published>2026-09-04T16:00:00.000Z</published>
+    <published>2026-09-05T08:44:00.000Z</published>
     <summary>把测试 Harness 从具体项目里拆成可复用骨架的过程，以及仓库里那条能自己跑完的示例流程。</summary>
     <title>Riqor 开源，把测试 Agent 从「会写」带到「可交付」</title>
-    <updated>2026-09-06T06:44:12.769Z</updated>
+    <updated>2026-09-06T06:47:15.497Z</updated>
   </entry>
   <entry>
     <author>
@@ -46,8 +46,8 @@
     </author>
     <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
-    <category term="Cloudflare" scheme="https://blog.phoenine.top/tags/Cloudflare/"/>
     <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
+    <category term="Cloudflare" scheme="https://blog.phoenine.top/tags/Cloudflare/"/>
     <category term="Docker" scheme="https://blog.phoenine.top/tags/Docker/"/>
     <id>https://blog.phoenine.top/posts/5a5ed66/</id>
     <link href="https://blog.phoenine.top/posts/5a5ed66/"/>
@@ -62,9 +62,9 @@
     </author>
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
-    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="FastAPI" scheme="https://blog.phoenine.top/tags/FastAPI/"/>
     <category term="React" scheme="https://blog.phoenine.top/tags/React/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="开源" scheme="https://blog.phoenine.top/tags/%E5%BC%80%E6%BA%90/"/>
     <id>https://blog.phoenine.top/posts/e8974565/</id>
     <link href="https://blog.phoenine.top/posts/e8974565/"/>
@@ -88,7 +88,7 @@
     <published>2026-07-13T16:00:00.000Z</published>
     <summary>拆解 agent-next 中 Skills 与 Workflow 的职责边界、receipt 闭环、Fail Closed 门禁与 Lazy Load 阶段驱动设计。</summary>
     <title>agent-next：Skills 与 Workflow——测试 Agent 的职责拆分与阶段驱动</title>
-    <updated>2026-07-21T05:53:16.790Z</updated>
+    <updated>2026-09-06T06:47:43.411Z</updated>
   </entry>
   <entry>
     <author>

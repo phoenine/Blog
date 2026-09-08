@@ -62,7 +62,8 @@
 }
 
 .siliconFlow-title-text {
-    font-weight: bold;
+    font-size: 13px;
+    font-weight: 600;
     margin-left: 0.5rem; /* 8px→0.5rem */
     line-height: 1;
 }
@@ -73,8 +74,10 @@
     background: var(--ai-summary-card-bg);
     border-radius: 0.5rem; /* 8px→0.5rem */
     border: var(--ai-summary-style-border-always);
-    /*font-size: var(--global-font-size);*/
-    line-height: 1.4;
+    /* AI 摘要是"正文前的辅助速览"，小于正文（15px）；灰绿文字与全站摘要语义同族 */
+    font-size: 13px;
+    color: #5F7B74;
+    line-height: 1.65;
     display: flex;
 }
 
@@ -108,4 +111,8 @@
 
 .siliconFlow-title-icon svg path {
     fill: var(--ai-summary-main);
+}
+/* 暗色：灰绿文字提亮（插件暗卡片 #2d3748 底上保持可读） */
+[data-theme="dark"] .siliconFlow-explanation {
+    color: #A4C7AE;
 }
