@@ -672,6 +672,15 @@
     #B64235;
   box-shadow: 0 0 0 1px rgba(182, 66, 53, .25), 0 1px 3px rgba(153, 49, 39, .12);
 }
+#body-wrap[data-page-type='page']:has(.shuoshuo-frame-page, .zhaizhai-reading-detail) #pagination .page-number.current {
+  background: var(--home-accent);
+  color: #fff;
+}
+#body-wrap[data-page-type='page']:has(.shuoshuo-frame-page, .zhaizhai-reading-detail) #pagination .page-number:hover,
+#body-wrap[data-page-type='page']:has(.shuoshuo-frame-page, .zhaizhai-reading-detail) #pagination .extend:hover {
+  background: var(--home-warm);
+  color: var(--home-accent);
+}
 /* 书籍详情不重复显示已在页首出现的书名。 */
 #body-wrap[data-page-type='page']:has(.zhaizhai-reading-detail) .zhaizhai-source {
   display: none;

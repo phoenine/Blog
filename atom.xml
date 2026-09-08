@@ -244,13 +244,12 @@
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
     <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
-    <category term="formula" scheme="https://blog.phoenine.top/tags/formula/"/>
-    <id>https://blog.phoenine.top/posts/7438f04c/</id>
-    <link href="https://blog.phoenine.top/posts/7438f04c/"/>
+    <id>https://blog.phoenine.top/posts/5cf07dd2/</id>
+    <link href="https://blog.phoenine.top/posts/5cf07dd2/"/>
     <published>2025-05-20T11:56:00.000Z</published>
-    <summary>Notion公式总结，涵盖属性返回值、运算、日期、功能函数，兼顾Formula 2.0更新，帮助快速构建复杂公式，适合前端开发者与日常使用。支持数值、文本、日期、复选框、列表、字符串等返回类型，提供加减乘除、比较、逻辑、字符串处理、日期运算、数组操作等常用函数，配合模板快速实现任务管理、进度追踪、预算计算等场景。</summary>
-    <title>Notion常用Formula总结</title>
-    <updated>2026-07-21T06:16:52.269Z</updated>
+    <summary>Notion常用快捷键汇总，涵盖Mac版键盘操作：创建新页面、跳转最近页面、插入分隔线、添加待办、折叠列表、引用块、颜色、emoji等；/命令快速插入文本、页面、列表、待办、切换、引用、链接、日期、emoji、评论、目录、模板按钮、数学公式等；数据库快捷键包括/table、/board、/calendar、/list、/gallery、/timeline、/linked；文件相关快捷键如/image、/pdf、/book、/video、/audio、/code、/file、/embed。掌握这些可大幅提升Notion使用效率。</summary>
+    <title>Notion常用快捷键汇总</title>
+    <updated>2026-07-21T06:16:52.283Z</updated>
   </entry>
   <entry>
     <author>
@@ -259,12 +258,13 @@
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
     <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
-    <id>https://blog.phoenine.top/posts/5cf07dd2/</id>
-    <link href="https://blog.phoenine.top/posts/5cf07dd2/"/>
+    <category term="formula" scheme="https://blog.phoenine.top/tags/formula/"/>
+    <id>https://blog.phoenine.top/posts/7438f04c/</id>
+    <link href="https://blog.phoenine.top/posts/7438f04c/"/>
     <published>2025-05-20T11:56:00.000Z</published>
-    <summary>Notion常用快捷键汇总，涵盖Mac版键盘操作：创建新页面、跳转最近页面、插入分隔线、添加待办、折叠列表、引用块、颜色、emoji等；/命令快速插入文本、页面、列表、待办、切换、引用、链接、日期、emoji、评论、目录、模板按钮、数学公式等；数据库快捷键包括/table、/board、/calendar、/list、/gallery、/timeline、/linked；文件相关快捷键如/image、/pdf、/book、/video、/audio、/code、/file、/embed。掌握这些可大幅提升Notion使用效率。</summary>
-    <title>Notion常用快捷键汇总</title>
-    <updated>2026-07-21T06:16:52.283Z</updated>
+    <summary>Notion公式总结，涵盖属性返回值、运算、日期、功能函数，兼顾Formula 2.0更新，帮助快速构建复杂公式，适合前端开发者与日常使用。支持数值、文本、日期、复选框、列表、字符串等返回类型，提供加减乘除、比较、逻辑、字符串处理、日期运算、数组操作等常用函数，配合模板快速实现任务管理、进度追踪、预算计算等场景。</summary>
+    <title>Notion常用Formula总结</title>
+    <updated>2026-07-21T06:16:52.269Z</updated>
   </entry>
   <entry>
     <author>
