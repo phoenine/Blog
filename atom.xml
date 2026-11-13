@@ -80,8 +80,8 @@
     </author>
     <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
-    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="Cloudflare" scheme="https://blog.phoenine.top/tags/Cloudflare/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="Docker" scheme="https://blog.phoenine.top/tags/Docker/"/>
     <id>https://blog.phoenine.top/posts/5a5ed66/</id>
     <link href="https://blog.phoenine.top/posts/5a5ed66/"/>
@@ -96,9 +96,9 @@
     </author>
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="FastAPI" scheme="https://blog.phoenine.top/tags/FastAPI/"/>
     <category term="React" scheme="https://blog.phoenine.top/tags/React/"/>
-    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="开源" scheme="https://blog.phoenine.top/tags/%E5%BC%80%E6%BA%90/"/>
     <id>https://blog.phoenine.top/posts/e8974565/</id>
     <link href="https://blog.phoenine.top/posts/e8974565/"/>
@@ -278,6 +278,21 @@
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
     <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
+    <category term="formula" scheme="https://blog.phoenine.top/tags/formula/"/>
+    <id>https://blog.phoenine.top/posts/7438f04c/</id>
+    <link href="https://blog.phoenine.top/posts/7438f04c/"/>
+    <published>2025-05-20T11:56:00.000Z</published>
+    <summary>Notion公式总结，涵盖属性返回值、运算、日期、功能函数，兼顾Formula 2.0更新，帮助快速构建复杂公式，适合前端开发者与日常使用。支持数值、文本、日期、复选框、列表、字符串等返回类型，提供加减乘除、比较、逻辑、字符串处理、日期运算、数组操作等常用函数，配合模板快速实现任务管理、进度追踪、预算计算等场景。</summary>
+    <title>Notion常用Formula总结</title>
+    <updated>2026-07-21T06:16:52.269Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
+    <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
     <id>https://blog.phoenine.top/posts/5cf07dd2/</id>
     <link href="https://blog.phoenine.top/posts/5cf07dd2/"/>
     <published>2025-05-20T11:56:00.000Z</published>
@@ -298,20 +313,5 @@
     <summary>Notion Embed功能可将网页、视频、音频、云应用等嵌入页面，提升可视化与交互。使用步骤：打开页面→加号→Embed→粘贴链接或代码。常用小组件网站包括WeatherWidget+Apption、组件世界、widgetbox、indify，支持天气、日历、倒计时、时钟等。通过Embed可快速集成多媒体与工具，增强工作流。并可随时更新提升效率快速。</summary>
     <title>Notion常见的页面小组件</title>
     <updated>2026-07-21T06:16:52.277Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Phoenine</name>
-    </author>
-    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
-    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
-    <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
-    <category term="formula" scheme="https://blog.phoenine.top/tags/formula/"/>
-    <id>https://blog.phoenine.top/posts/7438f04c/</id>
-    <link href="https://blog.phoenine.top/posts/7438f04c/"/>
-    <published>2025-05-20T11:56:00.000Z</published>
-    <summary>Notion公式总结，涵盖属性返回值、运算、日期、功能函数，兼顾Formula 2.0更新，帮助快速构建复杂公式，适合前端开发者与日常使用。支持数值、文本、日期、复选框、列表、字符串等返回类型，提供加减乘除、比较、逻辑、字符串处理、日期运算、数组操作等常用函数，配合模板快速实现任务管理、进度追踪、预算计算等场景。</summary>
-    <title>Notion常用Formula总结</title>
-    <updated>2026-07-21T06:16:52.269Z</updated>
   </entry>
 </feed>
