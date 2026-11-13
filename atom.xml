@@ -10,7 +10,41 @@
   <rights>All rights reserved 2026, Phoenine</rights>
   <subtitle>死锁中的苦行者</subtitle>
   <title>因受</title>
-  <updated>2026-09-06T06:47:15.497Z</updated>
+  <updated>2026-11-13T09:21:15.184Z</updated>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="Riqor" scheme="https://blog.phoenine.top/tags/Riqor/"/>
+    <category term="Agent" scheme="https://blog.phoenine.top/tags/Agent/"/>
+    <category term="测试工程" scheme="https://blog.phoenine.top/tags/%E6%B5%8B%E8%AF%95%E5%B7%A5%E7%A8%8B/"/>
+    <category term="Harness" scheme="https://blog.phoenine.top/tags/Harness/"/>
+    <id>https://blog.phoenine.top/posts/3f9c1d42/</id>
+    <link href="https://blog.phoenine.top/posts/3f9c1d42/"/>
+    <published>2026-11-13T08:40:00.000Z</published>
+    <summary>Riqor 2.0 变成 DSH 客户端插件，生命周期、阶段内活动、Skill 和产物模板都能按公司场景改。</summary>
+    <title>Riqor 有 UI 界面了，使用 harness 试试水</title>
+    <updated>2026-11-13T09:21:15.184Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Phoenine</name>
+    </author>
+    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+    <category term="开源" scheme="https://blog.phoenine.top/tags/%E5%BC%80%E6%BA%90/"/>
+    <category term="Chrome" scheme="https://blog.phoenine.top/tags/Chrome/"/>
+    <category term="浏览器扩展" scheme="https://blog.phoenine.top/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%A9%E5%B1%95/"/>
+    <category term="Obsidian" scheme="https://blog.phoenine.top/tags/Obsidian/"/>
+    <category term="高亮" scheme="https://blog.phoenine.top/tags/%E9%AB%98%E4%BA%AE/"/>
+    <id>https://blog.phoenine.top/posts/34c5637a/</id>
+    <link href="https://blog.phoenine.top/posts/34c5637a/"/>
+    <published>2026-09-14T03:15:00.000Z</published>
+    <summary>读技术文章时划的线和写的批注，不必交给谁的服务器。六彩是一个本地优先的 Chrome 扩展，摘录带批注导出成 Obsidian Markdown，想跨电脑就自己配一个 Supabase。</summary>
+    <title>开源一款网页高亮、批注与 AI 理解的 Chrome 插件</title>
+    <updated>2026-11-13T08:48:02.709Z</updated>
+  </entry>
   <entry>
     <author>
       <name>Phoenine</name>
@@ -46,8 +80,8 @@
     </author>
     <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
-    <category term="Cloudflare" scheme="https://blog.phoenine.top/tags/Cloudflare/"/>
     <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
+    <category term="Cloudflare" scheme="https://blog.phoenine.top/tags/Cloudflare/"/>
     <category term="Docker" scheme="https://blog.phoenine.top/tags/Docker/"/>
     <id>https://blog.phoenine.top/posts/5a5ed66/</id>
     <link href="https://blog.phoenine.top/posts/5a5ed66/"/>
@@ -62,9 +96,9 @@
     </author>
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="we-events" scheme="https://blog.phoenine.top/tags/we-events/"/>
-    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="FastAPI" scheme="https://blog.phoenine.top/tags/FastAPI/"/>
     <category term="React" scheme="https://blog.phoenine.top/tags/React/"/>
+    <category term="Supabase" scheme="https://blog.phoenine.top/tags/Supabase/"/>
     <category term="开源" scheme="https://blog.phoenine.top/tags/%E5%BC%80%E6%BA%90/"/>
     <id>https://blog.phoenine.top/posts/e8974565/</id>
     <link href="https://blog.phoenine.top/posts/e8974565/"/>
@@ -112,9 +146,9 @@
     </author>
     <category term="人工智能" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     <category term="LLM" scheme="https://blog.phoenine.top/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/LLM/"/>
+    <category term="Obsidian" scheme="https://blog.phoenine.top/tags/Obsidian/"/>
     <category term="Hermes" scheme="https://blog.phoenine.top/tags/Hermes/"/>
     <category term="Skills" scheme="https://blog.phoenine.top/tags/Skills/"/>
-    <category term="Obsidian" scheme="https://blog.phoenine.top/tags/Obsidian/"/>
     <category term="SQLite" scheme="https://blog.phoenine.top/tags/SQLite/"/>
     <category term="Apple" scheme="https://blog.phoenine.top/tags/Apple/"/>
     <id>https://blog.phoenine.top/posts/b9117924/</id>
@@ -244,21 +278,6 @@
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
     <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
-    <category term="formula" scheme="https://blog.phoenine.top/tags/formula/"/>
-    <id>https://blog.phoenine.top/posts/7438f04c/</id>
-    <link href="https://blog.phoenine.top/posts/7438f04c/"/>
-    <published>2025-05-20T11:56:00.000Z</published>
-    <summary>Notion公式总结，涵盖属性返回值、运算、日期、功能函数，兼顾Formula 2.0更新，帮助快速构建复杂公式，适合前端开发者与日常使用。支持数值、文本、日期、复选框、列表、字符串等返回类型，提供加减乘除、比较、逻辑、字符串处理、日期运算、数组操作等常用函数，配合模板快速实现任务管理、进度追踪、预算计算等场景。</summary>
-    <title>Notion常用Formula总结</title>
-    <updated>2026-07-21T06:16:52.269Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Phoenine</name>
-    </author>
-    <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
-    <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
-    <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
     <id>https://blog.phoenine.top/posts/5cf07dd2/</id>
     <link href="https://blog.phoenine.top/posts/5cf07dd2/"/>
     <published>2025-05-20T11:56:00.000Z</published>
@@ -287,29 +306,12 @@
     <category term="常用工具" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
     <category term="Notion" scheme="https://blog.phoenine.top/categories/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/Notion/"/>
     <category term="notion" scheme="https://blog.phoenine.top/tags/notion/"/>
-    <id>https://blog.phoenine.top/posts/b0e2dd23/</id>
-    <link href="https://blog.phoenine.top/posts/b0e2dd23/"/>
+    <category term="formula" scheme="https://blog.phoenine.top/tags/formula/"/>
+    <id>https://blog.phoenine.top/posts/7438f04c/</id>
+    <link href="https://blog.phoenine.top/posts/7438f04c/"/>
     <published>2025-05-20T11:56:00.000Z</published>
-    <summary>Notion积分打卡v2.0 通过按钮快速创建打卡页面与习惯记录，支持日常、支线、主线、副本任务四类，类似游戏任务系统。主页已锁定，需先解锁才能自定义；复制按钮时需取消同步。打卡后积分与Chat功能同步更新，支持称号与积分加成。模板免费共享，适合想用游戏化方式规划人生的用户。</summary>
-    <title>像玩游戏一样规划你的人生-Notion积分打卡v2.0</title>
-    <updated>2026-08-15T13:55:22.258Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Phoenine</name>
-    </author>
-    <category term="知识积累" scheme="https://blog.phoenine.top/categories/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/"/>
-    <category term="method" scheme="https://blog.phoenine.top/tags/method/"/>
-    <id>https://blog.phoenine.top/posts/67a0b627/</id>
-    <link href="https://blog.phoenine.top/posts/67a0b627/"/>
-    <published>2025-05-20T11:55:00.000Z</published>
-    <summary>
-      <![CDATA[<html><head></head><body><blockquote>
-<p>你不仅应该知道你学习的材料是什么，还应该知道为什么。</p>
-</blockquote>
-<p><img src="https://wechat-public-1258175280.cos.ap-n]]>
-    </summary>
-    <title>学习的关键 - 自我解释</title>
-    <updated>2026-08-15T13:58:57.989Z</updated>
+    <summary>Notion公式总结，涵盖属性返回值、运算、日期、功能函数，兼顾Formula 2.0更新，帮助快速构建复杂公式，适合前端开发者与日常使用。支持数值、文本、日期、复选框、列表、字符串等返回类型，提供加减乘除、比较、逻辑、字符串处理、日期运算、数组操作等常用函数，配合模板快速实现任务管理、进度追踪、预算计算等场景。</summary>
+    <title>Notion常用Formula总结</title>
+    <updated>2026-07-21T06:16:52.269Z</updated>
   </entry>
 </feed>
